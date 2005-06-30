@@ -1,0 +1,318 @@
+
+%
+% NOTE -- ONLY EDIT THE .Rnw FILE!!!  The .tex file is
+% likely to be overwritten.
+%
+\documentclass[12pt]{article}
+
+\usepackage{amsmath,pstricks}
+\usepackage[authoryear,round]{natbib}
+\usepackage{hyperref}
+
+
+\textwidth=6.2in
+\textheight=8.5in
+%\parskip=.3cm
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+
+
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rmethod}[1]{{\texttt{#1}}}
+\newcommand{\Rfunarg}[1]{{\texttt{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
+
+\textwidth=6.2in
+
+\bibliographystyle{plainnat} 
+ 
+\begin{document}
+%\setkeys{Gin}{width=0.55\textwidth}
+
+\title{the \Rpackage{biocViews} package}
+\author{VJ Carey}
+\maketitle
+
+\tableofcontents
+
+\section{A vocabulary graph and some manipulations}
+
+A possible vocabulary for bioconductor package topics has been created as a directed
+graph, saved as \Robject{bcVoc} in the \Rpackage{biocViews}
+package.  
+<<loadup,echo=FALSE,results=hide>>=
+library(biocViews)
+<<lkda>>=
+data(bcVoc)
+bcVoc
+@
+This graph was created with the graphviz dot language,
+then converted to GXL using graphviz dot2gxl utility,
+then imported to R using graph::fromGXL.
+To see the top-level terms of the vocabulary, use
+<<lktop>>=
+adj(bcVoc, "vocRoot")
+@
+To see all concept terms subordinate to ``ontologies'', use
+<<lkacc>>=
+acc(bcVoc, "Ontologies")
+@
+The entire term set is listed in the appendix.
+
+\section{Associating packages with vocabulary terms}
+
+The \Rfunction{packAssoc} function will associate each
+element of a vector of package names
+with (at present) a single term in the vocabulary.
+This works using a trivial GUI.  The R interpreter
+prompts the user to give top level, second level (if
+relevant given top level), and
+third level (if relevant given second level) terms
+associated with each package 
+named in the \Rfunarg{packlist} argument.  The vocabulary
+graph is given as the second argument.
+
+Suppose our package list is
+<<lkpl>>=
+demop <- c("Biobase", "graph", "limma", "factDesign")
+@
+Then
+<<doasso,echo=FALSE>>=
+if (interactive() & 0)
+  pal <- packAssoc(demop, bcVoc) else { data(pal) }
+@
+<<showasso,eval=FALSE>>=
+pal <- packAssoc(demop, bcVoc)
+@
+loads \Robject{pal} with a list, after the GUI has been used.
+@
+<<lkpal>>=
+names(pal)
+pal$factDesign
+@
+Some of the information saved is derived from calls to \Rfunction{packageDescription}.
+
+The package:terminology associations can be permuted:
+<<permu>>=
+vpal <- packAssoc2vlist(pal)
+vpal
+@
+This enables us to build \Rpackage{ctv} structures.
+
+\section{Building ctv documents}
+
+ctv documents are XML markups of view-related metadata.  The appendix
+includes a full example of a ctv view document.
+
+The basic structural elements are currently:
+\begin{itemize}
+\item \verb+<CRANTaskView>+ is the root tag
+\item \verb+<name>+, \verb+<topic>+, \verb+<maintainer>+; self-explanatory except for topic,
+which is a plaintext rendering of the topic; the maintainer must also be plaintext,
+apparently  owing to XML syntax restrictions
+\item \verb+<info>+; can hold a rich HTML markup of narrative about the view, including
+references to packages, which are marked up with \verb+<pkg>+
+\item \verb+<packagelist>+, a list of packages marked up with \verb+<pkg>+
+\item \verb+<links>+, a list of URLs marked up as pure HTML anchors
+\end{itemize}
+
+The \Rfunction{makeCTV} function helps to create such a document
+from the elements of a view-package-vocabulary association list created
+by packAssoc2vlist.  A trivial illustration:
+
+<<demomc>>=
+vn <- names(vpal)
+c1 <- makeCTV( vn[1], vn[1], "None", vpal[[1]], "None" , bcVoc )
+targ <- tempfile()
+saveXML(c1, file=targ)
+dem <- read.ctv(targ)
+dem
+<<dd,echo=FALSE>>=
+unlink(targ)
+@
+
+To run this over our entire view set, we can use:
+<<doit>>=
+getCTVs <- function(pal, vocab) {
+  vpal <- packAssoc2vlist(pal)
+  vn <- names(vpal)
+  nv <- length(vn)
+  out <- list()
+  for (i in 1:length(vn)) {
+    tmp <- makeCTV( vn[i], vn[i], "None", vpal[[i]], "None", bcVoc )
+    tf <- tempfile()
+    saveXML(tmp, file=tf)
+    out[[ vn[i] ]] <- read.ctv(tf)
+    unlink(tf)
+  }
+  out
+}
+allc <- getCTVs(pal, bcVoc)
+@
+I now have a list of CTV structures in R.  We'll serialize
+them to HTML:
+<<serall>>=
+jnk <- sapply( allc, ctv2html )
+@
+
+
+\begin{figure}[Hh]
+\includegraphics{ctvwin1}
+\caption{A view of one of the generated HTML pages.  To proceed,
+we need systematic ways of populating the narrative components.}
+\end{figure}
+
+
+\begin{figure}[Hh]
+\includegraphics{ctvwin2}
+\caption{Here's a higher level page on a rich topic set.}
+\end{figure}
+ 
+
+@
+
+%We would like to add information with minimal manual intervention.
+%In the info section, we would like to add information on the topic
+%hierarchy.
+
+<<writeTell,echo=FALSE>>=
+tellSuperTop <- function( topic, vocab ) {
+# returns vector of supertopics
+ if (length(topic)>1) stop("must have length 1 topic")
+ require(RBGL)
+ path <- sp.between.scalar( vocab, "vocRoot", topic )$path
+ path[-c(1, length(path))]
+}
+tellSubTop <- function( topic, vocab ) {
+ if (length(topic)>1) stop("must have length 1 topic")
+# returns vector of subtopics
+ desc <- acc( vocab, topic )[[1]]
+ names(desc)[desc==1]
+}
+@
+<<makeVocInfo,echo=FALSE>>=
+makeVocInfo <- function(topic, vocab) {
+ list(supertopics=tellSuperTop(topic,vocab),
+   subtopics=tellSubTop(topic,vocab))
+}
+@
+
+\clearpage
+\section{Appendix}
+\subsection{The full vocabulary}
+<<lkvocall>>=
+sort(nodes(bcVoc))
+@
+\subsection{Snapshots of vocabulary subgraphs}
+
+\begin{figure}
+\includegraphics{topg}
+\caption{Top level terms.}
+\end{figure}
+
+\begin{figure}
+\includegraphics{statg}
+\caption{Terms subordinate to statistical modeling for high throughput biology.}
+\end{figure}
+
+\clearpage
+
+\subsection{An example ctv document}
+\begin{verbatim}
+<CRANTaskView>
+
+  <name>MachineLearning</name>
+  <topic>Machine Learning &amp; Statistical Learning</topic>
+  <maintainer>Torsten Hothorn</maintainer>
+  
+  <info>
+    Several add-on packages implement ideas and methods developed at the
+    borderline between computer science and statistics - this field of research
+    is usually referred to as machine learning. 
+
+    The packages can be roughly structured into the following topics:
+    <ul>
+      <li><i>Neural Networks</i>: Single-hidden-layer neural network are 
+             implemented in package <tt>nnet</tt> as part of the <pkg>VR</pkg>
+             bundle (shipped with base R). </li>
+      <li><i>Recursive Partitioning</i>: Tree-structured models for
+             regression, classification and survival analysis, following the
+	     ideas in the CART book, are
+             implemented in <pkg>rpart</pkg> (shipped with base R) and <pkg>tree</pkg>.
+             An adaptation of <pkg>rpart</pkg> for multivariate responses
+             is available in package <pkg>mvpart</pkg>. The validity of
+             trees can be investigated via permutation approaches with package 
+             <pkg>rpart.permutation</pkg> and a tree algorithm fitting 
+             nearest neighbors in each node is implemented in package 
+             <pkg>knnTree</pkg>. For problems with binary input variables
+             the package <pkg>LogicReg</pkg> implements logic regression.
+             Graphical tools for the visualization of
+             trees are available in packages <pkg>maptree</pkg> and 
+             <pkg>pinktoe</pkg>.</li>
+      <li><i>Regularized and Shrinkage Methods</i>: Regression models with some
+             constraint on the parameter estimates can be fitted with the
+             <pkg>lasso2</pkg> and <pkg>lars</pkg> packages. The shrunken
+             centroids classifier and utilities for gene expression analyses are
+             implemented in package <pkg>pamr</pkg>.</li>
+\end{verbatim}
+\begin{verbatim}
+      <li><i>Random Forests</i>: The reference implementation of the random
+             forest algorithm for regression and classification is available in 
+             package <pkg>randomForest</pkg>. Package <pkg>ipred</pkg> has bagging
+             for regression, classification and survival analysis as well as
+             bundling, a combination of multiple models via
+             ensemble learning.</li>
+      <li><i>Boosting</i>: Various forms of gradient boosting are
+             implemented in packages <pkg>gbm</pkg> and <pkg>boost</pkg>.</li>
+      <li><i>Support Vector Machines</i>: The function <tt>svm()</tt> from 
+             <pkg>e1071</pkg> offers an interface to the LIBSVM library and
+             package <pkg>kernlab</pkg> implements a flexible framework 
+             for kernel learning (including SVMs, RVMs and other kernel
+	     learning algorithms). An interface to the SVMlight implementation
+	     (only for one-against-all classification) is provided in package
+	     <pkg>klaR</pkg>.</li>
+      <li><i>Model selection and validation</i>: Package <pkg>e1071</pkg>
+             has function <tt>tune()</tt> for hyper parameter tuning and 
+             function <tt>errorest()</tt> (<pkg>ipred</pkg>) can be used for
+             error rate estimation. The cost parameter C for support vector
+             machines can be chosen utilizing the functionality of package
+             <pkg>svmpath</pkg>.</li>
+    </ul>
+  </info>
+\end{verbatim}
+\begin{verbatim}
+
+  <packagelist>
+    <pkg>boost</pkg>
+    <pkg priority="core">e1071</pkg>
+    <pkg priority="core">gbm</pkg>
+    <pkg>ipred</pkg>
+    <pkg priority="core">kernlab</pkg>
+    <pkg>klaR</pkg>
+    <pkg>lars</pkg>
+    <pkg>lasso2</pkg>
+    <pkg>mvpart</pkg>
+    <pkg>pamr</pkg>
+    <pkg>rpart.permutation</pkg>
+    <pkg priority="core">randomForest</pkg>
+    <pkg priority="core">rpart</pkg>
+    <pkg>svmpath</pkg>
+    <pkg>tree</pkg>
+    <pkg priority="core">VR</pkg>
+  </packagelist>
+
+  <links>
+    <a href="http://www.boosting.org/">Boosting Research Site</a>
+  </links>
+
+</CRANTaskView>
+\end{verbatim}
+
+
+\end{document}
