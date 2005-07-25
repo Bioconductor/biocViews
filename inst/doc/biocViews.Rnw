@@ -1,5 +1,6 @@
 
 %
+%\VignetteIndexEntry{biocViews}
 % NOTE -- ONLY EDIT THE .Rnw FILE!!!  The .tex file is
 % likely to be overwritten.
 %
@@ -40,6 +41,44 @@
 \maketitle
 
 \tableofcontents
+
+\section{Overview}
+
+Bioconductor is a project supporting statistical computations and
+inference in high-throughput biological experimentation.
+Currently the project consists of containers, workflow components,
+and multiscale documentation
+useful in the areas of
+\begin{itemize}
+\item DNA microarray preprocessing and analysis,
+\item array CGH, SAGE, proteomic, and cell-based assay preprocessing
+and analysis,
+\item annotation of experimental processes and results,
+\item graph and network structures relevant to bioinformatics.
+\end{itemize}
+Bioconductor software is currently organized into over 100 R packages.
+R packages are collections of folders populated with program code
+in R and other languages, compiled datasets used for annotation
+or software demonstration, and documentation.  
+
+
+The use of R packages
+use of packages is helpful to both users and developers. 
+At the user level, R provides
+high-level processes for installing R packages with checksum verification,
+and for presenting/executing documentation at the package or package-component level.
+At the developer level, R provides high-level processes for carrying
+out package quality control, including verifying the structure of the
+package, the coverage of supplied documentation, and the freedom from error
+of various example computations supplied in the documentation sources.
+
+Large collections of R packages are difficult to survey without
+special guidance.  This document
+describes how a task view vocabulary can be constructed and used
+to provide a hypertext interface to a catalog of R packages.
+Section \ref{summ} below gives a concise step-by-step summary
+of the activities required.
+
 
 \section{A vocabulary graph and some manipulations}
 
@@ -100,7 +139,7 @@ Some of the information saved is derived from calls to \Rfunction{packageDescrip
 
 The package:terminology associations can be permuted:
 <<permu>>=
-vpal <- packAssoc2vlist(pal)
+vpal <- packAssoc2viewlist(pal)
 vpal
 @
 This enables us to build \Rpackage{ctv} structures.
@@ -139,21 +178,21 @@ unlink(targ)
 
 To run this over our entire view set, we can use:
 <<doit>>=
-getCTVs <- function(pal, vocab) {
-  vpal <- packAssoc2vlist(pal)
-  vn <- names(vpal)
-  nv <- length(vn)
-  out <- list()
-  for (i in 1:length(vn)) {
-    tmp <- makeCTV( vn[i], vn[i], "None", vpal[[i]], "None", bcVoc )
-    tf <- tempfile()
-    saveXML(tmp, file=tf)
-    out[[ vn[i] ]] <- read.ctv(tf)
-    unlink(tf)
-  }
-  out
-}
-allc <- getCTVs(pal, bcVoc)
+#getCTVs <- function(pal, vocab) {
+#  vpal <- packAssoc2vlist(pal)
+#  vn <- names(vpal)
+#  nv <- length(vn)
+#  out <- list()
+#  for (i in 1:length(vn)) {
+#    tmp <- makeCTV( vn[i], vn[i], "None", vpal[[i]], "None", bcVoc )
+#    tf <- tempfile()
+#    saveXML(tmp, file=tf)
+#    out[[ vn[i] ]] <- read.ctv(tf)
+#    unlink(tf)
+#  }
+#  out
+#}
+allc <- getCTVs(vpal, bcVoc)
 @
 I now have a list of CTV structures in R.  We'll serialize
 them to HTML:
@@ -161,18 +200,54 @@ them to HTML:
 jnk <- sapply( allc, ctv2html )
 @
 
+In addition to the view-specific HTML pages, we need a top-level
+entry point.  The \Rfunction{topwrap} function helps with this.
+
+<<dotop>>=
+els <- topwrap(bcVoc)
+toptop <- readLines(system.file("htmlfrags/topfrag.html", package="biocViews"))
+cat(toptop,els,"</ul>\n")
+@
+The resulting HTML can be installed as index.html in the directory
+holding all the other view files emitted by the application of ctv2html
+shown above.
+
+Figures \ref{f1} and \ref{f2} illustrate some view-specific outputs.
+
 
 \begin{figure}[Hh]
 \includegraphics{ctvwin1}
 \caption{A view of one of the generated HTML pages.  To proceed,
 we need systematic ways of populating the narrative components.}
+\label{f1}
 \end{figure}
 
 
 \begin{figure}[Hh]
 \includegraphics{ctvwin2}
 \caption{Here's a higher level page on a rich topic set.}
+\label{f2}
 \end{figure}
+
+\section{Summary of activities}
+\label{summ}
+\begin{enumerate}
+\item Create a vocabulary graph.  The dot language can be used
+very conveniently.  Serialize this to GXL using graphviz dot2gxl
+and then import using R graph::fromGXL.
+\item Create a package list.  A character vector in R of packages
+that are installed in the image of R to be used for view generation.
+\item Create a package-view association structure.  This can be
+very laborious, but is interruptible using \Rfunction{packAssoc}.
+Permute this structure to a viewlist using \Rfunction{packAssoc2viewlist}.
+\item Transform viewlist to ctv structures using \Rfunction{getCTVs}.
+The ctv structures generated here respect aspects of the vocabulary
+hierarchy, so the vocabulary graph must be identified as a an argument to
+\Rfunction{getCTVs}.
+\item Create an entry page using \Rfunction{topwrap}.  Move the folder
+including all generated HTML to a web-accessible location.  
+
+\end{enumerate}
  
 
 @

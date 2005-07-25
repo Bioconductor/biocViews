@@ -6,7 +6,7 @@
 #		vocEnv="environment",
 #		terms="character")) 
 		
-packAssoc <- function(packlist, vocGraph, root="vocRoot") {
+.BADpackAssoc <- function(packlist, vocGraph, root="vocRoot") {
  topl <- adj(vocGraph, root)[[1]]
  out <- list()
  for (i in packlist) {
@@ -112,23 +112,23 @@ makeCTV <- function( viewname, topic, viewmaintainer, packs, links, vocab ) {
   xmlChildren(tr$value())[[1]] # return node
 }
 
-packAssoc2vlist <- function(pael) {
- allconc <- unique(sapply(pael, function(x) c(x$top, x$second, x$third)))
- tall <- t(allconc)
- pks <- rep(rownames(tall),3) # assumes 3 level hierarchy
- split(pks, as.character(tall))
-}
+#packAssoc2vlist <- function(pael) {
+# allconc <- unique(sapply(pael, function(x) c(x$top, x$second, x$third)))
+# tall <- t(allconc)
+# pks <- rep(rownames(tall),3) # assumes 3 level hierarchy
+# split(pks, as.character(tall))
+#}
 
-getctv <- function(vl) {
- n <- length(vl)
- nms <- names(vl)
- out <- list()
- for (i in 1:n) {
-#makeCTV <- function( viewname, topic, viewmaintainer, info, packs, links ) {
-  out[[i]] <- makeCTV( nms[i], nms[i], vl[[i]]$maintainer , "no", vl[[i]], "no" )
- }
- out
-}
+#getctv <- function(vl) {
+# n <- length(vl)
+# nms <- names(vl)
+# out <- list()
+# for (i in 1:n) {
+##makeCTV <- function( viewname, topic, viewmaintainer, info, packs, links ) {
+#  out[[i]] <- makeCTV( nms[i], nms[i], vl[[i]]$maintainer , "no", vl[[i]], "no" )
+# }
+# out
+#}
 
 
 #<CRANTaskView>

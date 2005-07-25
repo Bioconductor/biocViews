@@ -13,8 +13,7 @@ packAssoc(packlist, vocGraph, root="vocRoot")
   \item{root}{ root -- root node of vocabulary}
 }
 \details{
-menu(graphics=TRUE) is used with prompting at the interpreter
-level
+prompting occurs using tcltk widgets
 }
 \value{
 a list with package information
