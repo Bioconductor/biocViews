@@ -1,0 +1,31 @@
+digraph G {
+Microarray;
+Visualization;
+Statistics;
+GraphsAndNetworks;
+Technology;
+Annotation;
+Infrastructure;
+Microarray -> OneChannel;
+Microarray -> TwoChannel;
+Microarray -> DataImport;
+Microarray -> QualityControl;
+Microarray -> Preprocessing;
+Microarray -> Transcription;
+Microarray -> DNACopyNumber;
+Microarray -> SNPsAndGeneticVariability;
+Statistics -> DifferentialExpression;
+Statistics -> Clustering;
+Statistics -> Classification;
+Statistics -> MultipleComparisons;
+Technology -> Microarray;
+Technology -> Proteomics;
+Technology -> MassSpectrometry;
+Technology -> SAGE;
+Technology -> CellBasedAssays;
+Technology -> Genetics;
+Annotation -> GO;
+Annotation -> Pathways;
+Annotation -> ProprietaryPlatforms;
+Annotation -> ReportWriting;
+}
