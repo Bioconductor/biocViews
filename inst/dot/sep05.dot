@@ -1,4 +1,5 @@
 digraph G {
+vocRoot;
 Microarray;
 Visualization;
 Statistics;
@@ -6,6 +7,13 @@ GraphsAndNetworks;
 Technology;
 Annotation;
 Infrastructure;
+vocRoot -> Microarray;
+vocRoot -> Visualization;
+vocRoot -> Statistics;
+vocRoot -> GraphsAndNetworks;
+vocRoot -> Technology;
+vocRoot -> Annotation;
+vocRoot -> Infrastructure;
 Microarray -> OneChannel;
 Microarray -> TwoChannel;
 Microarray -> DataImport;
@@ -18,6 +26,7 @@ Statistics -> DifferentialExpression;
 Statistics -> Clustering;
 Statistics -> Classification;
 Statistics -> MultipleComparisons;
+Statistics -> TimeCourse;
 Technology -> Microarray;
 Technology -> Proteomics;
 Technology -> MassSpectrometry;
