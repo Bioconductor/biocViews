@@ -73,9 +73,10 @@ html file that documents the package availability.
 purl <- "http://www.bioconductor.org/packages/bioc/devel/src/contrib/html/"
 @
 Now we iterate over the list of CTV structures and emit HTML
-that knows about the repository location.
+that knows about the repository location.  We use bcv2html, a minor
+modification to ctv2html, to propagate the DESCRIPTION Title field.
 <<doit>>=
-jnk <- sapply( cc, ctv2html, packageURL=purl, reposname="Bioconductor")
+jnk <- sapply( cc, bcv2html, packageURL=purl, reposname="Bioconductor")
 @
 Here are the created files:
 <<dirlk>>=
