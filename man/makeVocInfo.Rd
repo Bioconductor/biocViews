@@ -8,11 +8,12 @@ to obtain context of a given topic  }
 to obtain context of a given topic
 }
 \usage{
-makeVocInfo(topic, vocab)
+makeVocInfo(topic, vocab, root="vocRoot")
 }
 \arguments{
   \item{topic}{ topic -- character string naming a topic}
   \item{vocab}{ vocab -- a graph describing a vocabulary}
+  \item{root}{ root -- node that is vocabulary root}
 }
 \details{
 tellSubTop gives the accessibility list of the vocabulary graph from topic node;

@@ -42,11 +42,11 @@
 # and build the package/links list
 #
 
-tellSuperTop <- function( topic, vocab ) {
+tellSuperTop <- function( topic, vocab, root="vocRoot" ) {
 # returns vector of supertopics
  if (length(topic)>1) stop("must have length 1 topic")
  require(RBGL)
- path <- sp.between.scalar( vocab, "vocRoot", topic )$path
+ path <- sp.between.scalar( vocab, root, topic )$path
  path[-c(1, length(path))]
 }
 tellSubTop <- function( topic, vocab ) {
@@ -60,20 +60,20 @@ tellSubTop <- function( topic, vocab ) {
 ###################################################
 ### chunk number 12: makeVocInfo
 ###################################################
-makeVocInfo <- function(topic, vocab) {
- list(supertopics=tellSuperTop(topic,vocab),
+makeVocInfo <- function(topic, vocab, root="vocRoot") {
+ list(supertopics=tellSuperTop(topic,vocab, root),
    subtopics=tellSubTop(topic,vocab))
 }
 
  
-makeCTV <- function( viewname, topic, viewmaintainer, packs, links, vocab ) {
+makeCTV <- function( viewname, topic, viewmaintainer, packs, links, vocab, root="vocRoot" ) {
  require(XML)
  tr <- xmlOutputDOM("a")
  tr$addTag("CRANTaskView", close=FALSE)
   tr$addTag("name", viewname)
   tr$addTag("topic", topic)
   tr$addTag("maintainer", viewmaintainer)
-  vocInf <- makeVocInfo( viewname, vocab )
+  vocInf <- makeVocInfo( viewname, vocab, root )
   if (length(sut <- vocInf$supertopics)>0 | length(sbt <- vocInf$subtopics)>0) { 
        tr$addTag("info", close=FALSE)
        if (length(sut)>0) 

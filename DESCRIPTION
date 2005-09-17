@@ -1,6 +1,6 @@
 Package: biocViews
-Version: 0.0.4
-Date: 2005-7-25
+Version: 0.0.5
+Date: 2005-9-17
 Title: integrating ctv and hierarchical topic structure for bioconductor
 Author: VJ Carey <stvjc@channing.harvard.edu>
 Maintainer: VJ Carey <stvjc@channing.harvard.edu>
