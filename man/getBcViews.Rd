@@ -1,13 +1,17 @@
 \name{getBcViews}
 \alias{getBcViews}
-\title{build a view-package association list  }
+\title{build a view-package association list, with optional interpolation  }
 \description{build a view-package association list
 }
 \usage{
-getBcViews(packnames)
+getBcViews(packnames, vocab, root, interp=TRUE)
 }
 \arguments{
   \item{packnames}{ vector of package names; all named packages must be installed}
+  \item{vocab}{ vocabulary graph }
+  \item{root}{ root of vocabulary }
+  \item{interp}{ logical: if TRUE, then associate each package with all terms
+that are hypernyms of those to which it is directly associated }
 }
 \details{
 extracts the biocViews tag value from each DESCRIPTION file,
@@ -27,6 +31,7 @@ package names in each element
 
 \examples{
 pl <- c("Biobase", "clusterStab", "limmaGUI", "GeneTS", "RBGL")
-getBcViews(pl)
+data(sep05)
+getBcViews(pl,sep05)
 }
 \keyword{ models }

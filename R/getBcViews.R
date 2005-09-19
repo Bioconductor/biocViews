@@ -1,4 +1,4 @@
-getBcViews <- function(packnames) {
+getBcViews <- function(packnames, vocab, root="vocRoot", interp=TRUE) {
  allv <- sapply(packnames, packageDescription, field="biocViews")
 #
 # in sept 05, packageDescription could introduce a newline
@@ -11,5 +11,7 @@ getBcViews <- function(packnames) {
  allv <- strsplit(allv, ", ")
  lens <- sapply(allv, length)
  repp <- rep(packnames, lens)
- split( repp, unlist(allv) )
+ ans <- split( repp, unlist(allv) )
+ if (interp) pump(ans, vocab, root)
+ else ans
 }
