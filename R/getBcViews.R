@@ -5,10 +5,9 @@ getBcViews <- function(packnames, vocab, root="vocRoot", interp=TRUE) {
 #
  allv <- gsub("\\\n", " ", allv)
 #
-# i am assuming that people use format biocViews: x, y, z
 # if they use biocViews: x,y,z
-#  this particular approach will not work
- allv <- strsplit(allv, ", ")
+#  this particular approach will work -- thanks seth
+ allv <- strsplit(allv, ", *")
  lens <- sapply(allv, length)
  repp <- rep(packnames, lens)
  ans <- split( repp, unlist(allv) )

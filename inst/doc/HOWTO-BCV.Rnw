@@ -46,13 +46,13 @@
 plist <- c("AnnBuilder", "DNAcopy", "GeneTS", "GlobalAncova", "KEGGSOAP", 
 "MCRestimate", "MLInterfaces", "RBGL", "ROC", "RSNPper", "Rdbi", 
 "Resourcerer", "Rgraphviz", "SAGElyzer", "affxparser", "affy", 
-"affyPLM", "affyQCReport", "affylmGUI", "arrayMagic", "biocViews", 
-"biomaRt", "bridge", "clusterStab", "edd", "fdrame", "genArise", 
+"affyPLM", "affyQCReport", "affylmGUI", "altcdfenvs", "arrayMagic", "biocViews", 
+"biomaRt", "bridge", "clusterStab", "ecolitk", "edd", "fdrame", "genArise", 
 "genefilter", "geneplotter", "globaltest", "graph", "gtkWidgets", 
 "hexbin", "ideogram", "limmaGUI", "maDB", "macat", "made4", "marray", 
 "matchprobes", "nnNorm", "pdmclass", "pgUtils", "prada", "rama", 
-"reb", "sagenhaft", "siggenes", "timecourse", "tkWidgets", "twilight", 
-"vsn", "widgetInvoke", "widgetTools", "xcms")
+"reb", "sagenhaft", "siggenes", "splicegear", "timecourse", "tkWidgets", "twilight", 
+"vsn", "widgetInvoke", "widgetTools", "xcms", "GOstats", "goCluster", "multtest")
 @
 Suppose the following vector of package names lists packages
 whose DESCRIPTION file include a biocViews tag.
