@@ -255,27 +255,6 @@ including all generated HTML to a web-accessible location.
 %We would like to add information with minimal manual intervention.
 %In the info section, we would like to add information on the topic
 %hierarchy.
-
-<<writeTell,echo=FALSE>>=
-tellSuperTop <- function( topic, vocab ) {
-# returns vector of supertopics
- if (length(topic)>1) stop("must have length 1 topic")
- require(RBGL)
- path <- sp.between.scalar( vocab, "vocRoot", topic )$path
- path[-c(1, length(path))]
-}
-tellSubTop <- function( topic, vocab ) {
- if (length(topic)>1) stop("must have length 1 topic")
-# returns vector of subtopics
- desc <- acc( vocab, topic )[[1]]
- names(desc)[desc==1]
-}
-@
-<<makeVocInfo,echo=FALSE>>=
-makeVocInfo <- function(topic, vocab) {
- list(supertopics=tellSuperTop(topic,vocab),
-   subtopics=tellSubTop(topic,vocab))
-}
 @
 
 \clearpage
