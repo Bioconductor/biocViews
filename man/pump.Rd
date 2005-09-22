@@ -25,6 +25,7 @@ assures this.
 %\seealso{  }
 
 \examples{
+data(sep05)
 pump(list(DifferentialExpression="limma"),sep05)
 }
 \keyword{ models }
