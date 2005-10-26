@@ -1,4 +1,37 @@
 
+#library(biocViews)
+#gg <- getPacksAndViews("http://bioconductor.org/packages/bioc/1.8/src/contrib/")
+#data(oct05)
+#pp <- permulist(gg, oct05, "vocRoot")
+#ct <- getCTVs(pp,oct05)
+#sapply(ct, bcv2html)
+
+
+getPacksAndViews <- function(reposURL) {
+ pstruc <- .available.packages2(reposURL)
+ ns <- pstruc[,"Package"]
+ bcv <- pstruc[,"biocViews"]
+ bcv[is.na(bcv)] <- "NoViewProvided"
+ bcv <- gsub("\\\n","",bcv)
+ bcvl <- strsplit(bcv, ", *")
+ names(bcvl) <- ns
+ bcvl
+}
+
+
+permulist <- function(allv, vocab, root, interp=TRUE) {
+    lens <- sapply(allv, length)
+    packnames <- names(allv)
+    repp <- rep(packnames, lens)
+    ans <- split(repp, unlist(allv))
+    if (interp) 
+        pump(ans, vocab, root)
+    else ans
+}
+
+ 
+ 
+
 getPackNames <- function (rpackDir, majv = 1) #, dest = tempfile()) 
 {
 #
