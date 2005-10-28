@@ -1,6 +1,14 @@
 \name{getPacksAndViews}
 \alias{getPacksAndViews}
 \alias{permulist}
+%Undocumented code objects:
+%  makeVocInfo pump tellSubTop tellSuperTop
+%Undocumented data sets:
+%  gg oct05
+\alias{makeVocInfo}
+\alias{pump}
+\alias{tellSubTop}
+\alias{tellSuperTop}
 \title{Obtain the package names and biocViews entries from
 a repository PACKAGES file; also create an interpolated view-centered list
 on the basis of a vocabulary graph.}
@@ -8,7 +16,7 @@ on the basis of a vocabulary graph.}
 }
 \usage{
 getPacksAndViews(reposURL)
-permulist(plist, vgraph, root, interp=TRUE)
+permulist(allv, vocab, root, interp=TRUE)
 }
 \arguments{
   \item{reposURL}{ reposURL -- the URL path to PACKAGES for a repository}

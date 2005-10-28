@@ -107,7 +107,7 @@ cc <- getCTVlist(pp, oct05)
 @
 We apply \texttt{bcv2html} to all the components of \texttt{cc}:
 <<app>>=
-jnk <- lapply(cc, bcv2html, reposName="Bioconductor")
+jnk <- lapply(cc, bcv2html, reposname="Bioconductor")
 dir(patt="htm")
 @
 Finally, we need to create an index.html.  This mentions the top
