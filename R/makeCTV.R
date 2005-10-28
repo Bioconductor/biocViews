@@ -1,40 +1,3 @@
-#setClass("annotatedPackageRef",
-#	representation(
-#		packagename="character",
-#		title="character",
-#		maintainer="character",
-#		vocEnv="environment",
-#		terms="character")) 
-		
-.BADpackAssoc <- function(packlist, vocGraph, root="vocRoot") {
- topl <- adj(vocGraph, root)[[1]]
- out <- list()
- for (i in packlist) {
-   cat("top level concept for", i, "\n")
-   out[[i]] <- list()
-   out[[i]]$top <- topl[ menu(topl, graphics=TRUE, title=paste("Package", i,"-> vocabulary associations")) ]
-   sec <- adj( vocGraph, out[[i]]$top )[[1]]
-   if (length(sec) > 0) {
-       cat("second level concept for", i, "\n")
-       out[[i]]$second <- sec[ menu(sec, graphics=TRUE) ]
-       }
-   else out[[i]]$second <- NA
-   if (!is.na(out[[i]]$second)) thir <- adj( vocGraph, out[[i]]$second )[[1]]
-   else thir <- NULL
-   if (length(thir) > 0) {
-       cat("third level concept for", i, "\n")
-       out[[i]]$third <- thir[ menu(thir, graphics=TRUE) ]
-       }
-   else out[[i]]$third <- NA
-   pdstuff <- packageDescription( i, fields=c("Package", "Title", "Maintainer", "Description") )
-   out[[i]]$maintainer <- pdstuff$Maintainer
-   out[[i]]$packagename <- pdstuff$Package
-   killnl <- function(x) gsub("\\\n", " ", x)
-   out[[i]]$desc <- killnl(pdstuff$Description)
-   out[[i]]$title <- pdstuff$Title
- }
- out
-}
 
 #
 # what we need to do here: build an xhtml document component on the
@@ -46,7 +9,7 @@ tellSuperTop <- function( topic, vocab, root="vocRoot" ) {
 # returns vector of supertopics
  if (length(topic)>1) stop("must have length 1 topic")
  if (!(topic %in% nodes(vocab))) {
-   warning("attempt to interpolate term that is not even in the vocabulary! just returning term")
+   warning(paste("attempt to interpolate term [", topic, "] that is not even in the vocabulary! just returning term"))
    return(topic)
    }
  require(RBGL)
@@ -57,7 +20,7 @@ tellSubTop <- function( topic, vocab ) {
  if (length(topic)>1) stop("must have length 1 topic")
 # returns vector of subtopics
  if (!(topic %in% nodes(vocab))) {
-   warning("attempt to interpolate term that is not even in the vocabulary! just returning term")
+   warning(paste("attempt to interpolate term [", topic, "] that is not even in the vocabulary! just returning term"))
    return(topic)
    }
  desc <- acc( vocab, topic )[[1]]
@@ -71,6 +34,22 @@ tellSubTop <- function( topic, vocab ) {
 makeVocInfo <- function(topic, vocab, root="vocRoot") {
  list(supertopics=tellSuperTop(topic,vocab, root),
    subtopics=tellSubTop(topic,vocab))
+}
+
+getCTVlist <- function (vpal, vocab) 
+{
+    vn <- names(vpal)
+    nv <- length(vn)
+    out <- list()
+    for (i in 1:length(vn)) {
+        tmp <- makeCTV(vn[i], vn[i], "None", vpal[[i]], "None", 
+            vocab)
+        tf <- tempfile()
+        saveXML(tmp, file = tf)
+        out[[vn[i]]] <- read.ctv(tf)
+        unlink(tf)
+    }
+    out
 }
 
  

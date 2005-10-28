@@ -1,3 +1,4 @@
+
 \name{topwrap}
 \alias{topwrap}
 \title{ create kernel of an overview HTML file  }
@@ -23,9 +24,12 @@ wrap this with titles and footers
 %\seealso{  }
 
 \examples{
-data(bcVoc)
-els <- topwrap(bcVoc)
+data(oct05)
+tmp <- tempfile()
+els <- topwrap(oct05)
 toptop <- readLines(system.file("htmlfrags/topfrag.html", package="biocViews"))
-cat(toptop,els,"</ul>\n")
+cat(toptop,els,"</ul>\n", file=tmp)
+readLines(tmp)
 }
 \keyword{ models }
+

@@ -1,0 +1,135 @@
+
+%\VignetteIndexEntry{biocViews-HOWTO}
+
+%
+% NOTE -- ONLY EDIT THE .Rnw FILE!!!  The .tex file is
+% likely to be overwritten.
+%
+\documentclass[12pt]{article}
+
+\usepackage{amsmath,pstricks}
+\usepackage[authoryear,round]{natbib}
+\usepackage{hyperref}
+
+
+\textwidth=6.2in
+\textheight=8.5in
+%\parskip=.3cm
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+
+
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rmethod}[1]{{\texttt{#1}}}
+\newcommand{\Rfunarg}[1]{{\texttt{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
+
+\textwidth=6.2in
+
+\bibliographystyle{plainnat} 
+ 
+\begin{document}
+%\setkeys{Gin}{width=0.55\textwidth}
+
+\title{HOWTO generate biocViews HTML}
+\author{VJC}
+\maketitle
+
+
+<<echo=FALSE,results=hide>>=
+library(biocViews2)
+library(Biobase)
+@
+
+\section{Overview}
+
+The purpose of \Rpackage{biocViews} is to support the semi-automated
+creation of task view HTML pages based on a Bioconductor
+repository.  The fundamental resource is the PACKAGES
+file at a repository.  This file must include package-specific
+information on the contents of the \texttt{biocViews} field in
+each DESCRIPTION file of each repository package.
+
+The standard behavior of the view generation program is to
+query the repository over the internet.  This package includes
+a static representation of the package-view association
+described in the PACKAGES file,  so that the checking process
+can complete without internet access.
+
+\section{Establishing a view vocabulary}
+
+Currently we use \texttt{dot} to state the vocabulary.
+<<lkd>>=
+cat(readLines(system.file("dot/oct05.dot", package="biocViews2")),sep="\n")
+@
+This is transformed to a GXL document using graphviz' \texttt{dot2gxl}, and
+from GXL to an R graph::graphNEL using \Rfunction{fromGXL}.
+
+\section{Querying a repository}
+
+The basic tool is \Rfunction{getPacksAndViews}.
+<<lkp>>=
+if (testBioCConnection()) {
+        gg <- getPacksAndViews("http://bioconductor.org/packages/bioc/1.8/src/contrib/")
+} else data(gg)
+gg[1:4]
+@
+This returns a list with the contents of the \texttt{biocViews}
+field available as a vector for each package.
+
+\section{Getting a view-package list structure}
+
+The \Rfunction{permulist} function transforms the package-view
+association into a list with elements corresponding to all
+views in the vocabulary.
+<<lkpl>>=
+data(oct05)
+pp <- permulist(gg, oct05, "vocRoot")
+pp[1:4]
+@
+
+\section{Generating HTML}
+
+Once the view-package association has been created, we can generate
+view-specific HTML.  First we create ctv objects, by writing
+XML documents and reading them back in.  This is annoying but
+seems simpler than creating the ctv objects directly.  This
+is accomplished with a single call.
+
+<<lkh>>=
+cc <- getCTVlist(pp, oct05)
+@
+We apply \texttt{bcv2html} to all the components of \texttt{cc}:
+<<app>>=
+jnk <- lapply(cc, bcv2html, reposName="Bioconductor")
+dir(patt="htm")
+@
+Finally, we need to create an index.html.  This mentions the top
+level vocabulary terms:
+<<dotop>>=
+tmp <- tempfile()
+els <- topwrap(oct05)
+toptop <- readLines(system.file("htmlfrags/topfrag.html", package="biocViews"))
+cat(toptop,els,"</ul>\n", file=tmp)
+readLines(tmp)
+<<eval=FALSE>>=
+unlink(tmp)
+@
+
+Final products are like
+
+\includegraphics{topoct}
+
+\includegraphics{prepro}
+
+Still need a back button.
+
+
+\end{document}
+
