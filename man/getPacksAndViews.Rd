@@ -20,9 +20,9 @@ permulist(allv, vocab, root, interp=TRUE)
 }
 \arguments{
   \item{reposURL}{ reposURL -- the URL path to PACKAGES for a repository}
-  \item{plist}{ plist -- a list (one element per package, each element
+  \item{allv}{ allv -- a list (one element per package, each element
 is a vector of view names prescribed by package author, or \code{NoViewProvided})}
-  \item{vgraph}{ vgraph -- a graphNEL encoding the rooted DAG representing the vocabulary of views}
+  \item{vocab}{ vocab -- a graphNEL encoding the rooted DAG representing the vocabulary of views}
   \item{root}{the node that is the root of vgraph}
   \item{interp}{A logical variable; if TRUE, then if package P is in view V and
 view W is a generalization of V, then P is in view W.  Otherwise only direct
