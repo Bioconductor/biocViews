@@ -100,6 +100,7 @@ getPacksAndViews <- function(reposURL) {
 # patch up some usages that do not capitalize first letter
  bcvl <- lapply(bcvl, function(x) gsub("\\b(\\w)", "\\U\\1", x, perl=TRUE))
  names(bcvl) <- ns
+ attr(bcvl,"pstruc") <- pstruc
  bcvl
 }
 

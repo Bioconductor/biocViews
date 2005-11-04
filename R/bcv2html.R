@@ -15,6 +15,7 @@ bcv2html <- function (x, file = NULL, css = "../../../R.css", packageURL = "../D
         zpaste("  <h3>Maintainer: ", ampersSub(x$maintainer), 
             "</h3>"))
     htm2 <- ampersSub(x$info)
+### BAD!!!!  implies installation
     titles <- sapply(x$packagelist[, 1], packageDescription, 
         field = "Title")
     titles <- paste("[", titles, "]", sep = "")
