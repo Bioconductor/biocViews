@@ -97,6 +97,9 @@ getPacksAndViews <- function(reposURL) {
  bcv <- gsub("\\\n","",bcv)
  bcvl <- strsplit(bcv, ", *")
  names(bcvl) <- ns
+# patch up some usages that do not capitalize first letter
+ bcvl <- lapply(bcvl, function(x) gsub("\\b(\\w)", "\\U\\1", x, perl=TRUE))
+ names(bcvl) <- ns
  bcvl
 }
 

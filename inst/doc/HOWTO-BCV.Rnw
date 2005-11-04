@@ -43,7 +43,7 @@
 
 
 <<echo=FALSE,results=hide>>=
-library(biocViews2)
+library(biocViews)
 library(Biobase)
 @
 
@@ -66,7 +66,7 @@ can complete without internet access.
 
 Currently we use \texttt{dot} to state the vocabulary.
 <<lkd>>=
-cat(readLines(system.file("dot/oct05.dot", package="biocViews2")),sep="\n")
+cat(readLines(system.file("dot/oct05.dot", package="biocViews")),sep="\n")
 @
 This is transformed to a GXL document using graphviz' \texttt{dot2gxl}, and
 from GXL to an R graph::graphNEL using \Rfunction{fromGXL}.
@@ -118,6 +118,7 @@ els <- topwrap(oct05)
 toptop <- readLines(system.file("htmlfrags/topfrag.html", package="biocViews"))
 cat(toptop,els,"</ul>\n", file=tmp)
 readLines(tmp)
+system(paste("cp ", tmp, " index.html "))
 <<eval=FALSE>>=
 unlink(tmp)
 @
