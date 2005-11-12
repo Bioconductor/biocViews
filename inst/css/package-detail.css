@@ -1,0 +1,50 @@
+body
+{
+    margin-left:10%;       
+    margin-right:10%;       
+}
+
+h2
+{
+    font-style:italic;
+}
+
+p.description
+{
+    background-color: #E7EFF8;
+    margin-right:20%;
+    padding:15px;
+}
+
+table 
+{
+    border-style: dashed;
+    border-width: 2px;
+      
+}
+
+tr.row_odd
+{
+    background-color: #9EBFE3;
+}
+
+tr.row_even
+{
+    background-color: #E7EFF8;
+}
+
+td 
+{
+    padding-right:10px;
+    padding-left:4px;
+}
+
+th
+{
+    text-align: right;
+    padding-right:10px;
+    padding-left:4px;
+    font-weight:normal;
+}
+
+    

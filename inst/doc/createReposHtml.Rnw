@@ -1,0 +1,144 @@
+%\VignetteIndexEntry{biocViews-CreateRepositoryHTML}
+
+%
+% NOTE -- ONLY EDIT THE .Rnw FILE!!!  The .tex file is
+% likely to be overwritten.
+%
+\documentclass[12pt]{article}
+
+\usepackage{amsmath,pstricks}
+\usepackage[authoryear,round]{natbib}
+\usepackage{hyperref}
+
+\textwidth=6.2in
+\textheight=8.5in
+\oddsidemargin=.1in
+\evensidemargin=.1in
+\headheight=-.3in
+
+\newcommand{\scscst}{\scriptscriptstyle}
+\newcommand{\scst}{\scriptstyle}
+
+\newcommand{\Rfunction}[1]{{\texttt{#1}}}
+\newcommand{\Robject}[1]{{\texttt{#1}}}
+\newcommand{\Rpackage}[1]{{\textit{#1}}}
+\newcommand{\Rmethod}[1]{{\texttt{#1}}}
+\newcommand{\Rfunarg}[1]{{\texttt{#1}}}
+\newcommand{\Rclass}[1]{{\textit{#1}}}
+
+\textwidth=6.2in
+
+\bibliographystyle{plainnat} 
+ 
+\begin{document}
+%\setkeys{Gin}{width=0.55\textwidth}
+
+\title{HOWTO generate repository HTML}
+\author{S. Falcon}
+\maketitle
+
+
+<<echo=FALSE,results=hide>>=
+library(biocViews)
+@
+
+\section{Overview}
+
+This document assumes you have a collection of R packages on local
+disk that you would like to prepare for publishing to the web.  The
+end result we are going for is:
+
+\begin{enumerate}
+  \item Packages organized per CRAN-style repository standard
+  \item PACKAGES files created for install.packages access 
+  \item VIEWS file created for generating biocViews
+  \item A vignette directory created containing the extracted vignette
+    pdf files from each source package in the repository.
+  \item An html directory created containing html descriptions of each
+    package with links for downloading available artifacts.
+  \item A simple alphabetical listing index.html file
+\end{enumerate}
+
+\section{CRAN-style Layout}
+
+Establish a top-level directory for the repository, we will refer to
+this directory as reposRoot.  Place your packages as follows:
+
+\begin{description}
+  \item[src/contrib] Contains all source packages (*.tar.gz).
+  \item[bin/windows/contrib/x.y] Contains all win.binary packages
+    (*.zip).  Where x.y is the major.minor version number of R.
+  \item[bin/macosx/powerpc/contrib/x.y] Contains the mac.binary
+    (*.tgz) packages.
+\end{description}
+
+You will need the following parameters:
+<<params>>=
+reposRoot <- "path/to/reposRoot"
+## The names are essential
+contribPaths <- c(source="src/contrib", win.binary="bin/windows/contrib/2.3",
+                  mac.binary="bin/macosx/powerpc/contrib/2.3")
+@ 
+
+\section{Extracting vignettes}
+
+The \Rfunction{extractVignettes} function extracts pdf files from
+inst/doc.  The default is to extract to a reposRoot/vignettes.
+
+<<extractVigs, eval=FALSE>>=
+extractVignettes(reposRoot, contribPaths["source"])
+@ 
+
+\section{Generating the control files}
+
+The \Rfunction{genReposControlFiles} function will generate the
+PACKAGES files for each contrib path and also create a VIEWS file with
+complete info for later use by biocViews.
+
+<<controlFiles, eval=FALSE>>=
+genReposControlFiles(reposRoot, contribPaths)
+@ 
+
+\section{Generating the HTML}
+
+The \Rfunction{writeRepositoryHtml} will generate HTML detail files
+for each package in reposRoot/html.  The function will also create an
+index.html file at the top level.
+
+The HTML files need to be able to access the appropriate CSS file.
+The stylesheets go like this:
+
+\begin{verbatim}
+reposRoot/repository-detail.css 
+reposRoot/html/package-detail.css
+\end{verbatim}
+
+Example CSS files are in inst/css.
+
+
+\section{Design and extension notes}
+
+The basic idea is that using the VIEWS file and the known repository
+structure (location of packages and extracted vignettes), we represent
+the details for each package in the repository in a
+\Rclass{PackageDetail-class} instance.
+
+\Rclass{packageDetail-class} objects know how to write themselves to
+HTML using the \Rmethod{htmlValue} method.  We used the \Rpackage{XML}
+package's \Rfunction{xmlOutputDOM} function to build up the HTML documents.
+Each HTML producing class extends \Rclass{Htmlized-class} which
+contains a slot to hold the DOM tree and provides a place to put
+methods that are not specific to any given HTML outputting class.
+
+In terms of extending this to generate the biocViews, have a look at
+\Rfunction{setDependsOnMeSuggestsMe} which builds up an adjacency
+matrix representing package dependencies (and suggstions).  The
+matrix is square with rows and columns labeled with the names of the
+packages.  The entries are 0/1 with $a_{ij}=1$ meaning that package
+$j$ depends on package $i$.
+
+
+
+
+\end{document}
+
