@@ -108,6 +108,78 @@ setMethod("htmlFilename", signature(object="PackageDetail"),
           })
 
 
+htmlAuthorInfo <- function(object, css.class) {
+    ## Generate chunk of HTML (a dl) given a PackageDetail instance
+    ## Return the xmlNode structure
+    dom <- xmlOutputDOM("dl", attrs=c(class=css.class))
+    dom$addTag("dt", "Author")
+    dom$addTag("dd", cleanText(object@Author))
+    dom$addTag("dt", "Maintainer")
+    dom$addTag("dd", cleanText(object@Maintainer))
+    dom$closeTag()
+    dom$value()
+}
+
+
+htmlVignetteInfo <- function(object, css.class) {
+    ## Generate chunk of HTML (a table) given a PackageDetail instance
+    ## Return the xmlNode structure
+    dom <- xmlOutputDOM("table", attrs=c(class=css.class))
+    odd <- TRUE
+    if (length(object@vignetteLinks) > 0) {
+        for (vig in object@vignetteLinks) {
+            rowClass <- if(odd) "row_odd" else "row_even"
+            odd <- !odd
+            dom$addTag("tr", attrs=c(class=rowClass), close=FALSE)
+            dom$addTag("td", close=FALSE)
+            dom$addTag("a", basename(vig), attrs=c(href=vig))
+            dom$closeTag()
+            dom$closeTag() ## end tr
+        }
+    } else {
+        dom$addTag("tr", attrs=c(class="row_odd"), close=FALSE)
+        dom$addTag("td", "No vignettes available")
+        dom$closeTag()
+    }
+    dom$value()
+}
+
+
+htmlDownloadInfo <- function(object, css.class) {
+    ## Generate chunk of HTML (a table) given a PackageDetail instance
+    ## Return the xmlNode structure
+    fileTypes <- list(source="source", win.binary="Windows", mac.binary="OS X")
+    nms <- names(object@downloadLinks)
+    makeLinkHelper <- function(type) {
+        pos <- match(type, nms)
+        if (!is.na(pos)) {
+            f <- object@downloadLinks[pos]
+            ref <- paste("..", f, sep="/")
+            aTag <- xmlNode("a", basename(f), attrs=c(href=ref))
+        } else {
+            aTag <- "Not Available"
+        }
+        aTag
+    }
+    fileLinks <- lapply(fileTypes, makeLinkHelper)
+    names(fileLinks) <- fileTypes
+    domValue <- tableHelper(fileLinks, table.attrs=list(class=css.class))
+    domValue
+}
+
+
+htmlDetailsInfo <- function(object, css.class) {
+    flds <- c("Depends", "Suggests", "Imports", "SystemRequirements",
+              "License", "URL", "biocViews", "dependsOnMe",
+              "suggestsMe")
+    formatField <- function(x) paste(slot(object, x), collapse=", ")
+    tableDat <- lapply(flds, formatField)
+    names(tableDat) <- flds
+    domValue <- tableHelper(tableDat, table.attrs=list(class=css.class))
+    domValue
+}
+
+
 setMethod("htmlValue", signature(object="PackageDetail"),
           function(object) {
               ## TODO: factor out some duplication
@@ -122,12 +194,7 @@ setMethod("htmlValue", signature(object="PackageDetail"),
               dom$addTag("h2", cleanText(object@Title))
 
               ## Author info
-              dom$addTag("dl", attrs=c(class="author_info"), close=FALSE)
-              dom$addTag("dt", "Author")
-              dom$addTag("dd", cleanText(object@Author))
-              dom$addTag("dt", "Maintainer")
-              dom$addTag("dd", cleanText(object@Maintainer))
-              dom$closeTag()
+              dom$addNode(htmlAuthorInfo(object, css.class="author_info"))
 
               ## Description
               dom$addTag("p", cleanText(object@Description),
@@ -135,58 +202,15 @@ setMethod("htmlValue", signature(object="PackageDetail"),
 
               ## Details
               dom$addTag("h3", "Details")
-              flds <- c("Depends", "Suggests", "Imports", "SystemRequirements",
-                        "License", "URL", "biocViews", "dependsOnMe",
-                        "suggestsMe")
-              tableDat <- lapply(flds,
-                                 function(x) {
-                                     paste(slot(object, x), collapse=", ")
-                                 })
-              names(tableDat) <- flds
-              dom$addNode(tableHelper(tableDat,
-                                      table.attrs=list(class="details")))
+              dom$addNode(htmlDetailsInfo(object, css.class="details"))
 
               ## Download links
               dom$addTag("h3", "Download Package")
-              ##dom$addTag("table", attrs=c(class="downloads"), close=FALSE)
-              ##odd <- TRUE
-              fileTypes <- list(source="source", win.binary="Windows",
-                                mac.binary="OS X")
-              nms <- names(object@downloadLinks)
-              makeLinkHelper <- function(type) {
-                  pos <- match(type, nms)
-                  if (!is.na(pos)) {
-                      f <- object@downloadLinks[pos]
-                      ref <- paste("..", f, sep="/")
-                      aTag <- xmlNode("a", basename(f), attrs=c(href=ref))
-                  } else {
-                      aTag <- "Not Available"
-                  }
-                  aTag
-              }
-              fileLinks <- lapply(fileTypes, makeLinkHelper)
-              names(fileLinks) <- fileTypes
-              dom$addNode(tableHelper(fileLinks,
-                                      table.attrs=list(class="downloads")))
-
+              dom$addNode(htmlDownloadInfo(object, css.class="downloads"))
+              
               ## Vignettes
               dom$addTag("h3", "Vignettes (Documentation)")
-              if (length(object@vignetteLinks) > 0) {
-                  dom$addTag("table", attrs=c(class="vignettes"), close=FALSE)
-                  odd <- TRUE
-                  for (vig in object@vignetteLinks) {
-                      rowClass <- if(odd) "row_odd" else "row_even"
-                      odd <- !odd
-                      dom$addTag("tr", attrs=c(class=rowClass), close=FALSE)
-                      dom$addTag("td", close=FALSE)
-                      dom$addTag("a", basename(vig), attrs=c(href=vig))
-                      dom$closeTag()
-                      dom$closeTag() ## end tr
-                  }
-                  dom$closeTag() ## end table documentation downloads
-              } else {
-                  dom$addTag("p", "No vignettes available")
-              }
+              dom$addNode(htmlVignetteInfo(object, css.class="vignette"))
               
               object@.htmlDom <- dom
               htmlFooter(object) <- ""
