@@ -1,9 +1,7 @@
 ## TODO: make the reposInfo list into an S4 class to represent
 ## repository data
 
-setOldClass("XMLOutputDOM")
-setClassUnion("XMLOutputDOMOrNULL", members=c("XMLOutputDOM", "NULL"))
-setClass("Htmlized", representation(.htmlDom="XMLOutputDOMOrNULL", "VIRTUAL"))
+setClass("Htmlized", representation("VIRTUAL"))
 
 
 setClass("PackageDetail", contains="Htmlized",
@@ -27,6 +25,14 @@ setClass("PackageDetail", contains="Htmlized",
                         "suggestsMe"="character",
                         "functionIndex"="character",
                         "reposRoot"="character"))
+
+## Define a subclass of PackageDetail for each "chunk" of the object
+## that we want to be able to render to HTML separately.
+setClass("pdAuthorMaintainerInfo", contains="PackageDetail")
+setClass("pdVignetteInfo", contains="PackageDetail")
+setClass("pdDownloadInfo", contains="PackageDetail")
+setClass("pdDetailsInfo", contains="PackageDetail")
+setClass("pdDescriptionInfo", contains="PackageDetail")
 
 
 setClass("RepositoryDetail", contains="Htmlized",

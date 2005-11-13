@@ -101,7 +101,7 @@ writePackageDetailHtml <- function(pkgList, reposRoot, htmlDir="html") {
     for (pkg in pkgList) {
         f <- file.path(htmlDir, htmlFilename(pkg))
         cat("writing html for", pkg@Package, "\n")
-        writeHtml(pkg, f)
+        writeHtmlDoc(htmlDoc(pkg), f)
     }
 }
 
@@ -111,5 +111,5 @@ writeRepositoryIndexHtml <- function(pkgList, reposRoot, title, htmlDir="html")
     repos <- new("RepositoryDetail", Title=title, reposRoot=reposRoot,
                  htmlDir=htmlDir, packageList=pkgList)
     f <- file.path(reposRoot, htmlFilename(repos))
-    writeHtml(repos, f)
+    writeHtmlDoc(htmlDoc(repos), f)
 }
