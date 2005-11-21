@@ -101,9 +101,6 @@ setMethod("htmlValue", signature(object="RepositoryDetail"),
           })
 
 
-
-setAs("BiocView", "rdPackageTable", function(from) as(from, "RepositoryDetail"))
-
 setMethod("htmlFilename", signature(object="PackageDetail"),
           function(object) {
               paste(object@Package, "html", sep=".")
@@ -227,6 +224,11 @@ setMethod("htmlValue", signature(object="PackageDetail"),
           })
 
 
+setAs("BiocView", "rdPackageTable", function(from) {
+    as(as(from, "RepositoryDetail"), "rdPackageTable")
+    })
+
+
 setMethod("show", signature(object="BiocView"),
           function(object) {
               cat("Bioconductor View:", object@name, "\n")
@@ -238,3 +240,67 @@ setMethod("show", signature(object="BiocView"),
               print(names(object@packageList))
 
           })
+
+
+viewsHelper <- function(views) {
+    dom <- xmlOutputDOM("ul")
+    for (v in views) {
+        link <- paste(v, ".html", sep="")
+        dom$addTag("li", close=FALSE)
+        dom$addTag("a", v, attrs=c(href=link))
+        dom$closeTag()
+    }
+    dom$value()
+}
+
+
+setMethod("htmlValue", signature(object="bvSubViews"),
+          function(object) {
+              dom <- xmlOutputDOM("div", attrs=c(class="bv_subviews"))
+              dom$addTag("h2", "Subviews")
+              dom$addNode(viewsHelper(object@subViews))
+              dom$value()
+          })
+
+
+setMethod("htmlValue", signature(object="bvParentViews"),
+          function(object) {
+              dom <- xmlOutputDOM("div", attrs=c(class="bv_parentviews"))
+              dom$addTag("h2", "Subview of")
+              dom$addNode(viewsHelper(object@parentViews))
+              dom$value()
+          })
+
+
+setMethod("htmlValue", signature(object="BiocView"),
+          function(object) {
+              dom <- xmlOutputDOM("div", attrs=c(class="BiocView"))
+
+              ## Heading
+              dom$addTag("h1", paste("Bioconductor Task View:", object@name))
+              
+              ## Parent Views
+              if (length(object@parentViews) > 0) {
+                  parentViews <- as(object, "bvParentViews")
+                  dom$addNode(htmlValue(parentViews))
+              }
+
+              ## Subviews
+              if (length(object@subViews) > 0) {
+                  subViews <- as(object, "bvSubViews")
+                  dom$addNode(htmlValue(subViews))
+              }
+
+              dom$addTag("h2", "Package in view")
+              if (length(object@packageList) > 0) {
+                  pkgTable <- as(object, "rdPackageTable")
+                  dom$addNode(htmlValue(pkgTable))
+              } else {
+                  dom$addTag("p", "No packages in this view")
+              }
+
+              dom$value()
+          })
+              
+
+              
