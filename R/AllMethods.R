@@ -68,13 +68,9 @@ cleanText <- function(text) {
 }
 
 
-setMethod("htmlValue", signature(object="RepositoryDetail"),
+setMethod("htmlValue", signature(object="rdPackageTable"),
           function(object) {
-              dom <- xmlOutputDOM("div", attrs=c(class="RepositoryDetail"))
-              
-              dom$addTag("h1", cleanText(object@Title))
-              ## Package table
-              dom$addTag("table", attrs=c(class="repos_index"), close=FALSE)
+              dom <- xmlOutputDOM("table", attrs=c(class="repos_index"))
               odd <- TRUE
               alphaOrder <- order(tolower(names(object@packageList)))
               for (pkg in object@packageList[alphaOrder]) {
@@ -89,11 +85,24 @@ setMethod("htmlValue", signature(object="RepositoryDetail"),
                   dom$addTag("td", pkg@Title, attrs=c(class="title"))
                   dom$closeTag() ## end tr
               }
-              dom$closeTag() ## end package table
-              
               dom$value()
           })
 
+
+setMethod("htmlValue", signature(object="RepositoryDetail"),
+          function(object) {
+              dom <- xmlOutputDOM("div", attrs=c(class="RepositoryDetail"))
+              
+              dom$addTag("h1", cleanText(object@Title))
+              ## Package table
+              pkgTable <- as(object, "rdPackageTable")
+              dom$addNode(htmlValue(pkgTable))
+              dom$value()
+          })
+
+
+
+setAs("BiocView", "rdPackageTable", function(from) as(from, "RepositoryDetail"))
 
 setMethod("htmlFilename", signature(object="PackageDetail"),
           function(object) {
@@ -215,4 +224,17 @@ setMethod("htmlValue", signature(object="PackageDetail"),
               dom$addNode(htmlValue(vigInfo))
 
               return(dom$value())
+          })
+
+
+setMethod("show", signature(object="BiocView"),
+          function(object) {
+              cat("Bioconductor View:", object@name, "\n")
+              cat("Parent Views:\n")
+              print(object@parentViews)
+              cat("Subviews:\n")
+              print(object@subViews)
+              cat("Contains packages:\n")
+              print(names(object@packageList))
+
           })

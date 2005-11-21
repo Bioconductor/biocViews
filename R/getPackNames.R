@@ -88,7 +88,6 @@
     res
 }
 
-
 getPacksAndViews <- function(reposURL) {
  pstruc <- .available.packages2(reposURL)
  ns <- pstruc[,"Package"]
@@ -102,6 +101,63 @@ getPacksAndViews <- function(reposURL) {
  names(bcvl) <- ns
  attr(bcvl,"pstruc") <- pstruc
  bcvl
+}
+
+getBiocViews <- function(reposUrl, vocab, root) {
+    viewList <- getPacksAndViews2(reposUrl)
+    viewRoster <- permulist(viewList$views, vocab, root)
+    biocViews <- loadViews(vocab, viewRoster, viewList$pkgList)
+    biocViews
+}
+
+loadViews <- function(viewGraph, viewRoster, pkgList) {
+    views <- nodes(viewGraph)
+    viewmat <- as(viewGraph, "matrix")
+    viewFactory <- function(name) {
+        subViews <- viewmat[name, ] == 1
+        if (any(subViews))
+          subViews <- views[subViews]
+        else
+          subViews <- ""
+        parentViews <- viewmat[ , name] == 1
+        if (any(parentViews))
+          parentViews <- views[parentViews]
+        else
+          parentViews <- ""
+        if (name %in% names(viewRoster)) {
+            pkgsInView <- pkgList[viewRoster[[name]]]
+##            names(pkgsInView) <- viewRoster[[name]]
+        } else
+          pkgsInView <- list()
+        new("BiocView", name=name, subViews=subViews, parentViews=parentViews,
+            packageList=pkgsInView)
+    }
+    biocViews <- lapply(views, viewFactory)
+    names(biocViews) <- views
+    biocViews
+}
+
+getPacksAndViews2 <- function(reposURL) {
+    tmpf <- tempfile()
+    on.exit(unlink(tmpf))
+    method <- "auto"
+    ## FIXME: needs error checking and to look for VIEWS.gz first
+    z <- download.file(url=paste(reposURL, "VIEWS", sep="/"), destfile=tmpf,
+                       method=method, cacheOK=FALSE, quiet=TRUE, mode="wb")
+    pmat <- read.dcf(file=tmpf)
+    ns <- pmat[,"Package"]
+    bcv <- pmat[,"biocViews"]
+    bcv[is.na(bcv)] <- "NoViewProvided"
+    bcv <- gsub("\\\n","",bcv)
+    bcvl <- strsplit(bcv, ", *")
+    names(bcvl) <- ns
+    ## FIXME: we should validate against the known vocabulary here
+    ## patch up some usages that do not capitalize first letter
+    bcvl <- lapply(bcvl, function(x) gsub("\\b(\\w)", "\\U\\1", x, perl=TRUE))
+    names(bcvl) <- ns
+    pkgList <- apply(pmat, 1, pkgRowToPackageDetail)
+    names(pkgList) <- ns
+    list(views=bcvl, pkgList=pkgList)
 }
 
 

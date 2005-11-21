@@ -73,22 +73,40 @@ from GXL to an R graph::graphNEL using \Rfunction{fromGXL}.
 
 \section{Querying a repository}
 
-The basic tool is \Rfunction{getPacksAndViews}.
-<<lkp>>=
-if (testBioCConnection()) {
-        gg <- getPacksAndViews("http://bioconductor.org/packages/bioc/1.8/src/contrib/")
-} else data(gg)
-gg[1:4]
-@
-This returns a list with the contents of the \texttt{biocViews}
-field available as a vector for each package.
+To generate a list of \Rclass{BiocViews} objects that can be used to
+generate HTML views, you will need the repository URL, a graph
+representation of the vocabulary, and the string that represents the
+vocabular root node.
+
+
+<<getViews>>=
+data(oct05)
+reposPath <- system.file("doc", package="biocViews")
+reposUrl <- paste("file://", reposPath, sep="")
+biocViews <- getBiocViews(reposUrl, oct05, "vocRoot")
+
+print(biocViews[1:2])
+
+@ 
+
+\section{Generating HTML without ctv}
+
+Coming soon.  But basically, it will look like this:
+
+<<html1, eval=FALSE>>=
+writeBiocViewsHtml(biocViews)
+@ 
+
+Given that we want to be able to generate views remotely, I'm not sure
+how we want to deal with absolute vs relative links and such.  
+
 
 \section{Getting a view-package list structure}
 
 The \Rfunction{permulist} function transforms the package-view
 association into a list with elements corresponding to all
 views in the vocabulary.
-<<lkpl>>=
+<<lkpl, eval=FALSE>>=
 data(oct05)
 pp <- permulist(gg, oct05, "vocRoot")
 pp[1:4]
@@ -102,18 +120,18 @@ XML documents and reading them back in.  This is annoying but
 seems simpler than creating the ctv objects directly.  This
 is accomplished with a single call.
 
-<<lkh>>=
+<<lkh, eval=FALSE>>=
 cc <- getCTVlist(pp, oct05)
 @
 We apply \texttt{bcv2html} to all the components of \texttt{cc}:
-<<app>>=
+<<app, eval=FALSE>>=
 jnk <- lapply(cc, bcv2html, reposname="Bioconductor", 
 packageURL="http://www.bioconductor.org/packages/bioc/1.7/src/contrib/html/")
 dir(patt="htm")
 @
 Finally, we need to create an index.html.  This mentions the top
 level vocabulary terms:
-<<dotop>>=
+<<dotop, eval=FALSE>>=
 tmp <- tempfile()
 els <- topwrap(oct05)
 toptop <- readLines(system.file("htmlfrags/topfrag.html", package="biocViews"))
@@ -126,11 +144,11 @@ unlink(tmp)
 
 Final products are like
 
-\includegraphics{topoct}
+%\includegraphics{topoct}
 
-\includegraphics{prepro}
+%\includegraphics{prepro}
 
-Still need a back button.
+Still need a back button.  My browser comes with one.
 
 
 \end{document}

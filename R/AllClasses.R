@@ -41,8 +41,19 @@ setClass("RepositoryDetail", contains="Htmlized",
                         homeUrl="character",
                         htmlDir="character",
                         packageList="list"))
+setClass("rdPackageTable", contains="RepositoryDetail")
 
 
+setClass("BiocView", contains=c("RepositoryDetail", "Htmlized"),
+         representation(name="character",
+                        subViews="character",
+                        parentViews="character"))
+
+
+setClass("bvTitle", contains="BiocView")
+setClass("bvPackageTable", contains="BiocView")
+setClass("bvSubViews", contains="BiocView")
+setClass("bvParentViews", contains="BiocView")
 
 
     ## Outline
