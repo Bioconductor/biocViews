@@ -37,8 +37,28 @@ setMethod("htmlDoc", signature(object="RepositoryDetail"),
           })
 
 
+setMethod("htmlDoc", signature(object="BiocView"),
+          function(object) {
+              title <- paste("Bioconductor Task View", object@name)
+              sylesheet="repository-detail.css"
+              callNextMethod(object, title, stylesheet)
+          })
+
+
+setMethod("htmlFilename", signature(object="character"),
+          function(object) paste(object, ".html", sep=""))
+
 setMethod("htmlFilename", signature(object="RepositoryDetail"),
           function(object) "index.html")
+
+
+setMethod("htmlFilename", signature(object="BiocView"),
+          function(object) {
+              if (object@name == "vocRoot")
+                "index.html"
+              else
+                paste(object@name, ".html", sep="")
+          })
 
 
 writeHtmlDoc <- function(html, file) saveXML(html, file)
@@ -103,7 +123,7 @@ setMethod("htmlValue", signature(object="RepositoryDetail"),
 
 setMethod("htmlFilename", signature(object="PackageDetail"),
           function(object) {
-              paste(object@Package, "html", sep=".")
+              htmlFilename(object@Package)
           })
 
 
@@ -245,7 +265,11 @@ setMethod("show", signature(object="BiocView"),
 viewsHelper <- function(views) {
     dom <- xmlOutputDOM("ul")
     for (v in views) {
-        link <- paste(v, ".html", sep="")
+        ## FIXME: this should be done in one place
+        if (v == "vocRoot")
+          link <- "index.html"
+        else
+          link <- htmlFilename(v)
         dom$addTag("li", close=FALSE)
         dom$addTag("a", v, attrs=c(href=link))
         dom$closeTag()
@@ -291,7 +315,7 @@ setMethod("htmlValue", signature(object="BiocView"),
                   dom$addNode(htmlValue(subViews))
               }
 
-              dom$addTag("h2", "Package in view")
+              dom$addTag("h2", "Packages in view")
               if (length(object@packageList) > 0) {
                   pkgTable <- as(object, "rdPackageTable")
                   dom$addNode(htmlValue(pkgTable))

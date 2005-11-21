@@ -118,19 +118,18 @@ loadViews <- function(viewGraph, viewRoster, pkgList) {
         if (any(subViews))
           subViews <- views[subViews]
         else
-          subViews <- ""
+          subViews <- character(0)
         parentViews <- viewmat[ , name] == 1
         if (any(parentViews))
           parentViews <- views[parentViews]
         else
-          parentViews <- ""
+          parentViews <- character(0)
         if (name %in% names(viewRoster)) {
             pkgsInView <- pkgList[viewRoster[[name]]]
-##            names(pkgsInView) <- viewRoster[[name]]
         } else
           pkgsInView <- list()
         new("BiocView", name=name, subViews=subViews, parentViews=parentViews,
-            packageList=pkgsInView)
+            packageList=pkgsInView, htmlDir="html")
     }
     biocViews <- lapply(views, viewFactory)
     names(biocViews) <- views

@@ -94,7 +94,13 @@ print(biocViews[1:2])
 Coming soon.  But basically, it will look like this:
 
 <<html1, eval=FALSE>>=
-writeBiocViewsHtml(biocViews)
+viewsDir <- "testRepos"
+for (bv in biocViews) {
+    fn <- file.path(viewsDir, htmlFilename(bv))
+    html <- htmlDoc(bv)
+    writeHtmlDoc(html, fn)
+}
+
 @ 
 
 Given that we want to be able to generate views remotely, I'm not sure
