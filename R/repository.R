@@ -30,8 +30,27 @@ extractVignettes <- function(reposRoot, srcContrib, destDir="vignettes") {
 }
 
 
+getVignetteLinks <- function(pkgList, reposRootPath, vignette.dir) {
+    vigList <- list()
+    for (pkg in pkgList) {
+        vigSubDir <- "inst/doc"
+        vigDir <- file.path(reposRootPath, vignette.dir, pkg, vigSubDir)
+        if (file.exists(vigDir)) {
+            vigs <- list.files(vigDir, pattern=".*\.pdf$")
+            vigs <- paste(vignette.dir, pkg, vigSubDir, vigs, sep="/",
+                          collapse=", ")
+        } else
+          vigs <- NA
+        vigList[[pkg]] <- vigs
+    }
+    ## use unlist, as.character does NA --> "NA" ?!
+    unlist(vigList)
+}
+
+
 genReposControlFiles <- function(reposRoot, contribPaths)
 {
+    write <- REPOSITORY(reposRoot, contribPaths)
     ## Write PACKAGES files for all contrib paths
     packagesPaths <- file.path(reposRoot, contribPaths)
     names(packagesPaths) <- names(contribPaths)
@@ -39,19 +58,25 @@ genReposControlFiles <- function(reposRoot, contribPaths)
         path <- packagesPaths[[type]]
         write_PACKAGES(path, type=type)
     }
-
     ## Write a VIEWS file at the top-level containing
     ## detailed package info
-    write_VIEWS(pkg.dir=packagesPaths[["source"]],
-                out.dir=reposRoot, type="source")
+    write_VIEWS(reposRoot, type="source")
 }
 
 
+write_REPOSITORY <- function(reposRootPath, contribPaths) {
+    contrib <- as.list(contribPaths)
+    names(contrib) <- names(contribPaths)
+    contrib[["provides"]] <- paste(names(contrib), collapse=", ")
+    fn <- file.path(reposRootPath, "REPOSITORY")
+    write.dcf(contrib, fn)
+}
+
 .write_repository_db <- function(db, dir, fname) {
     if (length(db)) {
-        fields <- colnames(db[[1]])
-        db <- matrix(unlist(db), ncol = length(fields), byrow = TRUE)
-        colnames(db) <- fields
+##         fields <- colnames(db[[1]])
+##         db <- matrix(unlist(db), ncol = length(fields), byrow = TRUE)
+##         colnames(db) <- fields
         noPack <- is.na(db[, "Package"])
         db[noPack, "Package"] <- db[noPack, "Bundle"]
         gzname <- paste(fname, "gz", sep=".")
@@ -71,31 +96,69 @@ genReposControlFiles <- function(reposRoot, contribPaths)
 }
 
 
-write_VIEWS <- function(pkg.dir, out.dir, fields = NULL,
+write_VIEWS <- function(reposRootPath, fields = NULL,
                         type = c("source", "mac.binary", "win.binary"),
-                        verbose = FALSE) {
+                        verbose = FALSE, vignette.dir="vignettes") {
     ## Copied from tools::write_PACKAGES
     if (is.null(fields))
       fields <- c("Title", "Description", "biocViews",
                   "Author", "Maintainer", "URL", "License",
                   "SystemRequirements")
-    if (missing(type) && .Platform$OS.type == "windows") 
-      type <- "win.binary"
+    if (missing(type))
+      type <- "source"
     type <- match.arg(type)
+
+    ## Read REPOSITORY file for contrib path info
+    reposInfo <- read.dcf(file.path(reposRootPath, "REPOSITORY"))
+    provided <- strsplit(reposInfo[, "provides"], ", *")[[1]]
+
+    ## Use code from tools to build a matrix of package info
+    ## by parsing the .tar.gz files
+    pkg.dir <- file.path(reposRootPath, reposInfo[, "source"])
     db <- tools:::.build_repository_package_db(pkg.dir, fields, type, verbose)
-    .write_repository_db(db, out.dir, "VIEWS")
+    dbMat <- do.call("rbind", db)
+
+    ## Integrate version and archive file path info for the different contrib
+    ## paths in this repos.  We duplicate the source path info here, but that
+    ## makes things easier to handle later on as there is no special case.
+    fldNames <- c(colnames(dbMat), paste(provided, "ver", sep="."))
+    dbMat <- cbind(dbMat, NA, NA)
+    colnames(dbMat) <- fldNames
+    for (ctype in provided) {
+        cPath <- reposInfo[, ctype]
+        buildPkgPath <- function(pkgs, vers) {
+            ext <- switch(ctype, source=".tar.gz", win.binary=".zip",
+                          mac.binary=".tgz", stop("unknown type"))
+            paste(cPath, "/", pkgs, "_", vers, ext, sep="")
+        }
+        cDat <- read.dcf(file.path(reposRootPath, cPath, "PACKAGES"))
+        dbMatIdx <- match(cDat[, "Package"], dbMat[, "Package"])
+        col <- paste(ctype, "ver", sep=".")
+        dbMat[dbMatIdx, col] <- buildPkgPath(cDat[ , "Package"],
+                                             cDat[ , "Version"])
+    }
+    ## Add vignette path info
+    vigs <- getVignetteLinks(dbMat[, "Package"], reposRootPath, vignette.dir)
+    dbMat <- cbind(dbMat, vigs)
+    colnames(dbMat) <- c(fldNames, "vignettes")
+
+    .write_repository_db(dbMat, reposRootPath, "VIEWS")
 }
 
 
-writeRepositoryHtml <- function(reposRoot, contribPaths, title) {
-    pkgList <- loadPackageDetails(reposRoot, contribPaths)
-    writePackageDetailHtml(pkgList, reposRoot)
+writeRepositoryHtml <- function(reposRoot, title, reposUrl="..") {
+    ## Writes package description html under reposRoot/html and an index.html
+    ## file under reposRoot.
+    ##
+    ## Links created in the package description html will use reposUrl as
+    ## prefix.
+    pkgList <- loadPackageDetails(reposRoot, reposUrl)
+    writePackageDetailHtml(pkgList, file.path(reposRoot, "html"))
     writeRepositoryIndexHtml(pkgList, reposRoot, title)
 }
 
 
-writePackageDetailHtml <- function(pkgList, reposRoot, htmlDir="html") {
-    htmlDir <- file.path(reposRoot, htmlDir)
+writePackageDetailHtml <- function(pkgList, htmlDir="html") {
     if (!file.exists(htmlDir))
       dir.create(htmlDir)
     for (pkg in pkgList) {

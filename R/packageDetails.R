@@ -1,24 +1,22 @@
-loadPackageDetails <- function(reposRoot, contribPaths)
+loadPackageDetails <- function(reposRoot, reposUrl="..")
 {
     ## Return a list of PackageDetail objects representing
     ## the packages contained in the repository located
-    ## on the local filesystem at reposRoot and including
-    ## the paths under contribPaths.
+    ## on the local filesystem at reposRoot.
     ##
     ## reposRoot - Path to local filesystem CRAN-style repository
     ##
-    ## contribPaths - a named character vector of contrib paths where
-    ##                a valid PACKAGES file along with appropriate
-    ##                pakcage archives will be found.
-    ##
+    
+    ## FIXME: should allow reading VIEWS from a URL also.
     viewsFile <- file.path(reposRoot, "VIEWS")
     pkgMat <- read.dcf(viewsFile)
-    pkgList <- apply(pkgMat, 1, pkgRowToPackageDetail)
+    pkgList <- apply(pkgMat, 1, viewRowToPackageDetail)
     names(pkgList) <- pkgMat[, "Package"]
     pkgList <- setDependsOnMeSuggestsMe(pkgList)
-    pkgList <- setArchiveLinks(pkgList, reposRoot, contribPaths)
-    pkgList <- setFunctionIndex(pkgList, reposRoot, contribPaths["source"])
-    pkgList <- setVignetteLinks(pkgList, reposRoot, "vignettes")
+    pkgList <- lapply(pkgList, function(p) {
+        p@reposRoot <- reposUrl
+        p
+    })
     return(pkgList)
 }
 
@@ -49,86 +47,9 @@ setDependsOnMeSuggestsMe <- function(pkgDetailsList) {
 }
 
 
-setFunctionIndex <- function(pkgList, reposRoot, srcPath) {
-    ##TODO: extract function index from packages in some fashion
-    pkgList
-}
-
-
-setArchiveLinks <- function(pkgList, reposRoot, contribPaths) {
-    ## Return a copy of pkgList, a list of PackageDetail objects
-    ## with the archiveLinks set according to the availability
-    ## and location of packages in the specified contribPaths.
-    ##
-    ## contribPaths should be a named character vector where the
-    ## names correspond to type: source, win.binary, mac.binary
-    ##
-    packagesFiles <- file.path(reposRoot, contribPaths, "PACKAGES")
-    reposData <- lapply(packagesFiles, read.dcf)
-    names(reposData) <- names(contribPaths)
-    reposInfo <- lapply(names(reposData),
-                        function(type) {
-                            dat <- reposData[[type]]
-                            ## a pseudo object for repository
-                            ## info
-                            list(data=dat, type=type,
-                                 path=contribPaths[type])
-                        })
-
-    getLink <- function(repInfo, pkg) {
-        x <- repInfo$data
-        idx <- which(x[, "Package"] == pkg@Package)
-        f <- paste(pkg@Package, x[idx, "Version"], sep="_")
-        ext <- switch(repInfo$type,
-                      source=".tar.gz",
-                      win.binary=".zip",
-                      mac.binary=".tgz",
-                      ".UNKNOWN")
-        paste(repInfo$path, "/", f, ext, sep="")
-    }
-        
-    for (pkgName in names(pkgList)) {
-        pkg <- pkgList[[pkgName]]
-
-        inRepos <- sapply(reposInfo,
-                          function(repInfo) {
-                              x <- repInfo$data
-                              pkg@Package %in% x[, "Package"]
-                      })
-        if (any(inRepos)) {
-            links <- sapply(reposInfo[inRepos], getLink, pkg)
-            names(links) <- sapply(reposInfo[inRepos], function(x) x$type)
-        } else
-          links <- ""
-        pkg@downloadLinks <- links
-        pkg@reposRoot <- reposRoot
-        pkgList[[pkgName]] <- pkg
-    }
-    pkgList
-}
-
-
-setVignetteLinks <- function(pkgList, reposRoot, vignette.dir) {
-    for (pkg in pkgList) {
-        vigSubDir <- "inst/doc"
-        vigDir <- file.path(reposRoot, vignette.dir, pkg@Package,
-                            vigSubDir)
-        if (file.exists(vigDir)) {
-            vigs <- list.files(vigDir, pattern=".*\.pdf$")
-            vigs <- paste("..", vignette.dir, pkg@Package, vigSubDir,
-                          vigs, sep="/")
-        } else
-          vigs <- character(0)
-        pkg@vignetteLinks <- vigs
-    }
-    pkgList
-}
-
-
-pkgRowToPackageDetail <- function(row) {
-    ## Given a row from a package description matrix as returned
-    ## by available.packages, or calling read.dcf on a PACKAGES
-    ## formatted file, return a PackageDetail instance.
+viewRowToPackageDetail <- function(row) {
+    ## Given a row from a VIEWS package description matrix as returned by
+    ## calling read.dcf on a VIEWS file, return a PackageDetail instance.
 
     pkg <- new("PackageDetail")
     ## assume we have names on the row
@@ -144,14 +65,20 @@ pkgRowToPackageDetail <- function(row) {
     ## ignore.
     cleanField <- function(val) {
         val <- names(tools:::.split_dependencies(val))
-        if (is.null(val)) val <- ""
+        if (is.null(val)) val <- character(0)
         val
+    }
+
+    cleanVigs <- function(vigs) {
+        vigs <- gsub("\n", "", vigs)
+        strsplit(vigs, ", *")[[1]]
     }
     
     pkg@Depends <- cleanField(pkg@Depends)
     pkg@Suggests <- cleanField(pkg@Suggests)
     pkg@Imports <- cleanField(pkg@Imports)
     pkg@biocViews <- cleanField(pkg@biocViews)
+    pkg@vignettes <- cleanVigs(pkg@vignettes)
     
     pkg@Maintainer <- mangleEmail(pkg@Maintainer)
     pkg@Author <- mangleEmail(pkg@Author)
@@ -161,10 +88,12 @@ pkgRowToPackageDetail <- function(row) {
 
 
 mangleEmail <- function(line) {
-    ## 
-    ## @ -> XY for letters sampled
-    ## randomly from LETTERS.  And same with "."
-    ## Email address must be in enclosed in <s@f.com>.
+    ##  Rafael A. Irizarry <rafa@jhu.edu>
+    ##              |
+    ##              |
+    ##              *
+    ##  Rafael A. Irizarry <rafa vATx jhu pDOTl edu>
+    ##
     emailStarts <- gregexpr("<", line, fixed=TRUE)[[1]]
     emailEnds <- gregexpr(">", line, fixed=TRUE)[[1]]
 
@@ -172,7 +101,7 @@ mangleEmail <- function(line) {
                      function(x)
                          substr(line, emailStarts[x], emailEnds[x]))
     emails <- sapply(emails, function(line) {
-        wrapRand <- function(text, n=2) {
+        wrapRand <- function(text, n=1) {
             st <- paste(sample(letters, n), collapse="")
             en <- paste(sample(letters, n), collapse="")
             paste(" ", st, text, en, " ", sep="")

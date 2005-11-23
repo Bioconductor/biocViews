@@ -23,7 +23,7 @@ setMethod("htmlDoc", signature(object="Htmlized"),
 
 setMethod("htmlDoc", signature(object="PackageDetail"),
           function(object) {
-              title <- paste(object@Package, object@Version)
+              title <- object@Package
               stylesheet="package-detail.css"
               callNextMethod(object, title, stylesheet)
           })
@@ -143,13 +143,14 @@ setMethod("htmlValue", signature(object="pdVignetteInfo"),
           function(object) {
               dom <- xmlOutputDOM("table", attrs=c(class="vignette"))
               odd <- TRUE
-              if (length(object@vignetteLinks) > 0) {
-                  for (vig in object@vignetteLinks) {
+              if (length(object@vignettes) > 0) {
+                  for (vig in object@vignettes) {
                       rowClass <- if(odd) "row_odd" else "row_even"
                       odd <- !odd
                       dom$addTag("tr", attrs=c(class=rowClass), close=FALSE)
                       dom$addTag("td", close=FALSE)
-                      dom$addTag("a", basename(vig), attrs=c(href=vig))
+                      vlink <- paste(object@reposRoot, vig, sep="/")
+                      dom$addTag("a", basename(vig), attrs=c(href=vlink))
                       dom$closeTag()
                       dom$closeTag() ## end tr
                   }
@@ -164,21 +165,23 @@ setMethod("htmlValue", signature(object="pdVignetteInfo"),
 
 setMethod("htmlValue", signature(object="pdDownloadInfo"),
           function(object) {
+              flds <- c(source="source.ver",
+                        win.binary="win.binary.ver",
+                        mac.binary="mac.binary.ver")
+              
               fileTypes <- list(source="source", win.binary="Windows",
                                 mac.binary="OS X")
-              nms <- names(object@downloadLinks)
               makeLinkHelper <- function(type) {
-                  pos <- match(type, nms)
-                  if (!is.na(pos)) {
-                      f <- object@downloadLinks[pos]
-                      ref <- paste("..", f, sep="/")
-                      aTag <- xmlNode("a", basename(f), attrs=c(href=ref))
+                  pkgPath <- slot(object, flds[type])
+                  if (!is.na(pkgPath) && length(pkgPath) > 0) {
+                      ref <- paste(object@reposRoot, pkgPath, sep="/")
+                      aTag <- xmlNode("a", basename(pkgPath), attrs=c(href=ref))
                   } else {
                       aTag <- "Not Available"
                   }
                   aTag
               }
-              fileLinks <- lapply(fileTypes, makeLinkHelper)
+              fileLinks <- lapply(names(fileTypes), makeLinkHelper)
               names(fileLinks) <- fileTypes
               domValue <- tableHelper(fileLinks,
                                       table.attrs=list(class="downloads"))
@@ -214,7 +217,7 @@ setMethod("htmlValue", signature(object="PackageDetail"),
               dom <- xmlOutputDOM("div", attrs=c(class="PackageDetail"))
 
               ## Heading
-              dom$addTag("h1", paste(object@Package, object@Version))
+              dom$addTag("h1", object@Package)
               dom$addTag("h2", cleanText(object@Title))
 
               ## Author info
