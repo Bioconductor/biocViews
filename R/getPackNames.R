@@ -154,7 +154,7 @@ getPacksAndViews2 <- function(reposURL) {
     ## patch up some usages that do not capitalize first letter
     bcvl <- lapply(bcvl, function(x) gsub("\\b(\\w)", "\\U\\1", x, perl=TRUE))
     names(bcvl) <- ns
-    pkgList <- apply(pmat, 1, pkgRowToPackageDetail)
+    pkgList <- apply(pmat, 1, viewRowToPackageDetail)
     names(pkgList) <- ns
     list(views=bcvl, pkgList=pkgList)
 }
