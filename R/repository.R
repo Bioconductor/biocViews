@@ -132,13 +132,14 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
             paste(cPath, "/", pkgs, "_", vers, ext, sep="")
         }
         cDat <- read.dcf(file.path(reposRootPath, cPath, "PACKAGES"))
-        dbMatIdx <- match(cDat[, "Package"], dbMat[, "Package"])
         ## FIXME: part of the lie we tell, there may be binary pkgs
         ## for which we do not have a source pkgs.  For now, ignore.
+        cDatGood <- cDat[, "Package"] %in% dbMat[, "Package"]
+        dbMatIdx <- match(cDat[cDatGood, "Package"], dbMat[, "Package"])
         dbMatIdx <- dbMatIdx[!is.na(dbMatIdx)]
         col <- paste(ctype, "ver", sep=".")
-        dbMat[dbMatIdx, col] <- buildPkgPath(cDat[ , "Package"],
-                                             cDat[ , "Version"])
+        dbMat[dbMatIdx, col] <- buildPkgPath(cDat[cDatGood, "Package"],
+                                             cDat[cDatGood, "Version"])
     }
     ## Add vignette path info
     vigs <- getVignetteLinks(dbMat[, "Package"], reposRootPath, vignette.dir)
