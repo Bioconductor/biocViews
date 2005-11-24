@@ -50,7 +50,7 @@ getVignetteLinks <- function(pkgList, reposRootPath, vignette.dir) {
 
 genReposControlFiles <- function(reposRoot, contribPaths)
 {
-    write <- REPOSITORY(reposRoot, contribPaths)
+    write_REPOSITORY(reposRoot, contribPaths)
     ## Write PACKAGES files for all contrib paths
     packagesPaths <- file.path(reposRoot, contribPaths)
     names(packagesPaths) <- names(contribPaths)
@@ -133,6 +133,9 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
         }
         cDat <- read.dcf(file.path(reposRootPath, cPath, "PACKAGES"))
         dbMatIdx <- match(cDat[, "Package"], dbMat[, "Package"])
+        ## FIXME: part of the lie we tell, there may be binary pkgs
+        ## for which we do not have a source pkgs.  For now, ignore.
+        dbMatIdx <- dbMatIdx[!is.na(dbMatIdx)]
         col <- paste(ctype, "ver", sep=".")
         dbMat[dbMatIdx, col] <- buildPkgPath(cDat[ , "Package"],
                                              cDat[ , "Version"])
