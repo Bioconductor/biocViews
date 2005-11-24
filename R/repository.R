@@ -11,7 +11,7 @@ extractVignettes <- function(reposRoot, srcContrib, destDir) {
     ##
 
     if (missing(destDir))
-      destDir <- file.path("reposRoot", "vignettes")
+      destDir <- file.path(reposRoot, "vignettes")
 
     extractVignettesFromTarball <- function(tarball, unpackDir=".") {
         ## helper function to unpack pdf files from the vig
