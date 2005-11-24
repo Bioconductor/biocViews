@@ -81,15 +81,18 @@ write_REPOSITORY <- function(reposRootPath, contribPaths) {
         db[noPack, "Package"] <- db[noPack, "Bundle"]
         gzname <- paste(fname, "gz", sep=".")
         out <- file(file.path(dir, fname), "wt")
-        outgz <- gzfile(file.path(dir, gzname), "wt")
+        ##FIXME: gzfile writing segfaults for me
+        ##outgz <- gzfile(file.path(dir, gzname), "wt")
         for (i in seq(length = nrow(db))) {
             dbi <- db[i, !(is.na(db[i, ]) | (db[i, ] == 
                                                    "")), drop = FALSE]
             write.dcf(dbi, file = out)
-            write.dcf(dbi, file = outgz)
+            ##FIXME: writing to the gz file segfaults for me
+            ##write.dcf(dbi, file = outgz)
         }
         close(out)
-        close(outgz)
+        ##FIXME: writing to the gz file segfaults
+        ##close(outgz)
         invisible(nrow(db))
     }
     else invisible(0)
