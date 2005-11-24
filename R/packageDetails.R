@@ -70,8 +70,13 @@ viewRowToPackageDetail <- function(row) {
     }
 
     cleanVigs <- function(vigs) {
-        vigs <- gsub("\n", "", vigs)
-        strsplit(vigs, ", *")[[1]]
+        if (length(vigs) > 0 && !is.na(vigs)) {
+            vigs <- gsub("\n", "", vigs)
+            ans <- strsplit(vigs, ", *")[[1]]
+        } else {
+            ans <- character(0)
+        }
+        return(ans)
     }
     
     pkg@Depends <- cleanField(pkg@Depends)

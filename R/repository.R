@@ -1,4 +1,4 @@
-extractVignettes <- function(reposRoot, srcContrib, destDir="vignettes") {
+extractVignettes <- function(reposRoot, srcContrib, destDir) {
     ## Extract pdf vignettes from source package tarballs
     ##
     ## reposRoot - Top level path for CRAN-style repos
@@ -9,6 +9,9 @@ extractVignettes <- function(reposRoot, srcContrib, destDir="vignettes") {
     ## Under destDir, for tarball foo_1.2.3.tar.gz, you will
     ## get destDir/foo/inst/doc/*.pdf
     ##
+
+    if (missing(destDir))
+      destDir <- file.path("reposRoot", "vignettes")
 
     extractVignettesFromTarball <- function(tarball, unpackDir=".") {
         ## helper function to unpack pdf files from the vig
