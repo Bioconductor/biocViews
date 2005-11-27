@@ -98,7 +98,11 @@ setMethod("htmlValue", signature(object="rdPackageTable"),
                   odd <- !odd
                   dom$addTag("tr", attrs=c(class=rowClass), close=FALSE)
                   dom$addTag("td", attrs=c(class="package"), close=FALSE)
-                  infoPage <- paste(object@htmlDir, htmlFilename(pkg), sep="/")
+                  if (length(object@reposRoot) > 0)
+                    root <- paste(object@reposRoot, object@htmlDir, sep="/")
+                  else
+                    root <- object@htmlDir
+                  infoPage <- paste(root, htmlFilename(pkg), sep="/")
                   dom$addTag("a", attrs=c(href=infoPage), pkg@Package)
                   dom$closeTag()
                   dom$addTag("td", pkg@Version, attrs=c(class="version"))

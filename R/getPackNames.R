@@ -103,14 +103,30 @@ getPacksAndViews <- function(reposURL) {
  bcvl
 }
 
-getBiocViews <- function(reposUrl, vocab, root) {
-    viewList <- getPacksAndViews2(reposUrl)
+writeBiocViews <- function(bvList, dir) {
+    ## bvList is a list of BiocViews objects
+    ## dir is the output directory in which to write the views.
+    for (bv in bvList) {
+        fn <- file.path(dir, htmlFilename(bv))
+        html <- htmlDoc(bv)
+        writeHtmlDoc(html, fn)
+    }
+    ## copy the css
+    cssName <- "repository-detail.css"
+    cssPath <- system.file(file.path("css", cssName), package="biocViews")
+    res <- try(file.copy(cssPath, file.path(dir, cssName)), silent=TRUE)
+}
+
+getBiocViews <- function(reposUrl, vocab, root, local=FALSE) {
+    viewList <- getPacksAndViews2(reposUrl, local)
     viewRoster <- permulist(viewList$views, vocab, root)
-    biocViews <- loadViews(vocab, viewRoster, viewList$pkgList)
+    if (local)
+      reposUrl <- character(0)
+    biocViews <- loadViews(vocab, viewRoster, viewList$pkgList, reposUrl)
     biocViews
 }
 
-loadViews <- function(viewGraph, viewRoster, pkgList) {
+loadViews <- function(viewGraph, viewRoster, pkgList, reposUrl) {
     views <- nodes(viewGraph)
     viewmat <- as(viewGraph, "matrix")
     viewFactory <- function(name) {
@@ -129,14 +145,14 @@ loadViews <- function(viewGraph, viewRoster, pkgList) {
         } else
           pkgsInView <- list()
         new("BiocView", name=name, subViews=subViews, parentViews=parentViews,
-            packageList=pkgsInView, htmlDir="html")
+            packageList=pkgsInView, htmlDir="html", reposRoot=reposUrl)
     }
     biocViews <- lapply(views, viewFactory)
     names(biocViews) <- views
     biocViews
 }
 
-getPacksAndViews2 <- function(reposURL) {
+getPacksAndViews2 <- function(reposURL, local=FALSE) {
     tmpf <- tempfile()
     on.exit(unlink(tmpf))
     method <- "auto"
@@ -154,8 +170,10 @@ getPacksAndViews2 <- function(reposURL) {
     ## patch up some usages that do not capitalize first letter
     bcvl <- lapply(bcvl, function(x) gsub("\\b(\\w)", "\\U\\1", x, perl=TRUE))
     names(bcvl) <- ns
-    pkgList <- apply(pmat, 1, viewRowToPackageDetail)
-    names(pkgList) <- ns
+    if (!local)
+      pkgList <- createPackageDetailList(pmat, reposURL)
+    else
+      pkgList <- createPackageDetailList(pmat)
     list(views=bcvl, pkgList=pkgList)
 }
 

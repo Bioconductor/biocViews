@@ -10,8 +10,13 @@ loadPackageDetails <- function(reposRoot, reposUrl="..")
     ## FIXME: should allow reading VIEWS from a URL also.
     viewsFile <- file.path(reposRoot, "VIEWS")
     pkgMat <- read.dcf(viewsFile)
-    pkgList <- apply(pkgMat, 1, viewRowToPackageDetail)
-    names(pkgList) <- pkgMat[, "Package"]
+    createPackageDetailList(pkgMat, reposUrl)
+}
+
+
+createPackageDetailList <- function(viewMat, reposUrl="..") {
+    pkgList <- apply(viewMat, 1, viewRowToPackageDetail)
+    names(pkgList) <- viewMat[, "Package"]
     pkgList <- setDependsOnMeSuggestsMe(pkgList)
     pkgList <- lapply(pkgList, function(p) {
         p@reposRoot <- reposUrl

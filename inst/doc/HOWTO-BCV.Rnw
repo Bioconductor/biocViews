@@ -50,17 +50,17 @@ library(Biobase)
 \section{Overview}
 
 The purpose of \Rpackage{biocViews} is to support the semi-automated
-creation of task view HTML pages based on a Bioconductor
-repository.  The fundamental resource is the PACKAGES
-file at a repository.  This file must include package-specific
-information on the contents of the \texttt{biocViews} field in
-each DESCRIPTION file of each repository package.
+creation of task view HTML pages based on a Bioconductor repository.
+The fundamental resource is the VIEWS file at a repository.  This file
+contains the complete DESCRIPTION file contents for each package along
+with additional meta data describing the location of package artifacts
+(archive files for different platforms and vignettes).
 
-The standard behavior of the view generation program is to
-query the repository over the internet.  This package includes
-a static representation of the package-view association
-described in the PACKAGES file,  so that the checking process
-can complete without internet access.
+The standard behavior of the view generation program is to query the
+repository over the internet.  This package includes a static sample
+VIEWS file so that the examples in this document can run without
+internet access.
+
 
 \section{Establishing a view vocabulary}
 
@@ -71,13 +71,17 @@ cat(readLines(system.file("dot/oct05.dot", package="biocViews")),sep="\n")
 This is transformed to a GXL document using graphviz' \texttt{dot2gxl}, and
 from GXL to an R graph::graphNEL using \Rfunction{fromGXL}.
 
+One thing that is currently lacking from the definition of the views
+vocabulary is a notion of order.  Since the purpose of the vocabulary
+is primarily for display, ordering a given view's subviews is an
+important feature.
+
 \section{Querying a repository}
 
 To generate a list of \Rclass{BiocViews} objects that can be used to
 generate HTML views, you will need the repository URL, a graph
 representation of the vocabulary, and the string that represents the
 vocabular root node.
-
 
 <<getViews>>=
 data(oct05)
@@ -91,20 +95,17 @@ print(biocViews[1:2])
 
 \section{Generating HTML without ctv}
 
-Coming soon.  But basically, it will look like this:
+By default, the set of HTML views will link to package description
+pages located in the html subdirectory of the remote repository.
 
 <<html1, eval=FALSE>>=
-viewsDir <- "testRepos"
-for (bv in biocViews) {
-    fn <- file.path(viewsDir, htmlFilename(bv))
-    html <- htmlDoc(bv)
-    writeHtmlDoc(html, fn)
-}
+viewsDir <- file.path(tempdir(), "biocViews")
+dir.create(viewsDir)
+writeBiocViews(biocViews, dir=viewsDir)
 
+dir(viewsDir)
 @ 
 
-Given that we want to be able to generate views remotely, I'm not sure
-how we want to deal with absolute vs relative links and such.  
 
 
 \section{Getting a view-package list structure}
