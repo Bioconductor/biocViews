@@ -1,21 +1,18 @@
+/* Bioc Views Vocabular Definition in dot format */
+
 digraph G {
-vocRoot;
-Microarray;
-NoViewProvided;
-Visualization;
-Statistics;
-GraphsAndNetworks;
-Technology;
-Annotation;
-Infrastructure;
+
+/* Root */
 vocRoot -> Microarray;
-vocRoot -> NoViewProvided;
+vocRoot -> Annotation;
 vocRoot -> Visualization;
 vocRoot -> Statistics;
 vocRoot -> GraphsAndNetworks;
 vocRoot -> Technology;
-vocRoot -> Annotation;
 vocRoot -> Infrastructure;
+vocRoot -> NoViewProvided;
+
+/* Microarray subview */
 Microarray -> OneChannel;
 Microarray -> TwoChannel;
 Microarray -> DataImport;
@@ -24,19 +21,26 @@ Microarray -> Preprocessing;
 Microarray -> Transcription;
 Microarray -> DNACopyNumber;
 Microarray -> SNPsAndGeneticVariability;
+
+/* Statistics subview */
 Statistics -> DifferentialExpression;
 Statistics -> Clustering;
 Statistics -> Classification;
 Statistics -> MultipleComparisons;
 Statistics -> TimeCourse;
+
+/* Technology subview */
 Technology -> Microarray;
 Technology -> Proteomics;
 Technology -> MassSpectrometry;
 Technology -> SAGE;
 Technology -> CellBasedAssays;
 Technology -> Genetics;
+
+/* Annotation subview */
 Annotation -> GO;
 Annotation -> Pathways;
 Annotation -> ProprietaryPlatforms;
 Annotation -> ReportWriting;
+Annotation -> Affymetrix;
 }
