@@ -1,8 +1,8 @@
 Package: biocViews
-Version: 0.4.2
+Version: 0.4.3
 Date: 2005-10-28
 Title: integrating ctv and hierarchical topic structure for bioconductor
-Author: VJ Carey <stvjc@channing.harvard.edu>, BJ Harshfield <rebjh@channing.harvard.edu>
+Author: VJ Carey <stvjc@channing.harvard.edu>, BJ Harshfield <rebjh@channing.harvard.edu>, Seth Falcon <sfalcon@fhcrc.org>
 Maintainer: VJ Carey <stvjc@channing.harvard.edu>
 Depends: methods, tools, ctv, graph, RBGL, XML
 Description: structures for vocabularies and narratives of views

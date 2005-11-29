@@ -66,7 +66,7 @@ internet access.
 
 Currently we use \texttt{dot} to state the vocabulary.
 <<lkd>>=
-cat(readLines(system.file("dot/oct05.dot", package="biocViews")),sep="\n")
+cat(readLines(system.file("dot/biocViewsVocab.dot", package="biocViews")),sep="\n")
 @
 This is transformed to a GXL document using graphviz' \texttt{dot2gxl}, and
 from GXL to an R graph::graphNEL using \Rfunction{fromGXL}.
@@ -84,10 +84,10 @@ representation of the vocabulary, and the string that represents the
 vocabular root node.
 
 <<getViews>>=
-data(oct05)
+data(biocViewsVocab)
 reposPath <- system.file("doc", package="biocViews")
 reposUrl <- paste("file://", reposPath, sep="")
-biocViews <- getBiocViews(reposUrl, oct05, "vocRoot")
+biocViews <- getBiocViews(reposUrl, biocViewsVocab, "vocRoot")
 
 print(biocViews[1:2])
 
@@ -114,8 +114,8 @@ The \Rfunction{permulist} function transforms the package-view
 association into a list with elements corresponding to all
 views in the vocabulary.
 <<lkpl, eval=FALSE>>=
-data(oct05)
-pp <- permulist(gg, oct05, "vocRoot")
+data(biocViewsVocab)
+pp <- permulist(gg, biocViewsVocab, "vocRoot")
 pp[1:4]
 @
 
@@ -128,7 +128,7 @@ seems simpler than creating the ctv objects directly.  This
 is accomplished with a single call.
 
 <<lkh, eval=FALSE>>=
-cc <- getCTVlist(pp, oct05)
+cc <- getCTVlist(pp, biocViewsVocab)
 @
 We apply \texttt{bcv2html} to all the components of \texttt{cc}:
 <<app, eval=FALSE>>=
@@ -140,7 +140,7 @@ Finally, we need to create an index.html.  This mentions the top
 level vocabulary terms:
 <<dotop, eval=FALSE>>=
 tmp <- tempfile()
-els <- topwrap(oct05)
+els <- topwrap(biocViewsVocab)
 toptop <- readLines(system.file("htmlfrags/topfrag.html", package="biocViews"))
 cat(toptop,els,"</ul>\n", file=tmp)
 readLines(tmp)

@@ -1,9 +1,9 @@
 
 #library(biocViews)
 #gg <- getPacksAndViews("http://bioconductor.org/packages/bioc/1.8/src/contrib/")
-#data(oct05)
-#pp <- permulist(gg, oct05, "vocRoot")
-#ct <- getCTVs(pp,oct05)
+#data(biocViewsVocab)
+#pp <- permulist(gg, biocViewsVocab, "vocRoot")
+#ct <- getCTVs(pp, biocViewsVocab)
 #sapply(ct, bcv2html)
 
 
