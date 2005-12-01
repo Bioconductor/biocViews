@@ -5,19 +5,21 @@
 \alias{htmlFilename,RepositoryDetail-method}
 \alias{htmlValue,RepositoryDetail-method}
 
-\title{Class "RepositoryDetail" ~~~ }
-\description{	 ~~ A concise (1-5 lines) description of what the class is.  ~~}
+\title{Class "RepositoryDetail"}
+\description{Representation of R package repository index}
 \section{Objects from the Class}{
 Objects can be created by calls of the form \code{new("RepositoryDetail", ...)}.
-	 ~~ describe objects here ~~ 
 }
 \section{Slots}{
 	 \describe{
-    \item{\code{Title}:}{Object of class \code{"character"} ~~ }
-    \item{\code{reposRoot}:}{Object of class \code{"character"} ~~ }
-    \item{\code{homeUrl}:}{Object of class \code{"character"} ~~ }
-    \item{\code{htmlDir}:}{Object of class \code{"character"} ~~ }
-    \item{\code{packageList}:}{Object of class \code{"list"} ~~ }
+    \item{\code{Title}:}{Object of class \code{"character"} giving the
+    title for the repository.}
+    \item{\code{reposRoot}:}{Object of class \code{"character"} giving the root
+    URL of the repository}
+    \item{\code{homeUrl}:}{Object of class \code{"character"} ?}
+    \item{\code{htmlDir}:}{Object of class \code{"character"} ? }
+    \item{\code{packageList}:}{Object of class \code{"list"} consisting
+    of objects of class \code{PackageDetail-class} }
   }
 }
 \section{Extends}{
@@ -30,17 +32,5 @@ Class \code{"Htmlized"}, directly.
     \item{htmlValue}{\code{signature(object = "RepositoryDetail")}: ... }
 	 }
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ }
-
- ~Make other sections like Warning with \section{Warning }{....} ~
-
-\seealso{
-	~~objects to See Also as \code{\link{~~fun~~}}, ~~~
-	or \code{\link{CLASSNAME-class}} for links to other classes
-}
-\examples{
-##---- Should be DIRECTLY executable !! ----
-}
+\author{Seth Falcon}
 \keyword{classes}

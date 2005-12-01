@@ -1,6 +1,13 @@
 \name{PackageDetail-class}
 \docType{class}
 \alias{PackageDetail-class}
+
+\alias{pdAuthorMaintainerInfo-class}
+\alias{pdVignetteInfo-class}
+\alias{pdDownloadInfo-class}
+\alias{pdDetailsInfo-class}
+\alias{pdDescriptionInfo-class}
+
 \alias{htmlDoc,PackageDetail-method}
 \alias{htmlFilename,PackageDetail-method}
 \alias{htmlValue,PackageDetail-method}
@@ -58,23 +65,28 @@ Class \code{"Htmlized"}, directly.
 \section{Methods}{
   \describe{
     \item{htmlDoc}{\code{signature(object = "PackageDetail")}: Return an
-    \code{XMLNode} instance containg a complete HTML document
-    representation of the package.}
+      \code{XMLNode} instance containg a complete HTML document
+      representation of the package.}
     \item{htmlFilename}{\code{signature(object = "PackageDetail")}:
-    Return a filename appropriate for the HTML document representation. }
+      Return a filename appropriate for the HTML document representation. }
     \item{htmlValue}{\code{signature(object = "PackageDetail")}: Return
-    \code{XMLNode} instance containing an HTML representation of the package. }
-	 }
+      \code{XMLNode} instance containing an HTML representation of the package. }
+  }
 }
-\author{ Seth Falcon}
 
-\seealso{
-  \code{\link{pdAuthorMaintainerInfo-class}},
-  \code{\link{pdVignetteInfo-class}},
-  \code{\link{pdDownloadInfo-class}},
-  \code{\link{pdDetailsInfo-class}},
-  \code{\link{pdDescriptionInfo-class}}
+\section{Details}{
+  \code{pdAuthorMaintainerInfo-class}
+  \code{pdVignetteInfo-class}
+  \code{pdDownloadInfo-class}
+  \code{pdDetailsInfo-class}
+  \code{pdDescriptionInfo-class}
+
+  Dummy classes for HTML generation.  Each dummy class is a simple
+  extension (it does not add any slots).  The purpose of each dummy
+  class is to allow for method dispatch to generate HTML.
 }
+
+\author{ Seth Falcon}
 
 \examples{
 pd <- new("PackageDetail",
