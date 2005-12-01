@@ -3,7 +3,7 @@
 \title{Build a list of BiocView objects from a package repository}
 \description{
   Given the URL to a CRAN-style package repository containing a
-  \code{VIEWS} file at the top-level and a \code{\link{graph-class}} object
+  \code{VIEWS} file at the top-level and a \code{\link[graph]{graph-class}} object
   representing a DAG of views, this function returns a list of
   \code{\link{BiocView-class}} objects.
 }
@@ -14,8 +14,9 @@ getBiocViews(reposUrl, vocab, root, local = FALSE)
 \arguments{
   \item{reposUrl}{URL for a CRAN-style repository that hosts a
   \code{VIEWS} file at the top-level.}
-  \item{vocab}{A \code{graph-class} object representing the ontology of
-    views.  This graph should be a directed acyclic graph (DAG).}
+  \item{vocab}{A \code{\link[graph]{graph-class}} object representing
+    the ontologyof views.  This graph should be a directed acyclic graph
+    (DAG).}
   \item{root}{A character vector specifying the name of the root node of
     \code{vocab}.}
   \item{local}{logical indicating whether to assume a local package

@@ -93,7 +93,7 @@ print(biocViews[1:2])
 
 @ 
 
-\section{Generating HTML without ctv}
+\section{Generating HTML}
 
 By default, the set of HTML views will link to package description
 pages located in the html subdirectory of the remote repository.
@@ -105,58 +105,6 @@ writeBiocViews(biocViews, dir=viewsDir)
 
 dir(viewsDir)
 @ 
-
-
-
-\section{Getting a view-package list structure}
-
-The \Rfunction{permulist} function transforms the package-view
-association into a list with elements corresponding to all
-views in the vocabulary.
-<<lkpl, eval=FALSE>>=
-data(biocViewsVocab)
-pp <- permulist(gg, biocViewsVocab, "vocRoot")
-pp[1:4]
-@
-
-\section{Generating HTML}
-
-Once the view-package association has been created, we can generate
-view-specific HTML.  First we create ctv objects, by writing
-XML documents and reading them back in.  This is annoying but
-seems simpler than creating the ctv objects directly.  This
-is accomplished with a single call.
-
-<<lkh, eval=FALSE>>=
-cc <- getCTVlist(pp, biocViewsVocab)
-@
-We apply \texttt{bcv2html} to all the components of \texttt{cc}:
-<<app, eval=FALSE>>=
-jnk <- lapply(cc, bcv2html, reposname="Bioconductor", 
-packageURL="http://www.bioconductor.org/packages/bioc/1.7/src/contrib/html/")
-dir(patt="htm")
-@
-Finally, we need to create an index.html.  This mentions the top
-level vocabulary terms:
-<<dotop, eval=FALSE>>=
-tmp <- tempfile()
-els <- topwrap(biocViewsVocab)
-toptop <- readLines(system.file("htmlfrags/topfrag.html", package="biocViews"))
-cat(toptop,els,"</ul>\n", file=tmp)
-readLines(tmp)
-system(paste("cp ", tmp, " index.html "))
-<<eval=FALSE>>=
-unlink(tmp)
-@
-
-Final products are like
-
-%\includegraphics{topoct}
-
-%\includegraphics{prepro}
-
-Still need a back button.  My browser comes with one.
-
 
 \end{document}
 

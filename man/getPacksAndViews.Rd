@@ -9,46 +9,30 @@
 \alias{pump}
 \alias{tellSubTop}
 \alias{tellSuperTop}
-\title{Obtain the package names and biocViews entries from
-a repository PACKAGES file; also create an interpolated view-centered list
-on the basis of a vocabulary graph.}
+\title{Parse VIEWS file for views and packages}
 \description{
+  Given a repository URL, download and parse the VIEWS file.
 }
+
 \usage{
-getPacksAndViews(reposURL)
-permulist(allv, vocab, root, interp=TRUE)
+getPacksAndViews(reposURL, local=FALSE)
 }
 \arguments{
-  \item{reposURL}{ reposURL -- the URL path to PACKAGES for a repository}
-  \item{allv}{ allv -- a list (one element per package, each element
-is a vector of view names prescribed by package author, or \code{NoViewProvided})}
-  \item{vocab}{ vocab -- a graphNEL encoding the rooted DAG representing the vocabulary of views}
-  \item{root}{the node that is the root of vgraph}
-  \item{interp}{A logical variable; if TRUE, then if package P is in view V and
-view W is a generalization of V, then P is in view W.  Otherwise only direct
-view associations are used.}
-}
-\details{
-Requires internet access.  Uses a locally coded variation of \code{\link{available.packages}}
-to harvest the \code{biocViews} field from the PACKAGES data.
+  \item{reposURL}{character vector giving the URL of a CRAN-style
+  repository containing a VIEWS file at the top-level.}
+  \item{local}{logical indicating whether certain links should be
+    absolute (using \code{reposURL}) or relative.}
 }
 \value{
+  A list with named elements:
+
+  \code{views}: Vector of view memberships.  Names are package names.
+
+  \code{pkgList}: A list of \code{\link{PackageDetail-class}} objects.
 }
-\references{  }
-\author{Vince Carey <stvjc@channing.harvard.edu>}
-\note{  }
-
-
-\seealso{  }
+\author{Seth Falcon}
 
 \examples{
-## require(Biobase)
-## if (testBioCConnection()) {
-## 	gg <- getPacksAndViews("http://bioconductor.org/packages/bioc/1.8/src/contrib/")
-## } else data(gg)
-## gg[1:4]
-## data(oct05) # get the vocabulary graph
-## pp <- permulist(gg, oct05, "vocRoot")
-## pp[1:4]
+## TODO
 }
-\keyword{ models }
+\keyword{utilities}

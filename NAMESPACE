@@ -1,0 +1,17 @@
+exportClasses("Htmlized",
+
+              "PackageDetail", "pdAuthorMaintainerInfo", "pdVignetteInfo",
+              "pdDownloadInfo", "pdDetailsInfo", "pdDescriptionInfo",
+
+              "RepositoryDetail", "rdPackageTable",
+
+              "BiocView", "bvTitle", "bvPackageTable", "bvSubViews",
+              "bvParentViews")
+
+
+exportMethods("show", "htmlDoc", "htmlValue", "htmlFilename")
+
+
+export("writeBiocViews", "getBiocViews", "write_VIEWS", "write_REPOSITORY",
+       "genReposControlFiles", "extractVignettes", "writeRepositoryHtml",
+       "writePackageDetailHtml")

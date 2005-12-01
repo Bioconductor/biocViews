@@ -1,5 +1,5 @@
 Package: biocViews
-Version: 0.4.4
+Version: 0.4.5
 Date: 2005-10-28
 Title: Categorized views of R package repositories
 Author: VJ Carey <stvjc@channing.harvard.edu>, BJ Harshfield <rebjh@channing.harvard.edu>, Seth Falcon <sfalcon@fhcrc.org>
@@ -15,10 +15,7 @@ Collate: AllClasses.R
          htmlFilename-methods.R
          htmlValue-methods.R
          show-methods.R
-         bcv2html.R
          getPackNames.R
-         makeCTV.R
          packageDetails.R
          pump.R
          repository.R
-         topwrap.R                
