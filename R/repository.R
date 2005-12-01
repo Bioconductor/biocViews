@@ -156,7 +156,8 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
 }
 
 
-writeRepositoryHtml <- function(reposRoot, title, reposUrl="..") {
+writeRepositoryHtml <- function(reposRoot, title, reposUrl="..",
+                                link.rel=TRUE) {
     ## Writes package description html under reposRoot/html and an index.html
     ## file under reposRoot.
     ##
@@ -164,7 +165,7 @@ writeRepositoryHtml <- function(reposRoot, title, reposUrl="..") {
     ## prefix.
     pkgList <- loadPackageDetails(reposRoot, reposUrl)
     writePackageDetailHtml(pkgList, file.path(reposRoot, "html"))
-    writeRepositoryIndexHtml(pkgList, reposRoot, title)
+    writeRepositoryIndexHtml(pkgList, reposRoot, title, link.rel=link.rel)
 }
 
 
@@ -179,9 +180,14 @@ writePackageDetailHtml <- function(pkgList, htmlDir="html") {
 }
 
 
-writeRepositoryIndexHtml <- function(pkgList, reposRoot, title, htmlDir="html")
+writeRepositoryIndexHtml <- function(pkgList, reposRoot, title, htmlDir="html",
+                                     link.rel=TRUE)
 {
-    repos <- new("RepositoryDetail", Title=title, reposRoot=reposRoot,
+    if (link.rel)
+      linkRoot <- character(0)
+    else
+      linkRoot <- reposRoot
+    repos <- new("RepositoryDetail", Title=title, reposRoot=linkRoot,
                  htmlDir=htmlDir, packageList=pkgList)
     f <- file.path(reposRoot, htmlFilename(repos))
     writeHtmlDoc(htmlDoc(repos), f)
