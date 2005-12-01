@@ -1,66 +1,3 @@
-makeHtmlHeader <- function(title, stylesheet) {
-    html <- xmlOutputDOM("html")
-    html$addTag("head", close=FALSE)
-    html$addTag("title", title)
-    myAttrs <- c(rel="stylesheet",
-                 type="text/css",
-                 href=stylesheet)
-    html$addTag("link", attrs=myAttrs)
-    html$closeTag()
-    html
-}
-
-
-setMethod("htmlDoc", signature(object="Htmlized"),
-          function(object, title, stylesheet="style.css") {
-              dom <- makeHtmlHeader(title, stylesheet)
-              dom$addTag("body", close=FALSE)
-              dom$addNode(htmlValue(object))
-              dom$closeTag()
-              dom$value()
-          })
-
-
-setMethod("htmlDoc", signature(object="PackageDetail"),
-          function(object) {
-              title <- object@Package
-              stylesheet="package-detail.css"
-              callNextMethod(object, title, stylesheet)
-          })
-
-
-setMethod("htmlDoc", signature(object="RepositoryDetail"),
-          function(object) {
-              title <- object@Title
-              stylesheet="repository-detail.css"
-              callNextMethod(object, title, stylesheet)
-          })
-
-
-setMethod("htmlDoc", signature(object="BiocView"),
-          function(object) {
-              title <- paste("Bioconductor Task View", object@name)
-              sylesheet="repository-detail.css"
-              callNextMethod(object, title, stylesheet)
-          })
-
-
-setMethod("htmlFilename", signature(object="character"),
-          function(object) paste(object, ".html", sep=""))
-
-setMethod("htmlFilename", signature(object="RepositoryDetail"),
-          function(object) "index.html")
-
-
-setMethod("htmlFilename", signature(object="BiocView"),
-          function(object) {
-              if (object@name == "vocRoot")
-                "index.html"
-              else
-                paste(object@name, ".html", sep="")
-          })
-
-
 writeHtmlDoc <- function(html, file) saveXML(html, file)
 
 
@@ -122,12 +59,6 @@ setMethod("htmlValue", signature(object="RepositoryDetail"),
               pkgTable <- as(object, "rdPackageTable")
               dom$addNode(htmlValue(pkgTable))
               dom$value()
-          })
-
-
-setMethod("htmlFilename", signature(object="PackageDetail"),
-          function(object) {
-              htmlFilename(object@Package)
           })
 
 
@@ -251,24 +182,6 @@ setMethod("htmlValue", signature(object="PackageDetail"),
           })
 
 
-setAs("BiocView", "rdPackageTable", function(from) {
-    as(as(from, "RepositoryDetail"), "rdPackageTable")
-    })
-
-
-setMethod("show", signature(object="BiocView"),
-          function(object) {
-              cat("Bioconductor View:", object@name, "\n")
-              cat("Parent Views:\n")
-              print(object@parentViews)
-              cat("Subviews:\n")
-              print(object@subViews)
-              cat("Contains packages:\n")
-              print(names(object@packageList))
-
-          })
-
-
 viewsHelper <- function(views) {
     dom <- xmlOutputDOM("ul")
     for (v in views) {
@@ -332,6 +245,4 @@ setMethod("htmlValue", signature(object="BiocView"),
 
               dom$value()
           })
-              
-
               

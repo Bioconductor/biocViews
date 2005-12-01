@@ -1,10 +1,24 @@
 Package: biocViews
-Version: 0.4.3
+Version: 0.4.4
 Date: 2005-10-28
-Title: integrating ctv and hierarchical topic structure for bioconductor
+Title: Categorized views of R package repositories
 Author: VJ Carey <stvjc@channing.harvard.edu>, BJ Harshfield <rebjh@channing.harvard.edu>, Seth Falcon <sfalcon@fhcrc.org>
 Maintainer: VJ Carey <stvjc@channing.harvard.edu>
-Depends: methods, tools, ctv, graph, RBGL, XML
+Depends: methods, tools, graph, RBGL, XML
 Description: structures for vocabularies and narratives of views
 License: LGPL version
-URL:  http://www.biostat.harvard.edu/~carey
+URL: http://www.biostat.harvard.edu/~carey
+Collate: AllClasses.R
+         AllGenerics.R
+         as-methods.R
+         htmlDoc-methods.R
+         htmlFilename-methods.R
+         htmlValue-methods.R
+         show-methods.R
+         bcv2html.R
+         getPackNames.R
+         makeCTV.R
+         packageDetails.R
+         pump.R
+         repository.R
+         topwrap.R                

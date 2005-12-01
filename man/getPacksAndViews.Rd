@@ -42,13 +42,13 @@ to harvest the \code{biocViews} field from the PACKAGES data.
 \seealso{  }
 
 \examples{
-require(Biobase)
-if (testBioCConnection()) {
-	gg <- getPacksAndViews("http://bioconductor.org/packages/bioc/1.8/src/contrib/")
-} else data(gg)
-gg[1:4]
-data(oct05) # get the vocabulary graph
-pp <- permulist(gg, oct05, "vocRoot")
-pp[1:4]
+## require(Biobase)
+## if (testBioCConnection()) {
+## 	gg <- getPacksAndViews("http://bioconductor.org/packages/bioc/1.8/src/contrib/")
+## } else data(gg)
+## gg[1:4]
+## data(oct05) # get the vocabulary graph
+## pp <- permulist(gg, oct05, "vocRoot")
+## pp[1:4]
 }
 \keyword{ models }
