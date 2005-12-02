@@ -30,6 +30,11 @@ setMethod("htmlValue", signature(object="rdPackageTable"),
               dom <- xmlOutputDOM("table", attrs=c(class="repos_index"))
               odd <- TRUE
               alphaOrder <- order(tolower(names(object@packageList)))
+              dom$addTag("tr", close=FALSE)
+              dom$addTag("th", "Package")
+              dom$addTag("th", "Maintainer")
+              dom$addTag("th", "Title")
+              dom$closeTag()
               for (pkg in object@packageList[alphaOrder]) {
                   rowClass <- if(odd) "row_odd" else "row_even"
                   odd <- !odd
@@ -42,7 +47,13 @@ setMethod("htmlValue", signature(object="rdPackageTable"),
                   infoPage <- paste(root, htmlFilename(pkg), sep="/")
                   dom$addTag("a", attrs=c(href=infoPage), pkg@Package)
                   dom$closeTag()
-                  dom$addTag("td", pkg@Version, attrs=c(class="version"))
+                  maint <- pkg@Maintainer
+                  lt.pos <- regexpr("<", maint, fixed=TRUE)
+                  if (lt.pos < 2)
+                    maint <- "invalid maintainer field"
+                  else
+                    maint <- substr(maint, 1, lt.pos - 1)
+                  dom$addTag("td", maint, attrs=c(class="maintainer"))
                   dom$addTag("td", pkg@Title, attrs=c(class="title"))
                   dom$closeTag() ## end tr
               }
