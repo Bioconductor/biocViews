@@ -7,10 +7,7 @@ setMethod("htmlFilename", signature(object="RepositoryDetail"),
 
 setMethod("htmlFilename", signature(object="BiocView"),
           function(object) {
-              if (object@name == "vocRoot")
-                "index.html"
-              else
-                paste(object@name, ".html", sep="")
+              paste(object@name, ".html", sep="")
           })
 
 
