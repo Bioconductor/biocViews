@@ -9,7 +9,7 @@ exportClasses("Htmlized",
               "bvParentViews")
 
 
-exportMethods("show", "htmlDoc", "htmlValue", "htmlFilename")
+exportMethods("coerce", "show", "htmlDoc", "htmlValue", "htmlFilename")
 
 
 export("writeBiocViews", "getBiocViews", "write_VIEWS", "write_REPOSITORY",
