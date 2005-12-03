@@ -166,6 +166,11 @@ writeRepositoryHtml <- function(reposRoot, title, reposUrl="..",
     pkgList <- loadPackageDetails(reposRoot, reposUrl)
     writePackageDetailHtml(pkgList, file.path(reposRoot, "html"))
     writeRepositoryIndexHtml(pkgList, reposRoot, title, link.rel=link.rel)
+
+    ## copy the css stylesheet
+    cssName <- "repository-detail.css"
+    cssPath <- system.file(file.path("css", cssName), package="biocViews")
+    res <- try(file.copy(cssPath, file.path(reposRoot, cssName)), silent=TRUE)
 }
 
 
@@ -177,6 +182,11 @@ writePackageDetailHtml <- function(pkgList, htmlDir="html") {
         cat("writing html for", pkg@Package, "\n")
         writeHtmlDoc(htmlDoc(pkg), f)
     }
+    ## copy the package detail css stylesheet
+    cssName <- "package-detail.css"
+    cssPath <- system.file(file.path("css", cssName), package="biocViews")
+    res <- try(file.copy(cssPath, file.path(htmlDir, cssName)), silent=TRUE)
+
 }
 
 
