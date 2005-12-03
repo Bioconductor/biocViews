@@ -119,7 +119,7 @@ setMethod("htmlValue", signature(object="pdDownloadInfo"),
                                 mac.binary="OS X")
               makeLinkHelper <- function(type) {
                   pkgPath <- slot(object, flds[type])
-                  if (!is.na(pkgPath) && length(pkgPath) > 0) {
+                  if (!is.na(pkgPath) && length(pkgPath) > 0 && pkgPath != "") {
                       ref <- paste(object@reposRoot, pkgPath, sep="/")
                       aTag <- xmlNode("a", basename(pkgPath), attrs=c(href=ref))
                   } else {
