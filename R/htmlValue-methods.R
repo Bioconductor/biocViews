@@ -18,7 +18,9 @@ tableHelper <- function(tableData, table.attrs) {
 
 
 cleanText <- function(text) {
+    text <- gsub("&([a-zA-Z0-9#]+;)", "@_@_@\\1", text)
     text <- gsub("&", "&amp;", text, fixed=TRUE)
+    text <- gsub("@_@_@([a-zA-Z0-9#]+;)", "&\\1", text)
     text <- gsub("<", "&lt;", text, fixed=TRUE)
     text <- gsub(">", "&gt;", text, fixed=TRUE)
     text

@@ -61,6 +61,7 @@ viewRowToPackageDetail <- function(row) {
     flds <- names(row)
     for (fld in flds) {
         val <- row[[fld]]
+        ## FIXME: are we sure we want to get rid of the NA's here?
         if (is.na(val)) val <- ""
         slot(pkg, fld) <- val
     }
@@ -104,6 +105,23 @@ mangleEmail <- function(line) {
     ##              *
     ##  Rafael A. Irizarry <rafa vATx jhu pDOTl edu>
     ##
+    chrA <- c("&Agrave;", "&Aacute;", "&Acirc;", "&Atilde;",
+              "&Auml;", "&Aring;", "&AElig;")
+##              "&agrave;", "&aacute;", "&aring;")
+    
+    chrO <- c("&Ograve;", "&Oacute;", "&Ocirc;", "&Otilde;",
+              "&Ouml;") ##, "&ograve;", "&oacute;", "&ocirc;", "&ouml;")
+
+    makeAT <- function() {
+        i <- sample(seq(length=length(chrA), 1))
+        paste(" ", chrA[i], "T", " ", sep="")
+    }
+
+    makeDOT <- function() {
+        i <- sample(seq(length=length(chrO), 1))
+        paste(" ", "D", chrO[i], "T", " ", sep="")
+    }
+
     emailStarts <- gregexpr("<", line, fixed=TRUE)[[1]]
     emailEnds <- gregexpr(">", line, fixed=TRUE)[[1]]
 
@@ -111,13 +129,8 @@ mangleEmail <- function(line) {
                      function(x)
                          substr(line, emailStarts[x], emailEnds[x]))
     emails <- sapply(emails, function(line) {
-        wrapRand <- function(text, n=1) {
-            st <- paste(sample(letters, n), collapse="")
-            en <- paste(sample(letters, n), collapse="")
-            paste(" ", st, text, en, " ", sep="")
-        }
-        AT <- wrapRand("AT")
-        DOT <- wrapRand("DOT")
+        AT <- makeAT()
+        DOT <- makeDOT()
         line <- gsub("@", AT, line, fixed=TRUE)
         line <- gsub("\.", DOT, line, fixed=TRUE)
         line
