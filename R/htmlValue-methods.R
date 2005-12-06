@@ -196,11 +196,7 @@ setMethod("htmlValue", signature(object="PackageDetail"),
 viewsHelper <- function(views) {
     dom <- xmlOutputDOM("ul")
     for (v in views) {
-        ## FIXME: this should be done in one place
-        if (v == "vocRoot")
-          link <- "index.html"
-        else
-          link <- htmlFilename(v)
+        link <- htmlFilename(v)
         dom$addTag("li", close=FALSE)
         dom$addTag("a", v, attrs=c(href=link))
         dom$closeTag()
