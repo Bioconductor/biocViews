@@ -138,12 +138,34 @@ setMethod("htmlValue", signature(object="pdDownloadInfo"),
 setMethod("htmlValue", signature(object="pdDetailsInfo"),
           function(object) {
 
-              flds <- c("Depends", "Suggests", "Imports", "SystemRequirements",
-                        "License", "URL", "biocViews", "dependsOnMe",
+              flds <- c("biocViews", "Depends", "Suggests", "Imports",
+                        "SystemRequirements", "License", "URL", "dependsOnMe",
                         "suggestsMe")
+
+              ## handle biocViews separately
+              buildViewLink <- function(v) {
+                  if (nchar(v) == 0)
+                    return(v)
+                  link <- paste("../", v, ".html", sep="")
+                  node <- xmlNode("a", v, attrs=c(href=link))
+                  return(node)
+              }
+              vlinks <- lapply(object@biocViews, buildViewLink)
+              args <- list(name="div")
+              if (length(vlinks) > 0)
+                args <- c(args, list(vlinks[[1]]))
+              if (length(vlinks) > 1) {
+                  for (v in vlinks[2:length(vlinks)]) {
+                      args <- c(args, list(", "), list(v))
+                  }
+              }
+              args[["attrs"]] <- c(class="views")
+              views <- do.call("xmlNode", args)
+              
               formatField <- function(x) paste(slot(object, x), collapse=", ")
               tableDat <- lapply(flds, formatField)
               names(tableDat) <- flds
+              tableDat[["biocViews"]] <- views
               domValue <- tableHelper(tableDat,
                                       table.attrs=list(class="details"))
               domValue
