@@ -72,11 +72,14 @@ setMethod("htmlValue", signature(object="RepositoryDetail"),
 
 setMethod("htmlValue", signature(object="pdAuthorMaintainerInfo"),
           function(object) {
-              dom <- xmlOutputDOM("dl", attrs=c(class="author_info"))
-              dom$addTag("dt", "Author")
-              dom$addTag("dd", cleanText(removeEmail(object@Author)))
-              dom$addTag("dt", "Maintainer")
-              dom$addTag("dd", cleanText(removeEmail(object@Maintainer)))
+              dom <- xmlOutputDOM("table", attrs=c(class="author_info"))
+              dom$addTag("tr", close=FALSE)
+              dom$addTag("td", "Author")
+              dom$addTag("td", cleanText(removeEmail(object@Author)))
+              dom$closeTag()
+              dom$addTag("tr", close=FALSE)
+              dom$addTag("td", "Maintainer")
+              dom$addTag("td", cleanText(removeEmail(object@Maintainer)))
               dom$closeTag()
               dom$value()
           })
@@ -112,8 +115,8 @@ setMethod("htmlValue", signature(object="pdDownloadInfo"),
                         win.binary="win.binary.ver",
                         mac.binary="mac.binary.ver")
               
-              fileTypes <- list(source="source", win.binary="Windows",
-                                mac.binary="OS X")
+              fileTypes <- list(source="Source", win.binary="Windows binary",
+                                mac.binary="OS X binary")
               makeLinkHelper <- function(type) {
                   pkgPath <- slot(object, flds[type])
                   if (!is.na(pkgPath) && length(pkgPath) > 0 && pkgPath != "") {
@@ -163,23 +166,40 @@ setMethod("htmlValue", signature(object="PackageDetail"),
               dom$addTag("h1", object@Package)
               dom$addTag("h2", cleanText(object@Title))
 
-              ## Author info
-              authorInfo <- as(object, "pdAuthorMaintainerInfo")
-              dom$addNode(htmlValue(authorInfo))
-
               ## Description
               descInfo <- as(object, "pdDescriptionInfo")
               dom$addNode(htmlValue(descInfo))
 
+              ## Author info
+              authorInfo <- as(object, "pdAuthorMaintainerInfo")
+              dom$addNode(htmlValue(authorInfo))
+
+              ## Create a table for Vignettes and Downloads
+              ## FIXME: clean this up so it is readable!
+              dom$addTag("table", attrs=c(class="vigsAndDownloads"),
+                         close=FALSE)
+              dom$addTag("tr", close=FALSE)
+              dom$addTag("td", close=FALSE)
               ## Vignettes
               dom$addTag("h3", "Vignettes (Documentation)")
+              dom$closeTag()
+              dom$addTag("td", close=FALSE)
+              ## Download links
+              dom$addTag("h3", "Package Downloads")
+              dom$closeTag()
+              dom$closeTag()
+              
+              dom$addTag("tr", close=FALSE)
+              dom$addTag("td", close=FALSE)
               vigInfo <- as(object, "pdVignetteInfo")
               dom$addNode(htmlValue(vigInfo))
-
-              ## Download links
-              dom$addTag("h3", "Download Package")
+              dom$closeTag()
+              dom$addTag("td", close=FALSE)
               downloadInfo <- as(object, "pdDownloadInfo")
               dom$addNode(htmlValue(downloadInfo))
+              dom$closeTag() ## td
+              dom$closeTag() ## tr
+              dom$closeTag() ## table
               
               ## Details
               dom$addTag("h3", "Details")

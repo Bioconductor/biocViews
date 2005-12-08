@@ -1,14 +1,13 @@
 body
 {
-    margin-left:10%;       
-    margin-right:10%;       
+    margin-left:15%;       
+    margin-right:15%;       
 }
 
 p.description
 {
-    background-color: #E7EFF8;
-    margin-right:20%;
-    padding:15px;
+    background-color: #9EBFE3;
+    padding:10px;
 }
 
 tr.row_odd
@@ -23,6 +22,7 @@ tr.row_even
 
 td 
 {
+    vertical-align: top;
     padding-right:10px;
     padding-left:4px;
 }
@@ -35,4 +35,16 @@ th
     font-weight:normal;
 }
 
+h3 {
+   margin-bottom: 2px;
+}
+
     
+table.vigsAndDownloads {
+    margin-left: 10%;
+    margin-right: 10%;
+}
+
+table.author_info {
+    margin-bottom: 20px;
+}
