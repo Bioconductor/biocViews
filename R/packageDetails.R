@@ -91,26 +91,23 @@ viewRowToPackageDetail <- function(row) {
     pkg@biocViews <- cleanField(pkg@biocViews)
     pkg@vignettes <- cleanVigs(pkg@vignettes)
     
-    pkg@Maintainer <- mangleEmail(pkg@Maintainer)
-    pkg@Author <- mangleEmail(pkg@Author)
-    
     return(pkg)
 }
 
 
+removeEmail <- function(line) {
+    line <- gsub("<[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+>", "", line)
+    line <- gsub("[a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+", "", line)
+    line <- sub(" +$", "", line)
+    line
+}
+
+
 mangleEmail <- function(line) {
-    ##  Rafael A. Irizarry <rafa@jhu.edu>
-    ##              |
-    ##              |
-    ##              *
-    ##  Rafael A. Irizarry <rafa vATx jhu pDOTl edu>
-    ##
-    chrA <- c("&Agrave;", "&Aacute;", "&Acirc;", "&Atilde;",
-              "&Auml;", "&Aring;", "&AElig;")
-##              "&agrave;", "&aacute;", "&aring;")
+    chrA <- c("&Agrave;", "&Aacute;", "&Acirc;", "&Atilde;", "&Auml;",
+              "&Aring;", "&AElig;")
     
-    chrO <- c("&Ograve;", "&Oacute;", "&Ocirc;", "&Otilde;",
-              "&Ouml;") ##, "&ograve;", "&oacute;", "&ocirc;", "&ouml;")
+    chrO <- c("&Ograve;", "&Oacute;", "&Ocirc;", "&Otilde;", "&Ouml;")
 
     makeAT <- function() {
         i <- sample(seq(length=length(chrA), 1))

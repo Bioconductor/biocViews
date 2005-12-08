@@ -49,13 +49,8 @@ setMethod("htmlValue", signature(object="rdPackageTable"),
                   infoPage <- paste(root, htmlFilename(pkg), sep="/")
                   dom$addTag("a", attrs=c(href=infoPage), pkg@Package)
                   dom$closeTag()
-                  maint <- pkg@Maintainer
-                  lt.pos <- regexpr("<", maint, fixed=TRUE)
-                  if (lt.pos < 2)
-                    maint <- "invalid maintainer field"
-                  else
-                    maint <- substr(maint, 1, lt.pos - 1)
-                  dom$addTag("td", maint, attrs=c(class="maintainer"))
+                  dom$addTag("td", removeEmail(pkg@Maintainer),
+                             attrs=c(class="maintainer"))
                   dom$addTag("td", pkg@Title, attrs=c(class="title"))
                   dom$closeTag() ## end tr
               }
@@ -79,9 +74,9 @@ setMethod("htmlValue", signature(object="pdAuthorMaintainerInfo"),
           function(object) {
               dom <- xmlOutputDOM("dl", attrs=c(class="author_info"))
               dom$addTag("dt", "Author")
-              dom$addTag("dd", cleanText(object@Author))
+              dom$addTag("dd", cleanText(removeEmail(object@Author)))
               dom$addTag("dt", "Maintainer")
-              dom$addTag("dd", cleanText(object@Maintainer))
+              dom$addTag("dd", cleanText(removeEmail(object@Maintainer)))
               dom$closeTag()
               dom$value()
           })
@@ -176,20 +171,20 @@ setMethod("htmlValue", signature(object="PackageDetail"),
               descInfo <- as(object, "pdDescriptionInfo")
               dom$addNode(htmlValue(descInfo))
 
-              ## Details
-              dom$addTag("h3", "Details")
-              detailsInfo <- as(object, "pdDetailsInfo")
-              dom$addNode(htmlValue(detailsInfo))
+              ## Vignettes
+              dom$addTag("h3", "Vignettes (Documentation)")
+              vigInfo <- as(object, "pdVignetteInfo")
+              dom$addNode(htmlValue(vigInfo))
 
               ## Download links
               dom$addTag("h3", "Download Package")
               downloadInfo <- as(object, "pdDownloadInfo")
               dom$addNode(htmlValue(downloadInfo))
               
-              ## Vignettes
-              dom$addTag("h3", "Vignettes (Documentation)")
-              vigInfo <- as(object, "pdVignetteInfo")
-              dom$addNode(htmlValue(vigInfo))
+              ## Details
+              dom$addTag("h3", "Details")
+              detailsInfo <- as(object, "pdDetailsInfo")
+              dom$addNode(htmlValue(detailsInfo))
 
               return(dom$value())
           })

@@ -170,7 +170,8 @@ writeRepositoryHtml <- function(reposRoot, title, reposUrl="..",
     ## copy the css stylesheet
     cssName <- "repository-detail.css"
     cssPath <- system.file(file.path("css", cssName), package="biocViews")
-    res <- try(file.copy(cssPath, file.path(reposRoot, cssName)), silent=TRUE)
+    res <- try(file.copy(cssPath, file.path(reposRoot, cssName),
+                         overwrite=TRUE), silent=TRUE)
 }
 
 
@@ -185,7 +186,8 @@ writePackageDetailHtml <- function(pkgList, htmlDir="html") {
     ## copy the package detail css stylesheet
     cssName <- "package-detail.css"
     cssPath <- system.file(file.path("css", cssName), package="biocViews")
-    res <- try(file.copy(cssPath, file.path(htmlDir, cssName)), silent=TRUE)
+    res <- try(file.copy(cssPath, file.path(htmlDir, cssName),
+                         overwrite=TRUE), silent=TRUE)
 
 }
 
