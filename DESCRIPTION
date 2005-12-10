@@ -19,3 +19,4 @@ Collate: AllClasses.R
          packageDetails.R
          pump.R
          repository.R
+         showvoc.R
