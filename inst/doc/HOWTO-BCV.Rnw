@@ -79,15 +79,14 @@ important feature.
 \section{Querying a repository}
 
 To generate a list of \Rclass{BiocViews} objects that can be used to
-generate HTML views, you will need the repository URL, a graph
-representation of the vocabulary, and the string that represents the
-vocabular root node.
+generate HTML views, you will need the repository URL and a graph
+representation of the vocabulary.
 
 <<getViews>>=
 data(biocViewsVocab)
 reposPath <- system.file("doc", package="biocViews")
 reposUrl <- paste("file://", reposPath, sep="")
-biocViews <- getBiocViews(reposUrl, biocViewsVocab, "TaskViews")
+biocViews <- getBiocViews(reposUrl, biocViewsVocab)
 
 print(biocViews[1:2])
 

@@ -1,9 +1,16 @@
-pump <- function(viewlist, vocab, root="vocRoot") {
+getRootNode <- function(g) {
+    rootIdx <- which(sapply(inEdges(g), length) == 0)
+    nodes(g)[rootIdx]
+}
+
+
+pump <- function(viewlist, vocab) {
  # make packages annotated to hypernyms of their
  # direct annotations
  vs <- names(viewlist)
+ root <- getRootNode(vocab)
  for (v in vs) {
-   st <- tellSuperTop( v, vocab, root )
+   st <- tellSuperTop(v, vocab, root)
    if (length(st) > 0) {
      for (sti in st)
        viewlist[[sti]] <- union(viewlist[[sti]], viewlist[[v]])
@@ -13,7 +20,7 @@ pump <- function(viewlist, vocab, root="vocRoot") {
 }
 
 
-tellSuperTop <- function( topic, vocab, root="vocRoot" ) {
+tellSuperTop <- function(topic, vocab, root) {
                                         # returns vector of supertopics
     if (length(topic)>1) stop("must have length 1 topic")
     if (!(topic %in% nodes(vocab))) {
@@ -27,7 +34,7 @@ tellSuperTop <- function( topic, vocab, root="vocRoot" ) {
 }
 
 
-tellSubTop <- function( topic, vocab ) {
+tellSubTop <- function(topic, vocab) {
  if (length(topic)>1) stop("must have length 1 topic")
 # returns vector of subtopics
  if (!(topic %in% nodes(vocab))) {

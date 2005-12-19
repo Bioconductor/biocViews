@@ -105,16 +105,14 @@ The \Rfunction{writeRepositoryHtml} will generate HTML detail files
 for each package in reposRoot/html.  The function will also create an
 index.html file at the top level.
 
-The HTML files need to be able to access the appropriate CSS file.
-The stylesheets go like this:
+Two CSS files are included with \Rpackage{biocViews} that are
+automatically copied along side the appropriate HTML files during the
+HTML generation process.  These CSS files are:
 
 \begin{verbatim}
 reposRoot/repository-detail.css 
 reposRoot/html/package-detail.css
 \end{verbatim}
-
-Example CSS files are in inst/css.
-
 
 \section{Design and extension notes}
 

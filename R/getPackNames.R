@@ -12,9 +12,9 @@ writeBiocViews <- function(bvList, dir) {
     res <- try(file.copy(cssPath, file.path(dir, cssName)), silent=TRUE)
 }
 
-getBiocViews <- function(reposUrl, vocab, root, local=FALSE) {
+getBiocViews <- function(reposUrl, vocab, local=FALSE) {
     viewList <- getPacksAndViews(reposUrl, local)
-    viewRoster <- permulist(viewList$views, vocab, root)
+    viewRoster <- permulist(viewList$views, vocab)
     if (local)
       reposUrl <- character(0)
     biocViews <- loadViews(vocab, viewRoster, viewList$pkgList, reposUrl)
@@ -73,13 +73,13 @@ getPacksAndViews <- function(reposURL, local=FALSE) {
 }
 
 
-permulist <- function(allv, vocab, root, interp=TRUE) {
+permulist <- function(allv, vocab, interp=TRUE) {
     lens <- sapply(allv, length)
     packnames <- names(allv)
     repp <- rep(packnames, lens)
     ans <- split(repp, unlist(allv))
-    if (interp) 
-        pump(ans, vocab, root)
-    else ans
+    if (interp)
+      ans <- pump(ans, vocab)
+    return(ans)
 }
 
