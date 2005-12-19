@@ -7,10 +7,18 @@
 \alias{pdDownloadInfo-class}
 \alias{pdDetailsInfo-class}
 \alias{pdDescriptionInfo-class}
+\alias{pdVigsAndDownloads-class}
 
 \alias{htmlDoc,PackageDetail-method}
 \alias{htmlFilename,PackageDetail-method}
+
 \alias{htmlValue,PackageDetail-method}
+\alias{htmlValue,pdAuthorMaintainerInfo-method}
+\alias{htmlValue,pdVignetteInfo-method}
+\alias{htmlValue,pdDownloadInfo-method}
+\alias{htmlValue,pdDetailsInfo-method}
+\alias{htmlValue,pdDescriptionInfo-method}
+\alias{htmlValue,pdVigsAndDownloads-method}
 
 \title{Class "PackageDetail"}
 \description{Representation of R package metadata.  Most slots
@@ -80,10 +88,17 @@ Class \code{"Htmlized"}, directly.
   \code{pdDownloadInfo-class}
   \code{pdDetailsInfo-class}
   \code{pdDescriptionInfo-class}
+  \code{pdVigsAndDownloads-class}
 
   Dummy classes for HTML generation.  Each dummy class is a simple
   extension (it does not add any slots).  The purpose of each dummy
-  class is to allow for method dispatch to generate HTML.
+  class is to allow for method dispatch to generate HTML via the
+  \code{\link{htmlValue}} method.
+
+  You can convert convert a \code{PackageDetail} instance to one of the
+  dummy classes like this: \code{descInfo <- as(pdObj,
+    "pdDescriptionInfo")}
+  
 }
 
 \author{ Seth Falcon}

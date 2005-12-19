@@ -35,6 +35,7 @@ setClass("pdVignetteInfo", contains="PackageDetail")
 setClass("pdDownloadInfo", contains="PackageDetail")
 setClass("pdDetailsInfo", contains="PackageDetail")
 setClass("pdDescriptionInfo", contains="PackageDetail")
+setClass("pdVigsAndDownloads", contains="PackageDetail")
 
 
 setClass("RepositoryDetail", contains="Htmlized",

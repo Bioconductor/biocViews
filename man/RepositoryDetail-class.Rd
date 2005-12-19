@@ -1,9 +1,14 @@
 \name{RepositoryDetail-class}
 \docType{class}
 \alias{RepositoryDetail-class}
+
+\alias{rdPackageTable-class}
+
 \alias{htmlDoc,RepositoryDetail-method}
 \alias{htmlFilename,RepositoryDetail-method}
+
 \alias{htmlValue,RepositoryDetail-method}
+\alias{htmlValue,rdPackageTable-method}
 
 \title{Class "RepositoryDetail"}
 \description{Representation of R package repository index}

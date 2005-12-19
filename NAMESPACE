@@ -2,6 +2,7 @@ exportClasses("Htmlized",
 
               "PackageDetail", "pdAuthorMaintainerInfo", "pdVignetteInfo",
               "pdDownloadInfo", "pdDetailsInfo", "pdDescriptionInfo",
+              "pdVigsAndDownloads",
 
               "RepositoryDetail", "rdPackageTable",
 
@@ -15,3 +16,4 @@ exportMethods("coerce", "show", "htmlDoc", "htmlValue", "htmlFilename")
 export("writeBiocViews", "getBiocViews", "write_VIEWS", "write_REPOSITORY",
        "genReposControlFiles", "extractVignettes", "writeRepositoryHtml",
        "writePackageDetailHtml")
+

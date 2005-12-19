@@ -27,9 +27,6 @@ write_VIEWS(reposRootPath, fields = NULL, type = c("source", "mac.binary", "win.
   \item{verbose}{logical, if \code{TRUE}, print progress messages.}
   \item{vignette.dir}{character specifying where to look for vignettes.}
 }
-% \details{
-%   ~~ If necessary, more details than the description above ~~
-% }
 \author{Seth Falcon}
 \section{Warning}{
   This function uses a private function from the \code{tools} package:

@@ -8,7 +8,7 @@
   \code{\link{BiocView-class}} objects.
 }
 \usage{
-getBiocViews(reposUrl, vocab, root, local = FALSE)
+getBiocViews(reposUrl, vocab, local = FALSE)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -17,8 +17,6 @@ getBiocViews(reposUrl, vocab, root, local = FALSE)
   \item{vocab}{A \code{\link[graph]{graph-class}} object representing
     the ontologyof views.  This graph should be a directed acyclic graph
     (DAG).}
-  \item{root}{A character vector specifying the name of the root node of
-    \code{vocab}.}
   \item{local}{logical indicating whether to assume a local package
   repository.  The default is \code{FALSE} in which case absolute links
   to package detail pages are created.}
@@ -38,7 +36,7 @@ getBiocViews(reposUrl, vocab, root, local = FALSE)
 data(biocViewsVocab)
 reposPath <- system.file("doc", package="biocViews")
 reposUrl <- paste("file://", reposPath, sep="")
-biocViews <- getBiocViews(reposUrl, biocViewsVocab, "vocRoot")
+biocViews <- getBiocViews(reposUrl, biocViewsVocab)
 print(biocViews[1:2])
 }
 

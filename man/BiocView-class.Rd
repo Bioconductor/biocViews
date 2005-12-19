@@ -10,7 +10,11 @@
 \alias{coerce,BiocView,rdPackageTable-method}
 \alias{htmlDoc,BiocView-method}
 \alias{htmlFilename,BiocView-method}
+
 \alias{htmlValue,BiocView-method}
+\alias{htmlValue,bvSubViews-method}
+\alias{htmlValue,bvParentViews-method}
+
 \alias{show,BiocView-method}
 
 \title{Class "BiocView" }
