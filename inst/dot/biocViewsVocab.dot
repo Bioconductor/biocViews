@@ -1,16 +1,28 @@
 /* Bioc Views Vocabular Definition in dot format */
 
+/* How To Process this file:
+   1. Use dot2gxl from graphviz to transform into GXL format.
+          dot2gxl biocViewsVocab.dot > biocViewsVocab.gxl
+   2. use graph::fromGXL to obtain a graphNEL object
+          
+*/
+
 digraph G {
 
 /* Root */
-vocRoot -> Microarray;
-vocRoot -> Annotation;
-vocRoot -> Visualization;
-vocRoot -> Statistics;
-vocRoot -> GraphsAndNetworks;
-vocRoot -> Technology;
-vocRoot -> Infrastructure;
-vocRoot -> NoViewProvided;
+TaskViews -> Software;
+TaskViews -> AnnotationData;
+TaskViews -> ExperimentData;
+
+/* Software */
+Software -> Microarray;
+Software -> Annotation;
+Software -> Visualization;
+Software -> Statistics;
+Software -> GraphsAndNetworks;
+Software -> Technology;
+Software -> Infrastructure;
+Software -> NoViewProvided;
 
 /* Microarray subview */
 Microarray -> OneChannel;
@@ -42,5 +54,4 @@ Annotation -> GO;
 Annotation -> Pathways;
 Annotation -> ProprietaryPlatforms;
 Annotation -> ReportWriting;
-Annotation -> Affymetrix;
 }

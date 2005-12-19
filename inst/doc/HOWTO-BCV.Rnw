@@ -87,7 +87,7 @@ vocabular root node.
 data(biocViewsVocab)
 reposPath <- system.file("doc", package="biocViews")
 reposUrl <- paste("file://", reposPath, sep="")
-biocViews <- getBiocViews(reposUrl, biocViewsVocab, "vocRoot")
+biocViews <- getBiocViews(reposUrl, biocViewsVocab, "TaskViews")
 
 print(biocViews[1:2])
 
@@ -98,12 +98,12 @@ print(biocViews[1:2])
 By default, the set of HTML views will link to package description
 pages located in the html subdirectory of the remote repository.
 
-<<html1, eval=FALSE>>=
+<<htmlViewsGen>>=
 viewsDir <- file.path(tempdir(), "biocViews")
 dir.create(viewsDir)
 writeBiocViews(biocViews, dir=viewsDir)
 
-dir(viewsDir)
+dir(viewsDir)[1:2]
 @ 
 
 \end{document}
