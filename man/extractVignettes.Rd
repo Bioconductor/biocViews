@@ -10,6 +10,9 @@
   package archives will be processed.  The extracted pdf files will be
   extracted under \code{destDir} and will be found in
   \code{PKGNAME/inst/doc/*.pdf}.
+
+  Prior to extraction, all pdf files in \code{destDir/PKGNAME/inst/doc}
+  will be removed.
 }
 \usage{
 extractVignettes(reposRoot, srcContrib, destDir)

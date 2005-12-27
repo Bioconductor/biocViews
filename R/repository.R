@@ -13,10 +13,23 @@ extractVignettes <- function(reposRoot, srcContrib, destDir) {
     if (missing(destDir))
       destDir <- file.path(reposRoot, "vignettes")
 
+    cleanUnpackDir <- function(tarball, unpackDir) {
+        ## Delete vignettes from a previous extraction
+        pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
+        pkgDir <- file.path(unpackDir, pkg, "inst", "doc")
+        rmRegex <- ".*\\.pdf$"
+        if (!file.exists(pkgDir))
+          return(FALSE)
+        oldFiles <- list.files(pkgDir, pattern=rmRegex, full.names=TRUE)
+        if (length(oldFiles) > 0)
+          try(file.remove(oldFiles), silent=TRUE)
+    }
+    
     extractVignettesFromTarball <- function(tarball, unpackDir=".") {
         ## helper function to unpack pdf files from the vig
         vigPat <- "'*/doc/*.pdf'"
         tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, vigPat)
+        cleanUnpackDir(tarball, unpackDir)
         cat("Extracting vignettes from", tarball, "\n")
         ret <- system(tarCmd)
         if (ret != 0)
