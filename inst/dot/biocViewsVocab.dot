@@ -54,4 +54,19 @@ Annotation -> GO;
 Annotation -> Pathways;
 Annotation -> ProprietaryPlatforms;
 Annotation -> ReportWriting;
+
+/* AnnotationData */
+AnnotationData -> Homo_Sapiens;
+AnnotationData -> SequenceAnnotation;
+AnnotationData -> FunctionalAnnotation;
+AnnotationData -> Manufacturer;
+
+/* AnnotationData Chip Names */
+AnnotationData -> hgu95av2;
+AnnotationData -> hu6800;
+
+
+/* ExperimentData */
+    /* TODO */
+
 }
