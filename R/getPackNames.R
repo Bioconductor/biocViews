@@ -56,7 +56,10 @@ getPacksAndViews <- function(reposURL, local=FALSE) {
                        method=method, cacheOK=FALSE, quiet=TRUE, mode="wb")
     pmat <- read.dcf(file=tmpf)
     ns <- pmat[,"Package"]
-    bcv <- pmat[,"biocViews"]
+    if ("biocViews" %in% colnames(pmat))
+      bcv <- pmat[,"biocViews"]
+    else 
+      bcv <- rep(NA, nrow(pmat))
     bcv[is.na(bcv)] <- "NoViewProvided"
     bcv <- gsub("\\\n","",bcv)
     bcvl <- strsplit(bcv, ", *")
