@@ -13,7 +13,7 @@ writeBiocViews <- function(bvList, dir) {
 }
 
 getBiocViews <- function(reposUrl, vocab, local=FALSE) {
-    viewList <- getPacksAndViews(reposUrl, local)
+    viewList <- getPacksAndViews(reposUrl, vocab, local)
     viewRoster <- permulist(viewList$views, vocab)
     if (local)
       reposUrl <- character(0)
@@ -47,7 +47,7 @@ loadViews <- function(viewGraph, viewRoster, pkgList, reposUrl) {
     biocViews
 }
 
-getPacksAndViews <- function(reposURL, local=FALSE) {
+getPacksAndViews <- function(reposURL, vocab, local=FALSE) {
     tmpf <- tempfile()
     on.exit(unlink(tmpf))
     method <- "auto"
@@ -56,24 +56,69 @@ getPacksAndViews <- function(reposURL, local=FALSE) {
                        method=method, cacheOK=FALSE, quiet=TRUE, mode="wb")
     pmat <- read.dcf(file=tmpf)
     ns <- pmat[,"Package"]
-    if ("biocViews" %in% colnames(pmat))
-      bcv <- pmat[,"biocViews"]
-    else 
-      bcv <- rep(NA, nrow(pmat))
-    bcv[is.na(bcv)] <- "NoViewProvided"
-    bcv <- gsub("\\\n","",bcv)
-    bcvl <- strsplit(bcv, ", *")
+    ## The DESCRIPTION fields we try to parse for tags
+    DESC_FIELDS <- c("biocViews")
+    bcvl <- vector(mode="list", length=nrow(pmat))
     names(bcvl) <- ns
-    ## FIXME: we should validate against the known vocabulary here
-    ## patch up some usages that do not capitalize first letter
-    bcvl <- lapply(bcvl, function(x) gsub("\\b(\\w)", "\\U\\1", x, perl=TRUE))
-    names(bcvl) <- ns
+    for (tagCol in DESC_FIELDS) {
+        if (tagCol %in% colnames(pmat)) {
+            tags <- pmat[, tagCol]
+            names(tags) <- ns
+            bcvl <- processTagsField(tags, bcvl)
+        }
+    }
+    ## In case none of the fields were available, make sure everyone
+    ## gets a NoViewsProvided tag.
+    bcvl <- lapply(bcvl, function(x) {
+        if (is.null(x))
+          "NoViewProvided"
+        else
+          x
+    })
+    bcvl <- normalizeTags(bcvl, vocab)
     if (!local)
       pkgList <- createPackageDetailList(pmat, reposURL)
     else
       pkgList <- createPackageDetailList(pmat)
     list(views=bcvl, pkgList=pkgList)
 }
+
+
+normalizeTags <- function(tagList, vocab) {
+    ## try to match tags to the vocab ignoring case.
+    ## If found, replace with case as found in vocab.
+    knownTerms <- nodes(vocab)
+    knownTermsLower <- tolower(knownTerms)
+    tagList <- lapply(tagList, function(x) {
+        idx <- match(tolower(x), knownTermsLower)
+        unknown <- is.na(idx)
+        if (any(unknown)) {
+            warning("Dropping unknown biocViews terms:\n",
+                    paste(x[unknown], collapse=", "), call.=FALSE)
+            idx <- idx[!is.na(idx)]
+        }
+        knownTerms[unique(idx)] ## remove duplicates
+    })
+    tagList
+}
+
+
+processTagsField <- function(tags, tagList) {
+    ## Given a named character vector of comma separated tags,
+    ## parse the tags and append data to the given tagList.
+    ## Names of tags and tagList must match.
+    if (!all.equal(names(tags), names(tagList)))
+      stop("Names of tags and tagList must match")
+    tags[is.na(tags)] <- "NoViewProvided"
+    tags <- gsub("\\\n","",tags)
+    fieldSp <- strsplit(tags, ", *")
+    names(fieldSp) <- names(tagList)
+    for (n in names(tagList)) {
+        tagList[[n]] <- c(tagList[[n]], fieldSp[[n]])
+    }
+    tagList
+}
+    
 
 
 permulist <- function(allv, vocab, interp=TRUE) {
