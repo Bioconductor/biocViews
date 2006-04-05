@@ -59,7 +59,10 @@ viewRowToPackageDetail <- function(row) {
     pkg <- new("PackageDetail")
     ## assume we have names on the row
     flds <- names(row)
+    ourSlots <- slotNames(getClass("PackageDetail"))
     for (fld in flds) {
+        if (! fld %in% ourSlots)
+          next
         val <- row[[fld]]
         ## FIXME: are we sure we want to get rid of the NA's here?
         if (is.na(val)) val <- ""
