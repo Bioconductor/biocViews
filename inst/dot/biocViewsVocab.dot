@@ -56,6 +56,8 @@ Annotation -> ProprietaryPlatforms;
 Annotation -> ReportWriting;
 
 /* AnnotationData */
+
+/* AnnotationData Organisms */
 AnnotationData -> Arabidopsis_thaliana;
 AnnotationData -> Mus_musculus;
 AnnotationData -> Homo_sapiens;
@@ -66,9 +68,10 @@ AnnotationData -> Danio_rerio;
 AnnotationData -> Xenopus_laevis;
 AnnotationData -> Caenorhabditis_elegans;
 
+/* AnnotationData Misc */
 AnnotationData -> SequenceAnnotation;
 AnnotationData -> FunctionalAnnotation;
-AnnotationData -> Manufacturer;
+AnnotationData -> AffymetrixAnnotation;
 
 /* AnnotationData Chip Names */
 AnnotationData -> ag;
