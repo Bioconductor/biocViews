@@ -72,10 +72,18 @@ viewRowToPackageDetail <- function(row) {
     ## FIXME: we are using a private func from tools.  Also,
     ## this func gives more structure (version info) which for now we
     ## ignore.
-    cleanField <- function(val) {
+    cleanPkgField <- function(val) {
         val <- names(tools:::.split_dependencies(val))
         if (is.null(val)) val <- character(0)
         val
+    }
+
+    cleanField <- function (x) {
+        x <- unlist(strsplit(x, ","))
+        if (!length(x)) 
+          return(character(0))
+        x <- unique(sub("^[[:space:]]*(.*)[[:space:]]*$", "\\1", x))
+        x
     }
 
     cleanVigs <- function(vigs) {
@@ -88,9 +96,9 @@ viewRowToPackageDetail <- function(row) {
         return(ans)
     }
     
-    pkg@Depends <- cleanField(pkg@Depends)
-    pkg@Suggests <- cleanField(pkg@Suggests)
-    pkg@Imports <- cleanField(pkg@Imports)
+    pkg@Depends <- cleanPkgField(pkg@Depends)
+    pkg@Suggests <- cleanPkgField(pkg@Suggests)
+    pkg@Imports <- cleanPkgField(pkg@Imports)
     pkg@biocViews <- cleanField(pkg@biocViews)
     pkg@vignettes <- cleanVigs(pkg@vignettes)
     
