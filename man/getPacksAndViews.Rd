@@ -15,11 +15,14 @@
 }
 
 \usage{
-getPacksAndViews(reposURL, local=FALSE)
+getPacksAndViews(reposURL, vocab, local=FALSE)
 }
 \arguments{
   \item{reposURL}{character vector giving the URL of a CRAN-style
-  repository containing a VIEWS file at the top-level.}
+    repository containing a VIEWS file at the top-level.}
+  \item{vocab}{A \code{\link[graph]{graph-class}} object representing
+    the ontologyof views.  This graph should be a directed acyclic graph
+    (DAG).}
   \item{local}{logical indicating whether certain links should be
     absolute (using \code{reposURL}) or relative.}
 }
@@ -32,7 +35,4 @@ getPacksAndViews(reposURL, local=FALSE)
 }
 \author{Seth Falcon}
 
-\examples{
-## TODO
-}
 \keyword{utilities}
