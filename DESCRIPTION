@@ -1,10 +1,10 @@
 Package: biocViews
-Version: 0.4.14
+Version: 0.4.15
 Date: 2006-04-06
 Title: Categorized views of R package repositories
 Author: VJ Carey <stvjc@channing.harvard.edu>, BJ Harshfield <rebjh@channing.harvard.edu>, Seth Falcon <sfalcon@fhcrc.org>
-Maintainer: VJ Carey <stvjc@channing.harvard.edu>
-Depends: methods, tools, graph, RBGL, XML
+Maintainer: Seth Falcon <sfalcon@fhcrc.org>
+Depends: methods, tools, graph (>= 1.9.27), RBGL, XML
 Description: structures for vocabularies and narratives of views
 License: LGPL version
 URL: http://www.biostat.harvard.edu/~carey

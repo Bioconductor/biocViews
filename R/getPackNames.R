@@ -12,14 +12,34 @@ writeBiocViews <- function(bvList, dir) {
     res <- try(file.copy(cssPath, file.path(dir, cssName)), silent=TRUE)
 }
 
-getBiocViews <- function(reposUrl, vocab, local=FALSE) {
-    viewList <- getPacksAndViews(reposUrl, vocab, local)
+
+writeTopLevelView <- function(dir, vocab) {
+    top <- getRootNode(vocab)
+    mainSubViews <- edges(biocViewsVocab)[[top]]
+    topView <- new("BiocView", name=top, subViews=mainSubViews)
+    fn <- file.path(dir, htmlFilename(topView))
+    writeHtmlDoc(htmlDoc(topView), fn)
+}
+
+
+getBiocViews <- function(reposUrl, vocab, defaultView, local=FALSE) {
+    viewList <- getPacksAndViews(reposUrl, vocab, defaultView, local)
     viewRoster <- permulist(viewList$views, vocab)
     if (local)
       reposUrl <- character(0)
     biocViews <- loadViews(vocab, viewRoster, viewList$pkgList, reposUrl)
     biocViews
 }
+
+
+getBiocSubViews <- function(reposUrl, vocab, topTerm, local=FALSE) {
+    root <- getRootNode(vocab)
+    terms <- getSubTerms(vocab, topTerm)
+    subVocab <- subGraph(c(root, terms), vocab)
+    bvl <- getBiocViews(reposUrl, subVocab, topTerm, local)
+    bvl[terms] ## exclude root
+}
+
 
 loadViews <- function(viewGraph, viewRoster, pkgList, reposUrl) {
     views <- nodes(viewGraph)
@@ -47,7 +67,8 @@ loadViews <- function(viewGraph, viewRoster, pkgList, reposUrl) {
     biocViews
 }
 
-getPacksAndViews <- function(reposURL, vocab, local=FALSE) {
+getPacksAndViews <- function(reposURL, vocab, defaultView, local=FALSE)
+{
     tmpf <- tempfile()
     on.exit(unlink(tmpf))
     method <- "auto"
@@ -64,14 +85,14 @@ getPacksAndViews <- function(reposURL, vocab, local=FALSE) {
         if (tagCol %in% colnames(pmat)) {
             tags <- pmat[, tagCol]
             names(tags) <- ns
-            bcvl <- processTagsField(tags, bcvl)
+            bcvl <- processTagsField(tags, bcvl, defaultView)
         }
     }
     ## In case none of the fields were available, make sure everyone
     ## gets a NoViewsProvided tag.
     bcvl <- lapply(bcvl, function(x) {
         if (is.null(x))
-          "NoViewProvided"
+          defaultView
         else
           x
     })
@@ -103,13 +124,13 @@ normalizeTags <- function(tagList, vocab) {
 }
 
 
-processTagsField <- function(tags, tagList) {
+processTagsField <- function(tags, tagList, defaultTag) {
     ## Given a named character vector of comma separated tags,
     ## parse the tags and append data to the given tagList.
     ## Names of tags and tagList must match.
     if (!all.equal(names(tags), names(tagList)))
       stop("Names of tags and tagList must match")
-    tags[is.na(tags)] <- "NoViewProvided"
+    tags[is.na(tags)] <- defaultTag
     tags <- gsub("\\\n","",tags)
     fieldSp <- strsplit(tags, ", *")
     names(fieldSp) <- names(tagList)
@@ -119,6 +140,10 @@ processTagsField <- function(tags, tagList) {
     tagList
 }
     
+
+getSubTerms <- function(dag, term) {
+    c(term, names(acc(dag, term)[[1]]))
+}
 
 
 permulist <- function(allv, vocab, interp=TRUE) {
@@ -130,4 +155,3 @@ permulist <- function(allv, vocab, interp=TRUE) {
       ans <- pump(ans, vocab)
     return(ans)
 }
-

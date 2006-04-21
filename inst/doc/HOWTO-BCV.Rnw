@@ -86,7 +86,7 @@ representation of the vocabulary.
 data(biocViewsVocab)
 reposPath <- system.file("doc", package="biocViews")
 reposUrl <- paste("file://", reposPath, sep="")
-biocViews <- getBiocViews(reposUrl, biocViewsVocab)
+biocViews <- getBiocViews(reposUrl, biocViewsVocab, defaultView="Software")
 
 print(biocViews[1:2])
 

@@ -6,6 +6,9 @@ setMethod("show", signature(object="BiocView"),
               cat("Subviews:\n")
               print(object@subViews)
               cat("Contains packages:\n")
-              print(names(object@packageList))
+              if (length(object@packageList))
+                print(names(object@packageList))
+              else
+                cat("<no packages>\n")
 
           })

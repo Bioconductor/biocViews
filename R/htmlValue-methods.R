@@ -146,7 +146,7 @@ setMethod("htmlValue", signature(object="pdDetailsInfo"),
               buildViewLink <- function(v) {
                   if (nchar(v) == 0)
                     return(v)
-                  link <- paste("../", v, ".html", sep="")
+                  link <- paste("../../", v, ".html", sep="")
                   node <- xmlNode("a", v, attrs=c(href=link))
                   return(node)
               }
