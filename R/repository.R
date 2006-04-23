@@ -170,13 +170,13 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
 
 
 writeRepositoryHtml <- function(reposRoot, title, reposUrl="..",
-                                link.rel=TRUE) {
+                                viewUrl="../..", link.rel=TRUE) {
     ## Writes package description html under reposRoot/html and an index.html
     ## file under reposRoot.
     ##
     ## Links created in the package description html will use reposUrl as
     ## prefix.
-    pkgList <- loadPackageDetails(reposRoot, reposUrl)
+    pkgList <- loadPackageDetails(reposRoot, reposUrl, viewUrl)
     writePackageDetailHtml(pkgList, file.path(reposRoot, "html"))
     writeRepositoryIndexHtml(pkgList, reposRoot, title, link.rel=link.rel)
 

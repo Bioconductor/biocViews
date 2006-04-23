@@ -38,7 +38,7 @@
 %\setkeys{Gin}{width=0.55\textwidth}
 
 \title{HOWTO generate biocViews HTML}
-\author{VJC}
+\author{S. Falcon and V.J. Carey}
 \maketitle
 
 
@@ -49,12 +49,13 @@ library(Biobase)
 
 \section{Overview}
 
-The purpose of \Rpackage{biocViews} is to support the semi-automated
-creation of task view HTML pages based on a Bioconductor repository.
-The fundamental resource is the VIEWS file at a repository.  This file
-contains the complete DESCRIPTION file contents for each package along
-with additional meta data describing the location of package artifacts
-(archive files for different platforms and vignettes).
+The purpose of \Rpackage{biocViews} is create HTML pages that
+categorize packages in a Bioconductor package repository according to
+terms, or \textit{views}, in a controlled vocabulary.  The fundamental
+resource is the VIEWS file placed at the root of a repository.  This
+file contains the complete DESCRIPTION file contents for each package
+along with additional meta data describing the location of package
+artifacts such as archive files for different platforms and vignettes.
 
 The standard behavior of the view generation program is to query the
 repository over the internet.  This package includes a static sample
@@ -62,19 +63,34 @@ VIEWS file so that the examples in this document can run without
 internet access.
 
 
-\section{Establishing a view vocabulary}
+\section{Establishing a vocabulary of terms}
 
-Currently we use \texttt{dot} to state the vocabulary.
-<<lkd>>=
-cat(readLines(system.file("dot/biocViewsVocab.dot", package="biocViews")),sep="\n")
+We use \texttt{dot} to describe the vocabulary.  For details on the
+\texttt{dot} syntax, see
+\url{http://www.graphviz.org/doc/info/lang.html}.
+
+<<VocabDefinition>>=
+vocabFile <- system.file("dot/biocViewsVocab.dot", package="biocViews")
+cat(readLines(vocabFile)[1:20], sep="\n")
+cat("...\n")
 @
-This is transformed to a GXL document using graphviz' \texttt{dot2gxl}, and
-from GXL to an R graph::graphNEL using \Rfunction{fromGXL}.
 
-One thing that is currently lacking from the definition of the views
-vocabulary is a notion of order.  Since the purpose of the vocabulary
-is primarily for display, ordering a given view's subviews is an
-important feature.
+The dot description is transformed to a GXL document using 
+\texttt{dot2gxl}, a tool included in the graphviz distribution.  The
+GXL is then converted to \Rclass{graphNEL} instance using
+\Rfunction{fromGXL} from the \Rpackage{graph} package.  There is a
+helper script in the root of the \Rpackage{biocViews} package called
+\texttt{updateVocab.sh} that automates the update process if the
+required tools are available.
+
+The definition of the vocabulary lacks a notion of order.  Since
+the purpose of the vocabulary is primarily for display, a valuable
+improvement would be to use graph attributes to allow the ordering of
+the terms.
+
+Another missing piece is a place to put a text description of each
+term.  This could also be achieved using graph attributes.
+
 
 \section{Querying a repository}
 
@@ -82,11 +98,22 @@ To generate a list of \Rclass{BiocViews} objects that can be used to
 generate HTML views, you will need the repository URL and a graph
 representation of the vocabulary.
 
+There are three main Bioconductor package repositories: a software
+repository containing analytic packages, an annotation data
+repository, and an experiment data repository.  The vocabulary of
+terms has a single top-level node, all other nodes have at least one
+parent.  The top-level node, \textit{BiocViews}, has three children
+that correspond to the three main Bioconductor repositories:
+\textit{Software}, \textit{AnnotationData}, and
+\textit{ExperimentData}.  Views for each repository are created
+separately using \Rfunction{getBiocSubViews}.  Below, we demonstrate
+how to build the \textit{Software} set of views.
+
 <<getViews>>=
 data(biocViewsVocab)
 reposPath <- system.file("doc", package="biocViews")
 reposUrl <- paste("file://", reposPath, sep="")
-biocViews <- getBiocViews(reposUrl, biocViewsVocab, defaultView="Software")
+biocViews <- getBiocSubViews(reposUrl, biocViewsVocab, topTerm="Software")
 
 print(biocViews[1:2])
 

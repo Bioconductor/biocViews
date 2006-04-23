@@ -39,7 +39,7 @@
 
 
 <<echo=FALSE,results=hide>>=
-library(biocViews)
+library("biocViews")
 @
 
 \section{Overview}

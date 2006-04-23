@@ -10,9 +10,9 @@
 digraph G {
 
 /* Root */
-TaskViews -> Software;
-TaskViews -> AnnotationData;
-TaskViews -> ExperimentData;
+BiocViews -> Software;
+BiocViews -> AnnotationData;
+BiocViews -> ExperimentData;
 
 /* Software */
 Software -> Microarray;
@@ -22,7 +22,6 @@ Software -> Statistics;
 Software -> GraphsAndNetworks;
 Software -> Technology;
 Software -> Infrastructure;
-Software -> NoViewProvided;
 
 /* Microarray subview */
 Microarray -> OneChannel;
@@ -59,25 +58,58 @@ Annotation -> ReportWriting;
 
 /* AnnotationData Organisms */
 AnnotationData -> Organism;
+Organism -> Anopheles_gambiae;
 Organism -> Arabidopsis_thaliana;
+Organism -> Bacillus_subtilis;
+Organism -> Bos_taurus;
 Organism -> Caenorhabditis_elegans;
+Organism -> Canis_familiaris;
+Organism -> Ciona_intestinalis;
 Organism -> Danio_rerio;
 Organism -> Drosophila_melanogaster;
+Organism -> Eremothecium_gossypii;
+Organism -> Escherichia_coli;
+Organism -> Gallus_gallus;
+Organism -> Glycine_max;
 Organism -> Homo_sapiens;
+Organism -> Hordeum_vulgare;
+Organism -> Kluyveromyces_lactis;
+Organism -> Magnaporthe_grisea;
+Organism -> Medicago_truncatula;
 Organism -> Mus_musculus;
+Organism -> Neurospora_crassa;
+Organism -> Oncorhynchus_mykiss;
+Organism -> Oryza_sativa;
+Organism -> Pan_troglodytes;
+Organism -> Plasmodium_falciparum;
+Organism -> Pseudomonas_aeruginosa;
 Organism -> Rattus_norvegicus;
 Organism -> Saccharomyces_cerevisiae;
+Organism -> Saccharum_officinarum;
+Organism -> Schizosaccharomyces_pombe;
+Organism -> Staphylococcus_aureus;
+Organism -> Sus_scrofa;
+Organism -> Triticum_aestivum;
+Organism -> Vitis_vinifera;
 Organism -> Xenopus_laevis;
+Organism -> Xenopus_tropicalis;
+Organism -> Zea_mays;
+
 
 /* AnnotationData Misc */
 AnnotationData -> SequenceAnnotation;
 AnnotationData -> FunctionalAnnotation;
 AnnotationData -> ChipManufacturer;
+
 ChipManufacturer -> AffymetrixChip;
-ChipManufacturer -> ClonetechChip;
-ChipManufacturer -> QiagenChip;
-ChipManufacturer -> INDACChip;
 ChipManufacturer -> AgilentChip;
+ChipManufacturer -> ClonetechChip;
+ChipManufacturer -> GEChip;
+ChipManufacturer -> INDACChip;
+ChipManufacturer -> QiagenChip;
+ChipManufacturer -> RocheChip;
+
+
 
 /* AnnotationData Chip Names */
 AnnotationData -> ChipName;
@@ -144,11 +176,8 @@ ChipName -> yeast2;
 ChipName -> ygs98;
 ChipName -> zebrafish;
 
-AnnotationData -> NoViewProvided;
-
 
 /* ExperimentData */
     /* TODO */
-ExperimentData -> NoViewProvided;
 
 }

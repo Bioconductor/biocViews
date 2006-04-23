@@ -26,7 +26,8 @@ setClass("PackageDetail", contains="Htmlized",
                         "dependsOnMe"="character",
                         "suggestsMe"="character",
                         "functionIndex"="character",
-                        "reposRoot"="character"))
+                        "reposRoot"="character",
+                        "viewRoot"="character"))
 
 ## Define a subclass of PackageDetail for each "chunk" of the object
 ## that we want to be able to render to HTML separately.

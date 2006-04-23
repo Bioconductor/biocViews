@@ -144,9 +144,9 @@ setMethod("htmlValue", signature(object="pdDetailsInfo"),
 
               ## handle biocViews separately
               buildViewLink <- function(v) {
-                  if (nchar(v) == 0)
+                  if (nchar(v) == 0 || !length(object@viewRoot))
                     return(v)
-                  link <- paste("../../", v, ".html", sep="")
+                  link <- paste(object@viewRoot, "/", v, ".html", sep="")
                   node <- xmlNode("a", v, attrs=c(href=link))
                   return(node)
               }
