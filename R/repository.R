@@ -141,7 +141,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     ## paths in this repos.  We duplicate the source path info here, but that
     ## makes things easier to handle later on as there is no special case.
     fldNames <- c(colnames(dbMat), paste(provided, "ver", sep="."))
-    dbMat <- cbind(dbMat, NA, NA)
+    dbMat <- cbind(dbMat, matrix(NA, nrow=nrow(dbMat), ncol=length(provided)))
     colnames(dbMat) <- fldNames
     for (ctype in provided) {
         cPath <- reposInfo[, ctype]
@@ -150,7 +150,25 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
                           mac.binary=".tgz", stop("unknown type"))
             paste(cPath, "/", pkgs, "_", vers, ext, sep="")
         }
-        cDat <- read.dcf(file.path(reposRootPath, cPath, "PACKAGES"))
+        packagesFile <- file.path(reposRootPath, cPath, "PACKAGES")
+        if (!file.exists(packagesFile)) {
+            warning("No PACKAGES file found at ",
+                    file.path(reposRootPath, cPath),
+                    "\nSkipping this contrib path.")
+            next
+        }
+        readOk <- tryCatch({
+            cDat <- read.dcf(packagesFile)
+            TRUE
+        }, error=function(e) FALSE)
+        if (!readOk)
+          next
+        if (!length(cDat)) {
+            warning("Empty PACKAGES file found at ",
+                    file.path(reposRootPath, cPath),
+                    "\nSkipping this contrib path.")
+            next
+        }
         ## FIXME: part of the lie we tell, there may be binary pkgs
         ## for which we do not have a source pkgs.  For now, ignore.
         cDatGood <- cDat[, "Package"] %in% dbMat[, "Package"]

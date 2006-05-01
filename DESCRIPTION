@@ -1,6 +1,6 @@
 Package: biocViews
-Version: 0.7.0
-Date: 2006-04-22
+Version: 1.1.1
+Date: 2006-04-30
 Title: Categorized views of R package repositories
 Author: VJ Carey <stvjc@channing.harvard.edu>, BJ Harshfield <rebjh@channing.harvard.edu>, S Falcon <sfalcon@fhcrc.org>
 Maintainer: Seth Falcon <sfalcon@fhcrc.org>
