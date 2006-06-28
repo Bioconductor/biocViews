@@ -118,7 +118,6 @@ ChipName -> ath1121501;
 ChipName -> celegans;
 ChipName -> drosgenome1;
 ChipName -> drosophila2;
-ChipName -> h10kcod;
 ChipName -> hcg110;
 ChipName -> hgfocus;
 ChipName -> hgu133a2;
@@ -176,6 +175,14 @@ ChipName -> xenopuslaevis;
 ChipName -> yeast2;
 ChipName -> ygs98;
 ChipName -> zebrafish;
+ChipName -> UniSet_Human_I;
+ChipName -> UniSet_Mouse_I;
+ChipName -> UniSet_Rat_I;
+ChipName -> UniSet_Human_20k_I;
+ChipName -> UniSet_Mouse_20k_I;
+ChipName -> Human_Whole_Genome;
+ChipName -> Mouse_Whole_Genome;
+ChipName -> Rat_Whole_Genome;
 
 
 /* ExperimentData */
