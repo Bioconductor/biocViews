@@ -183,6 +183,10 @@ ChipName -> UniSet_Mouse_20k_I;
 ChipName -> Human_Whole_Genome;
 ChipName -> Mouse_Whole_Genome;
 ChipName -> Rat_Whole_Genome;
+ChipName -> ADME_Rat_16_Assay;
+ChipName -> Human_Inflammation_16;
+ChipName -> Mouse_Inflammation_16;
+ChipName -> Rat_Inflammation_16;
 
 
 /* ExperimentData */
