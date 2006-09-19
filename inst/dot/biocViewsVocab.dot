@@ -107,6 +107,7 @@ ChipManufacturer -> ClonetechChip;
 ChipManufacturer -> GEChip;
 ChipManufacturer -> INDACChip;
 ChipManufacturer -> QiagenChip;
+ChipManufacturer -> RNGMRCChip;
 ChipManufacturer -> RocheChip;
 
 
@@ -137,12 +138,14 @@ ChipName -> hgug4110b;
 ChipName -> hgug4111a;
 ChipName -> hgug4112a;
 ChipName -> hguqiagenv3;
+ChipName -> hs25kresogen;
 ChipName -> hu35ksuba;
 ChipName -> hu35ksubb;
 ChipName -> hu35ksubc;
 ChipName -> hu35ksubd;
 ChipName -> hu6800;
 ChipName -> indac;
+ChipName -> mm24kresogen;
 ChipName -> mgu74a;
 ChipName -> mgu74av2;
 ChipName -> mgu74b;
