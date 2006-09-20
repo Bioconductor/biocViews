@@ -1,3 +1,27 @@
+genReposControlFiles <- function(reposRoot, contribPaths)
+{
+    ## Generate all control files for BioC hosted R
+    ## package repositorys
+    
+    write_REPOSITORY(reposRoot, contribPaths)
+    ## Write PACKAGES files for all contrib paths
+    packagesPaths <- file.path(reposRoot, contribPaths)
+    names(packagesPaths) <- names(contribPaths)
+    for (type in names(packagesPaths)) {
+        path <- packagesPaths[[type]]
+        write_PACKAGES(path, type=type)
+    }
+    ## Write a VIEWS file at the top-level containing
+    ## detailed package info
+    write_VIEWS(reposRoot, type="source")
+
+    ## Write a SYMBOLS file at the top-level containing the
+    ## exported symbols for all packages that have name
+    ## spaces.  This is used to build a searchable index.
+    write_SYMBOLS(reposRoot, verbose=TRUE)
+}
+
+
 extractVignettes <- function(reposRoot, srcContrib, destDir) {
     ## Extract pdf vignettes from source package tarballs
     ##
@@ -61,22 +85,6 @@ getVignetteLinks <- function(pkgList, reposRootPath, vignette.dir) {
     }
     ## use unlist, as.character does NA --> "NA" ?!
     unlist(vigList)
-}
-
-
-genReposControlFiles <- function(reposRoot, contribPaths)
-{
-    write_REPOSITORY(reposRoot, contribPaths)
-    ## Write PACKAGES files for all contrib paths
-    packagesPaths <- file.path(reposRoot, contribPaths)
-    names(packagesPaths) <- names(contribPaths)
-    for (type in names(packagesPaths)) {
-        path <- packagesPaths[[type]]
-        write_PACKAGES(path, type=type)
-    }
-    ## Write a VIEWS file at the top-level containing
-    ## detailed package info
-    write_VIEWS(reposRoot, type="source")
 }
 
 
@@ -234,4 +242,59 @@ writeRepositoryIndexHtml <- function(pkgList, reposRoot, title, htmlDir="html",
                  htmlDir=htmlDir, packageList=pkgList)
     f <- file.path(reposRoot, htmlFilename(repos))
     writeHtmlDoc(htmlDoc(repos), f)
+}
+
+
+write_SYMBOLS <- function(dir, verbose=FALSE, source.dirs=FALSE) {
+    con <- file(file.path(dir, "SYMBOLS"), open="w")
+
+    tdir <- tempfile("NAMESPACES")
+    dir.create(tdir)
+    on.exit(file.remove(tdir, recursive=TRUE))
+
+    extractNAMESPACEFromTarball <- function(tarball, unpackDir=tdir) {
+        ## helper function to unpack NAMESPACE file from the tarball
+        pat <- "'*/NAMESPACE'"
+        tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, pat)
+        ret <- system(tarCmd)
+        if (ret != 0)
+          warning("tar had non-zero exit status for NAMESPACE extract of: ",
+                  tarball)
+    }
+
+    writeField <- function(field, v) {
+        ## Helper function for writing DCF
+        if (length(v)) {
+            vals <- paste(v, collapse=", ")
+            field <- paste(field, ":", sep="")
+            writeLines(paste(field, vals), con=con)
+        }
+    }
+
+    if (!source.dirs) {
+        tarballs <- list.files(file.path(dir, "src/contrib"),
+                               pattern="\.tar\.gz$", full.names=TRUE)
+        for (t in tarballs) {
+            extractNAMESPACEFromTarball(t)
+        }
+        dir <- tdir
+    }
+    pkgs <- list.files(dir)
+    for (p in pkgs) {
+        syms <- tryCatch(parseNamespaceFile(p, dir),
+                         error=function(e) character(0))
+        numSyms <- (length(syms$exports) + length(syms$exportMethods)
+                    +length(syms$exportClasses))
+        if (numSyms > 0) {
+            writeField("Package", p)
+            writeField("Exports", syms$exports)
+            writeField("ExportMethods", syms$exportMethods)
+            writeField("ExportClasses", syms$exportClasses)
+            writeLines("", con=con)
+        }
+        if (verbose)
+          cat(p, numSyms, "symbols\n")
+    }
+    close(con)
+    NULL
 }

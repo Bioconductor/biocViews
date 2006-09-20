@@ -16,5 +16,5 @@ exportMethods("coerce", "show", "htmlDoc", "htmlValue", "htmlFilename")
 export("writeBiocViews", "getBiocViews", "write_VIEWS", "write_REPOSITORY",
        "genReposControlFiles", "extractVignettes", "writeRepositoryHtml",
        "writePackageDetailHtml", "getSubTerms", "getBiocSubViews",
-       "writeTopLevelView", "writeHtmlDoc")
+       "writeTopLevelView", "writeHtmlDoc", "write_SYMBOLS")
 
