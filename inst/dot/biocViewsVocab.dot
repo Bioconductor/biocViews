@@ -107,7 +107,7 @@ ChipManufacturer -> ClonetechChip;
 ChipManufacturer -> GEChip;
 ChipManufacturer -> INDACChip;
 ChipManufacturer -> QiagenChip;
-ChipManufacturer -> RNGMRCChip;
+ChipManufacturer -> RNG_MRCChip;
 ChipManufacturer -> RocheChip;
 
 
