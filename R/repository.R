@@ -61,7 +61,7 @@ extractVignettes <- function(reposRoot, srcContrib, destDir) {
     }
 
     tarballs <- list.files(file.path(reposRoot, srcContrib),
-                           pattern="\.tar\.gz$", full.names=TRUE)
+                           pattern="\\.tar\\.gz$", full.names=TRUE)
     if (!file.exists(destDir))
       dir.create(destDir, recursive=TRUE)
     if (!file.info(destDir)$isdir)
@@ -76,7 +76,7 @@ getVignetteLinks <- function(pkgList, reposRootPath, vignette.dir) {
         vigSubDir <- "inst/doc"
         vigDir <- file.path(reposRootPath, vignette.dir, pkg, vigSubDir)
         if (file.exists(vigDir)) {
-            vigs <- list.files(vigDir, pattern=".*\.pdf$")
+            vigs <- list.files(vigDir, pattern=".*\\.pdf$")
             vigs <- paste(vignette.dir, pkg, vigSubDir, vigs, sep="/",
                           collapse=", ")
         } else
@@ -273,7 +273,7 @@ write_SYMBOLS <- function(dir, verbose=FALSE, source.dirs=FALSE) {
 
     if (!source.dirs) {
         tarballs <- list.files(file.path(dir, "src/contrib"),
-                               pattern="\.tar\.gz$", full.names=TRUE)
+                               pattern="\\.tar\\.gz$", full.names=TRUE)
         for (t in tarballs) {
             extractNAMESPACEFromTarball(t)
         }

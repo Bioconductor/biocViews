@@ -143,7 +143,7 @@ mangleEmail <- function(line) {
         AT <- makeAT()
         DOT <- makeDOT()
         line <- gsub("@", AT, line, fixed=TRUE)
-        line <- gsub("\.", DOT, line, fixed=TRUE)
+        line <- gsub("\\.", DOT, line, fixed=TRUE)
         line
     })
     other <- strsplit(line, "<[^>]+@[^>]+>")[[1]]
