@@ -39,6 +39,7 @@ Statistics -> Clustering;
 Statistics -> Classification;
 Statistics -> MultipleComparisons;
 Statistics -> TimeCourse;
+Statistics -> SequenceMatching;
 
 /* Technology subview */
 Technology -> Microarray;
