@@ -198,6 +198,9 @@ ChipName -> zebrafish;
 
 
 /* ExperimentData */
-    /* TODO */
+ExperimentData -> OvarianCancer;
+ExperimentData -> BreastCancer;
+ExperimentData -> ProstateCancer;
+ExperimentData -> Leukemia;
 
 }
