@@ -1,6 +1,4 @@
-
 %\VignetteIndexEntry{biocViews-HOWTO}
-
 %
 % NOTE -- ONLY EDIT THE .Rnw FILE!!!  The .tex file is
 % likely to be overwritten.
@@ -43,8 +41,8 @@
 
 
 <<echo=FALSE,results=hide>>=
-library(biocViews)
-library(Biobase)
+library("biocViews")
+library("Biobase")
 @
 
 \section{Overview}
@@ -75,9 +73,9 @@ cat(readLines(vocabFile)[1:20], sep="\n")
 cat("...\n")
 @
 
-The dot description is transformed to a GXL document using 
+The dot description is transformed to a GXL document using
 \texttt{dot2gxl}, a tool included in the graphviz distribution.  The
-GXL is then converted to \Rclass{graphNEL} instance using
+GXL is then converted to a \Rclass{graphNEL} instance using
 \Rfunction{fromGXL} from the \Rpackage{graph} package.  There is a
 helper script in the root of the \Rpackage{biocViews} package called
 \texttt{updateVocab.sh} that automates the update process if the
@@ -90,6 +88,31 @@ the terms.
 
 Another missing piece is a place to put a text description of each
 term.  This could also be achieved using graph attributes.
+
+\subsection{Use Case: adding a term to the vocabulary}
+
+To add a new term to the vocabulary:
+
+\begin{enumerate}
+
+\item edit the \textit{dot} file \texttt{dot/biocViewsVocab.dot} and
+  add the desired term.  Note that terms cannot contain spaces and
+  that the underscore character, \verb+_+, should be used instead.
+
+\item ensure that R and dot2gxl are on your PATH.
+
+\item cd into the biocViews working copy directory.
+
+\item run the updateVocab.sh script.
+
+\item reinstall the package and test that the new term is part of the
+  vocabulary.  In short, you will load the data using
+  \texttt{data(biocViewsVocab)} and check that the term is a node of
+  the graph instance.
+
+\item commit changes to svn.
+
+\end{enumerate}
 
 
 \section{Querying a repository}
