@@ -114,6 +114,19 @@ To add a new term to the vocabulary:
 
 \end{enumerate}
 
+\subsection{Use Case: updating BioConductor website}
+
+This is for BioConductor web administrator:
+
+\begin{enumerate}
+
+\item update local copy of biocViews using \texttt{svn update}.
+
+\item find the correct instance R that is used to generate HTML pages on BioConductor website, and install the updated \texttt{biocViews}.
+
+\item re-generate the related HTML packages by using \texttt{/home/biocadmin/bin/prepareRepos-*.sh} and \texttt{/home/biocadmin/bin/pushRepos-*.sh}.
+
+\end{enumerate}
 
 \section{Querying a repository}
 
