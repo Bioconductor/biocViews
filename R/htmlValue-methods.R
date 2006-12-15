@@ -1,4 +1,12 @@
-writeHtmlDoc <- function(html, file) saveXML(html, file)
+writeHtmlDoc <- function(html, file)
+{
+    ## Temporary fix: we open and close 'file' here instead of passing it
+    ## directly to saveXML because of a bug in current XML::saveXML
+    ## (from XML 1.3-2). Bug reported to XML's author on 2006-12-14. Herve.
+    f <- file(file, open="w")
+    saveXML(html, f)
+    close(f)
+}
 
 
 tableHelper <- function(tableData, table.attrs) {
