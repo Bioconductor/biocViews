@@ -48,7 +48,7 @@ setClass("RepositoryDetail", contains="Htmlized",
 setClass("rdPackageTable", contains="RepositoryDetail")
 
 
-setClass("BiocView", contains=c("RepositoryDetail", "Htmlized"),
+setClass("BiocView", contains=c("RepositoryDetail"),
          representation(name="character",
                         subViews="character",
                         parentViews="character"))
