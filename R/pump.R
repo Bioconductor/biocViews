@@ -28,8 +28,7 @@ tellSuperTop <- function(topic, vocab, root) {
                       "] that is not even in the vocabulary! just returning term"))
         return(topic)
     }
-    require(RBGL)
-    path <- sp.between.scalar( vocab, root, topic )$path
+    path <- sp.between( vocab, root, topic )[[1]]$path_detail
     path[-c(1, length(path))]
 }
 
