@@ -12,7 +12,7 @@ makeHtmlHeader <- function(title, stylesheet) {
 
 
 setMethod("htmlDoc", signature(object="Htmlized"),
-          function(object, title, stylesheet="style.css") {
+          function(object, ..., title, stylesheet="style.css") {
               dom <- makeHtmlHeader(title, stylesheet)
               dom$addTag("body", close=FALSE)
               dom$addNode(htmlValue(object))
@@ -22,24 +22,27 @@ setMethod("htmlDoc", signature(object="Htmlized"),
 
 
 setMethod("htmlDoc", signature(object="PackageDetail"),
-          function(object) {
+          function(object, ...) {
               title <- object@Package
               stylesheet="package-detail.css"
-              callNextMethod(object, title, stylesheet)
+              callNextMethod(object=object, title=title,
+                             stylesheet=stylesheet)
           })
 
 
 setMethod("htmlDoc", signature(object="RepositoryDetail"),
-          function(object) {
+          function(object, ...) {
               title <- object@Title
               stylesheet="repository-detail.css"
-              callNextMethod(object, title, stylesheet)
+              callNextMethod(object=object, title=title,
+                             stylesheet=stylesheet)
           })
 
 
 setMethod("htmlDoc", signature(object="BiocView"),
-          function(object) {
+          function(object, ...) {
               title <- paste("Bioconductor Task View", object@name)
               sylesheet="repository-detail.css"
-              callNextMethod(object, title, stylesheet)
+              callNextMethod(object=object, title=title,
+                             stylesheet=stylesheet)
           })
