@@ -15,7 +15,7 @@ writeBiocViews <- function(bvList, dir) {
 
 writeTopLevelView <- function(dir, vocab) {
     top <- getRootNode(vocab)
-    mainSubViews <- edges(biocViewsVocab)[[top]]
+    mainSubViews <- edges(vocab)[[top]]
     topView <- new("BiocView", name=top, subViews=mainSubViews)
     fn <- file.path(dir, htmlFilename(topView))
     writeHtmlDoc(htmlDoc(topView), fn)
