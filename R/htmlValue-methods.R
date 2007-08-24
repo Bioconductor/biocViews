@@ -197,26 +197,6 @@ setMethod("htmlValue", signature(object="pdDescriptionInfo"),
           })
 
 
-setMethod("htmlValue", signature(object="pdVigsAndDownloads"),
-          function(object) {
-              dom <- xmlOutputDOM("table", attrs=c(class="vigsAndDownloads"))
-              ## Create a table for Vignettes and Downloads
-              dom$addTag("tr", close=FALSE)
-              dom$addTag("td", xmlNode("h3", "Vignettes (Documentation)"))
-              dom$addTag("td", xmlNode("h3", "Package Downloads"))
-              dom$closeTag() ## tr
-              
-              dom$addTag("tr", close=FALSE)
-              vigInfo <- as(object, "pdVignetteInfo")
-              dom$addTag("td", htmlValue(vigInfo))
-              downloadInfo <- as(object, "pdDownloadInfo")
-              dom$addTag("td", htmlValue(downloadInfo))
-              dom$closeTag() ## tr
-
-              dom$value()
-          })
-
-
 setMethod("htmlValue", signature(object="PackageDetail"),
           function(object) {
               dom <- xmlOutputDOM("div", attrs=c(class="PackageDetail"))
