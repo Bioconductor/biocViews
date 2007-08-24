@@ -169,11 +169,20 @@ setMethod("htmlValue", signature(object="pdDetailsInfo"),
               }
               args[["attrs"]] <- c(class="views")
               views <- do.call("xmlNode", args)
-              
+
+              ## handle URL separately
+              buildURLLink <- function(u) {
+                  if (!length(u) || nchar(u) == 0)
+                    return("")
+                  node <- xmlNode("a", u, attrs=c(href=u))
+                  return(node)
+              }
+
               formatField <- function(x) paste(slot(object, x), collapse=", ")
               tableDat <- lapply(flds, formatField)
               names(tableDat) <- flds
               tableDat[["biocViews"]] <- views
+              tableDat[["URL"]] <- buildURLLink(object@URL)
               domValue <- tableHelper(tableDat,
                                       table.attrs=list(class="details"))
               domValue
