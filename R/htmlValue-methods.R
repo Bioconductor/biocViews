@@ -213,6 +213,19 @@ setMethod("htmlValue", signature(object="PackageDetail"),
               authorInfo <- as(object, "pdAuthorMaintainerInfo")
               dom$addNode(htmlValue(authorInfo))
 
+              ## install instructions
+              dom$addTag("div", attrs=c(class="installInstruct"), close=FALSE)
+              dom$addTag("p", paste("To install this package,",
+                                    "start R and enter:"),
+                         attrs=c(class="install"))
+              dom$addTag("pre",
+                         paste("    ",
+                               "source(\"",
+                               "http://bioconductor.org/biocLite.R\")",
+                               "\n    biocLite(\"", object@Package, "\")",
+                               sep=""))
+              dom$closeTag()            # div
+
               ## Create a table for Vignettes and Downloads
               ## FIXME: clean this up so it is readable!
               dom$addTag("table", attrs=c(class="vigsAndDownloads"),
@@ -225,9 +238,9 @@ setMethod("htmlValue", signature(object="PackageDetail"),
               dom$addTag("td", close=FALSE)
               ## Download links
               dom$addTag("h3", "Package Downloads")
-              dom$closeTag()
-              dom$closeTag()
-              
+              dom$closeTag()            # td
+              dom$closeTag()            # tr
+
               dom$addTag("tr", close=FALSE)
               dom$addTag("td", close=FALSE)
               vigInfo <- as(object, "pdVignetteInfo")

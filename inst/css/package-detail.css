@@ -48,3 +48,7 @@ table.vigsAndDownloads {
 table.author_info {
     margin-bottom: 20px;
 }
+
+div.installInstruct {
+    background-color: #FFFF66;
+}
