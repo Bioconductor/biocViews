@@ -6,7 +6,7 @@ Maintainer: Seth Falcon <sfalcon@fhcrc.org>
 Depends: R (>= 2.4.0), methods, tools, graph (>= 1.9.26), RBGL (>= 1.13.5), XML
 Description: structures for vocabularies and narratives of views
 License: LGPL version
-URL: http://bioconductor.org/packages/1.8/TaskViews.html
+URL: http://www.bioconductor.org/packages/release/BiocViews.html
 Collate: AllClasses.R
          AllGenerics.R
          as-methods.R
