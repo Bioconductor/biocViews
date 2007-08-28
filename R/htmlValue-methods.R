@@ -4,7 +4,13 @@ writeHtmlDoc <- function(html, file)
     ## directly to saveXML because of a bug in current XML::saveXML
     ## (from XML 1.3-2). Bug reported to XML's author on 2006-12-14. Herve.
     f <- file(file, open="w")
-    saveXML(html, f)
+    ## another temp fix: write the DOCTYPE header here, perhaps we should
+    ## use prefix for this in the call to saveXML?
+    writeLines(paste('<!DOCTYPE html PUBLIC',
+                     '"-//W3C//DTD XHTML 1.0 Strict//EN"',
+                     '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'),
+               con=f)
+    saveXML(html, f, prefix="")
     close(f)
 }
 

@@ -1,5 +1,19 @@
 makeHtmlHeader <- function(title, stylesheet) {
-    html <- xmlOutputDOM("html")
+## Right now xmlTree's addNode method doesn't accept XMLNode objects
+##     html <- xmlTree("html",
+##                     attrs=c(xmlns="http://www.w3.org/1999/xhtml",
+##                       "xml:lang"="en", lang="en"),
+##                     dtd=c('html',
+##                          '-//W3C//DTD XHTML 1.0 Strict//EN',
+##                          'http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd'))
+    html <- xmlOutputDOM("html",
+                    attrs=c(xmlns="http://www.w3.org/1999/xhtml",
+                      "xml:lang"="en", lang="en"))
+### gaah! header is only supported by xmlOutputBuffer ! :-(
+### so instead we write out the DOCTYPE in the writeDoc method.
+##                     header=paste('<!DOCTYPE html PUBLIC',
+##                          '"-//W3C//DTD XHTML 1.0 Strict//EN"',
+##                          '"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">'))
     html$addTag("head", close=FALSE)
     html$addTag("title", title)
     myAttrs <- c(rel="stylesheet",
