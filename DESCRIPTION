@@ -2,10 +2,10 @@ Package: biocViews
 Version: 1.5.4
 Title: Categorized views of R package repositories
 Author: VJ Carey <stvjc@channing.harvard.edu>, BJ Harshfield <rebjh@channing.harvard.edu>, S Falcon <sfalcon@fhcrc.org>
-Maintainer: Seth Falcon <sfalcon@fhcrc.org>
+Maintainer: Biocore Team c/o BioC user list <bioconductor@stat.math.ethz.ch>
 Depends: R (>= 2.4.0), methods, tools, graph (>= 1.9.26), RBGL (>= 1.13.5), XML
 Description: structures for vocabularies and narratives of views
-License: LGPL version
+License: Artistic-2.0
 URL: http://www.bioconductor.org/packages/release/BiocViews.html
 Collate: AllClasses.R
          AllGenerics.R
