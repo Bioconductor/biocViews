@@ -32,6 +32,7 @@ Microarray -> Preprocessing;
 Microarray -> Transcription;
 Microarray -> DNACopyNumber;
 Microarray -> SNPsAndGeneticVariability;
+Microarray -> CpGIsland;
 
 /* Statistics subview */
 Statistics -> DifferentialExpression;
@@ -113,6 +114,7 @@ ChipManufacturer -> IlluminaChip;
 ChipManufacturer -> QiagenChip;
 ChipManufacturer -> RNG_MRCChip;
 ChipManufacturer -> RocheChip;
+ChipManufacturer -> UniversityHealthNetwork;
 
 CustomCDF -> MBNICustomCDF;
 
@@ -215,6 +217,9 @@ ChipName -> xenopuslaevis;
 ChipName -> yeast2;
 ChipName -> ygs98;
 ChipName -> zebrafish;
+ChipName -> hcgi12k;
+ChipName -> hcgi8k;
+
 
 
 /* ExperimentData */
