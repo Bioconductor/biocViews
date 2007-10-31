@@ -22,6 +22,7 @@ Software -> Statistics;
 Software -> GraphsAndNetworks;
 Software -> Technology;
 Software -> Infrastructure;
+Software -> GUI;
 
 /* Microarray subview */
 Microarray -> OneChannel;
