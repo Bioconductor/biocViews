@@ -113,6 +113,7 @@ write_REPOSITORY <- function(reposRootPath, contribPaths) {
             write.dcf(dbi, file = out)
             ##FIXME: writing to the gz file segfaults for me
             ##write.dcf(dbi, file = outgz)
+            cat("\n", file=out)
         }
         close(out)
         ##FIXME: writing to the gz file segfaults
