@@ -36,7 +36,7 @@ write_VIEWS(reposRootPath, fields = NULL, type = c("source", "mac.binary", "win.
 \seealso{
   \code{\link[tools]{write_PACKAGES}},
   \code{\link{extractVignettes}},
-  \code{link{genReposControlFiles}},
+  \code{\link{genReposControlFiles}},
   \code{\link{write_REPOSITORY}}
 }
 

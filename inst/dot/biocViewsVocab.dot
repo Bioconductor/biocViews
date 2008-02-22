@@ -50,6 +50,7 @@ Technology -> MassSpectrometry;
 Technology -> SAGE;
 Technology -> CellBasedAssays;
 Technology -> Genetics;
+Technology -> FlowCytometry;
 
 /* Annotation subview */
 Annotation -> GO;

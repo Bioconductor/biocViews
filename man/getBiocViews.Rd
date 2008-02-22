@@ -31,8 +31,8 @@ getBiocViews(reposUrl, vocab, defaultView, local = FALSE)
 \author{Seth Falcon}
 
 \seealso{
-  \code{link{write_VIEWS}},
-  \code{link{writeBiocViews}}
+  \code{\link{write_VIEWS}},
+  \code{\link{writeBiocViews}}
 }
 
 \examples{

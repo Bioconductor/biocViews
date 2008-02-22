@@ -155,6 +155,16 @@ print(biocViews[1:2])
 
 @ 
 
+To query the currently available vocabulary terms, use function
+\Rfunction{getSubTerms} on the \Rclass{graphNEL} object
+\Robject{biocViewsVocab}. The second argument of this function takes a
+character of the base term for which all subterms should be
+returned. For a complete list use \Rfunarg{term="BiocViews"}.
+
+<<listTerms>>=
+getSubTerms(biocViewsVocab, term="Technology")
+@ 
+
 \section{Generating HTML}
 
 By default, the set of HTML views will link to package description

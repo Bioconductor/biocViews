@@ -17,7 +17,7 @@ writeBiocViews(bvList, dir)
 
 \seealso{
   \code{\link{getBiocViews}},
-  \code{link{genReposControlFiles}},
+  \code{\link{genReposControlFiles}},
   \code{\link{write_VIEWS}}
 }
 
