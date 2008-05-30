@@ -51,7 +51,7 @@ extractVignettes <- function(reposRoot, srcContrib, destDir) {
     
     extractVignettesFromTarball <- function(tarball, unpackDir=".") {
         ## helper function to unpack pdf files from the vig
-        vigPat <- "'*/doc/*.pdf'"
+        vigPat <- "--wildcards '*/doc/*.pdf'"
         tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, vigPat)
         cleanUnpackDir(tarball, unpackDir)
         cat("Extracting vignettes from", tarball, "\n")
