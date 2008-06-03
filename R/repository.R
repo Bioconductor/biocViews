@@ -255,7 +255,7 @@ write_SYMBOLS <- function(dir, verbose=FALSE, source.dirs=FALSE) {
 
     extractNAMESPACEFromTarball <- function(tarball, unpackDir=tdir) {
         ## helper function to unpack NAMESPACE file from the tarball
-        pat <- "'*/NAMESPACE'"
+        pat <- "--wildcards '*/NAMESPACE'"
         tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, pat)
         ret <- system(tarCmd)
         if (ret != 0)
