@@ -5,7 +5,7 @@
 %
 \documentclass[12pt]{article}
 
-\usepackage{amsmath,pstricks}
+\usepackage{amsmath}
 \usepackage[authoryear,round]{natbib}
 \usepackage{hyperref}
 
