@@ -15,21 +15,19 @@ BiocViews -> AnnotationData;
 BiocViews -> ExperimentData;
 
 /* Software */
-Software -> Microarray;
 Software -> Annotation;
 Software -> Visualization;
 Software -> Statistics;
 Software -> GraphsAndNetworks;
 Software -> Technology;
+Software -> Applications;
 Software -> Infrastructure;
 Software -> GUI;
+Software -> DataManipulation;
 
 /* Microarray subview */
 Microarray -> OneChannel;
 Microarray -> TwoChannel;
-Microarray -> DataImport;
-Microarray -> QualityControl;
-Microarray -> Preprocessing;
 Microarray -> Transcription;
 Microarray -> DNACopyNumber;
 Microarray -> SNPsAndGeneticVariability;
@@ -42,15 +40,24 @@ Statistics -> Classification;
 Statistics -> MultipleComparisons;
 Statistics -> TimeCourse;
 Statistics -> SequenceMatching;
+Statistics -> QualityControl;
+Statistics -> Preprocessing;
 
 /* Technology subview */
 Technology -> Microarray;
-Technology -> Proteomics;
 Technology -> MassSpectrometry;
 Technology -> SAGE;
 Technology -> CellBasedAssays;
-Technology -> Genetics;
 Technology -> FlowCytometry;
+Technology -> Sequencing;
+
+/* Applications subview */
+Applications -> Proteomics;
+Applications -> Genetics;
+Applications -> CellBiology;
+
+/* DataManipulation subview */
+DataManipulation -> DataImport;
 
 /* Annotation subview */
 Annotation -> GO;
