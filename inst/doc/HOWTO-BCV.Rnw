@@ -79,7 +79,11 @@ GXL is then converted to a \Rclass{graphNEL} instance using
 \Rfunction{fromGXL} from the \Rpackage{graph} package.  There is a
 helper script in the root of the \Rpackage{biocViews} package called
 \texttt{updateVocab.sh} that automates the update process if the
-required tools are available.
+required tools are available. The script will also attempt to dump the
+ontology graph into a local SQLite database using tools from
+\Rpackage{DBI} and \Rpackage{RSQLite}. The information in this
+database can be used to create a dynamic HTML representation of the
+graph by means of a PHP script.
 
 The definition of the vocabulary lacks a notion of order.  Since
 the purpose of the vocabulary is primarily for display, a valuable

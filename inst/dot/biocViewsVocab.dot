@@ -23,7 +23,26 @@ Software -> Technology;
 Software -> Applications;
 Software -> Infrastructure;
 Software -> GUI;
-Software -> DataManipulation;
+Software -> DataImport;
+Software -> AssayTechnologies;
+Software -> QualityControl;
+Software -> Preprocessing;
+
+/* AssayTechnologies subview */
+AssayTechnologies -> HighThroughputSequencing
+AssayTechnologies -> ExonArray;
+AssayTechnologies -> SNPchip;
+AssayTechnologies -> DNAMethylation;
+AssayTechnologies -> GeneExpression;
+AssayTechnologies -> ChIPchip;
+AssayTechnologies -> aCGH;
+AssayTechnologies -> CopyNumberVariants;
+AssayTechnologies -> Microarray;
+AssayTechnologies -> MassSpectrometry;
+AssayTechnologies -> SAGE;
+AssayTechnologies -> CellBasedAssays;
+AssayTechnologies -> FlowCytometry;
+AssayTechnologies -> Sequencing;
 
 /* Microarray subview */
 Microarray -> OneChannel;
@@ -40,24 +59,11 @@ Statistics -> Classification;
 Statistics -> MultipleComparisons;
 Statistics -> TimeCourse;
 Statistics -> SequenceMatching;
-Statistics -> QualityControl;
-Statistics -> Preprocessing;
-
-/* Technology subview */
-Technology -> Microarray;
-Technology -> MassSpectrometry;
-Technology -> SAGE;
-Technology -> CellBasedAssays;
-Technology -> FlowCytometry;
-Technology -> Sequencing;
 
 /* Applications subview */
 Applications -> Proteomics;
 Applications -> Genetics;
 Applications -> CellBiology;
-
-/* DataManipulation subview */
-DataManipulation -> DataImport;
 
 /* Annotation subview */
 Annotation -> GO;
@@ -235,9 +241,23 @@ ChipName -> hcgi8k;
 
 
 /* ExperimentData */
-ExperimentData -> Ovarian_Cancer;
-ExperimentData -> Breast_Cancer;
-ExperimentData -> Prostate_Cancer;
-ExperimentData -> Leukemia;
+ExperimentData -> Cancer;
+ExperimentData -> QualityAndTesting;
+ExperimentData -> SpikeIns;
+ExperimentData -> HapMap;
+ExperimentData -> HIV;
+ExperimentData -> CGH;
+ExperimentData -> ChIPchip;
+ExperimentData -> StemCells;
+ExperimentData -> HighThroughputSequencing;
+ExperimentData -> Yeast;
+ExperimentData -> Proteome;
+
+/* Cancer subview*/
+Cancer -> Ovarian;
+Cancer -> Breast;
+Cancer -> Prostate;
+Cancer -> Leukemia;
+
 
 }
