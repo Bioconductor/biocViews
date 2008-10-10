@@ -14,62 +14,77 @@ BiocViews -> Software;
 BiocViews -> AnnotationData;
 BiocViews -> ExperimentData;
 
+
+
 /* Software */
 Software -> Annotation;
-Software -> Visualization;
-Software -> Statistics;
-Software -> GraphsAndNetworks;
-Software -> Technology;
-Software -> Applications;
-Software -> Infrastructure;
-Software -> GUI;
-Software -> DataImport;
+Software -> AssayDomains;
 Software -> AssayTechnologies;
-Software -> QualityControl;
-Software -> Preprocessing;
+Software -> BiologicalDomains;
+Software -> ComputationalDomains;
+Software -> Statistics;
 
-/* AssayTechnologies subview */
-AssayTechnologies -> HighThroughputSequencing
-AssayTechnologies -> ExonArray;
-AssayTechnologies -> SNPchip;
-AssayTechnologies -> DNAMethylation;
-AssayTechnologies -> GeneExpression;
-AssayTechnologies -> ChIPchip;
-AssayTechnologies -> aCGH;
-AssayTechnologies -> CopyNumberVariants;
-AssayTechnologies -> Microarray;
-AssayTechnologies -> MassSpectrometry;
-AssayTechnologies -> SAGE;
-AssayTechnologies -> CellBasedAssays;
-AssayTechnologies -> FlowCytometry;
-AssayTechnologies -> Sequencing;
-
-/* Microarray subview */
-Microarray -> OneChannel;
-Microarray -> TwoChannel;
-Microarray -> Transcription;
-Microarray -> DNACopyNumber;
-Microarray -> SNPsAndGeneticVariability;
-Microarray -> CpGIsland;
-
-/* Statistics subview */
-Statistics -> DifferentialExpression;
-Statistics -> Clustering;
-Statistics -> Classification;
-Statistics -> MultipleComparisons;
-Statistics -> TimeCourse;
-Statistics -> SequenceMatching;
-
-/* Applications subview */
-Applications -> Proteomics;
-Applications -> Genetics;
-Applications -> CellBiology;
 
 /* Annotation subview */
 Annotation -> GO;
 Annotation -> Pathways;
 Annotation -> ProprietaryPlatforms;
 Annotation -> ReportWriting;
+
+
+/* AssayDomains subview */
+AssayDomains -> aCGH;
+AssayDomains -> CellBasedAssays;
+AssayDomains -> ChIPchip;
+AssayDomains -> CopyNumberVariants;
+AssayDomains -> CpGIsland;
+AssayDomains -> DifferentialExpression;
+AssayDomains -> DNAMethylation;
+AssayDomains -> ExonArray;
+AssayDomains -> GeneExpression;
+AssayDomains -> GeneticVariability;
+AssayDomains -> SNP;
+AssayDomains -> Transcription;
+
+
+/* AssayTechnologies subview */
+AssayTechnologies -> Microarray;
+AssayTechnologies -> MicrotitrePlateAssay;
+AssayTechnologies -> MassSpectrometry;
+AssayTechnologies -> SAGE;
+AssayTechnologies -> FlowCytometry;
+AssayTechnologies -> Sequencing;
+
+
+/* Microarray subview */
+Microarray -> OneChannel;
+Microarray -> TwoChannel;
+
+
+/* BiologicalDomains subview */
+BiologicalDomains -> CellBiology;
+BiologicalDomains -> Genetics;
+BiologicalDomains -> Proteomics;
+
+
+/* computationalDomains subview */
+ComputationalDomains -> DataImport;
+ComputationalDomains -> GraphsAndNetworks;
+ComputationalDomains -> GUI;
+ComputationalDomains -> Infrastructure;
+ComputationalDomains -> Preprocessing;
+ComputationalDomains -> QualityControl;
+ComputationalDomains -> Visualization;
+
+
+/* Statistics subview */
+Statistics -> Clustering;
+Statistics -> Classification;
+Statistics -> MultipleComparisons;
+Statistics -> TimeCourse;
+Statistics -> SequenceMatching;
+
+
 
 /* AnnotationData */
 
@@ -114,12 +129,12 @@ Organism -> Zea_mays;
 
 
 /* AnnotationData Misc */
-AnnotationData -> SequenceAnnotation;
-AnnotationData -> FunctionalAnnotation;
 AnnotationData -> ChipManufacturer;
 AnnotationData -> CustomCDF;
 AnnotationData -> CustomArray;
 AnnotationData -> CustomDBSchema;
+AnnotationData -> FunctionalAnnotation;
+AnnotationData -> SequenceAnnotation;
 
 ChipManufacturer -> AffymetrixChip;
 ChipManufacturer -> AgilentChip;
@@ -132,8 +147,11 @@ ChipManufacturer -> RNG_MRCChip;
 ChipManufacturer -> RocheChip;
 ChipManufacturer -> UniversityHealthNetwork;
 
-CustomCDF -> MBNICustomCDF;
+/* AnnotationData Chip CustomCDF */
 CustomCDF -> GACustomCDF;
+CustomCDF -> MBNICustomCDF;
+
+/* AnnotationData CustomDBSchema */
 CustomDBSchema -> GeneCardsCustomSchema;
 
 /* AnnotationData Chip Names */
@@ -241,23 +259,26 @@ ChipName -> hcgi8k;
 
 
 /* ExperimentData */
+ExperimentData -> BiologicalDomains
 ExperimentData -> Cancer;
-ExperimentData -> QualityAndTesting;
-ExperimentData -> SpikeIns;
-ExperimentData -> HapMap;
-ExperimentData -> HIV;
 ExperimentData -> CGH;
 ExperimentData -> ChIPchip;
-ExperimentData -> StemCells;
+ExperimentData -> HapMap;
 ExperimentData -> HighThroughputSequencing;
-ExperimentData -> Yeast;
+ExperimentData -> HIV;
 ExperimentData -> Proteome;
+ExperimentData -> QualityAndTesting;
+ExperimentData -> SpikeIns;
+ExperimentData -> StemCells;
+ExperimentData -> Yeast;
+
 
 /* Cancer subview*/
-Cancer -> Ovarian;
 Cancer -> Breast;
-Cancer -> Prostate;
 Cancer -> Leukemia;
+Cancer -> Ovarian;
+Cancer -> Prostate;
+
 
 
 }
