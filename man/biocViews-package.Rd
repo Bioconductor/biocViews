@@ -79,5 +79,5 @@ Maintainer: Biocore Team c/o BioC user list <bioconductor@stat.math.ethz.ch>
 
 \examples{
 data(biocViewsVocab)
-getSubTerms(biocViewsVocab, "Technology")
+getSubTerms(biocViewsVocab, "AssayTechnologies")
 }
