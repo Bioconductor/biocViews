@@ -151,44 +151,78 @@ setMethod("htmlValue", signature(object="pdDownloadInfo"),
 
 setMethod("htmlValue", signature(object="pdDetailsInfo"),
           function(object) {
+              ## link generating functions
+              buildLinks <- function(x, root, class, check = FALSE) {
+                  nodes <-
+                    lapply(x,
+                           function(y) {
+                               if (nchar(y) == 0 || !length(root)) {
+                                   node <- y
+                               } else {
+                                   link <- paste(root, "/", y, ".html", sep="")
+                                   if (check) {
+                                       oldWarn <- options()[["warn"]]
+                                       options(warn = -1)
+                                       con <- try(url(link, "r"), silent = TRUE)
+                                       options(warn = oldWarn)
+                                       if (class(con)[[1]] == "try-error") {
+                                           node <- y
+                                       } else {
+                                           close(con)
+                                           node <- xmlNode("a", y, attrs=c(href=link))
+                                       }
+                                   }
+                               }
+                               return(node)
+                           })
+                  if (length(nodes) == 0) {
+                      args <- list()
+                  } else if (length(nodes) == 1) {
+                      args <- nodes
+                  } else {
+                      args <- vector("list", 2*length(nodes) - 1)
+                      args[seq(1, 2*length(nodes) - 1, by = 2)] <- nodes
+                      args[seq(2, 2*(length(nodes) - 1), by = 2)] <- list(", ")
+                  }
+                  args <- c(list(name = "div"), args, list(attrs = c(class=class)))
+                  return(do.call("xmlNode", args))
+              }
+              buildViewLinks <- function(x) buildLinks(x, object@viewRoot, class="views")
+              buildPkgLinks <- function(x)
+                buildLinks(x, paste(object@reposRoot, "/html", sep=""),
+                           class="packages", check=TRUE)
+              buildURLLink <- function(u) {
+                  if (!length(u) || nchar(u) == 0)
+                      node <- ""
+                  else
+                      node <- xmlNode("a", u, attrs=c(href=u))
+                  return(node)
+              }
 
+              ## create list elements for fields
               flds <- c("biocViews", "Depends", "Suggests", "Imports",
                         "SystemRequirements", "License", "URL", "dependsOnMe",
                         "suggestsMe")
-
-              ## handle biocViews separately
-              buildViewLink <- function(v) {
-                  if (nchar(v) == 0 || !length(object@viewRoot))
-                    return(v)
-                  link <- paste(object@viewRoot, "/", v, ".html", sep="")
-                  node <- xmlNode("a", v, attrs=c(href=link))
-                  return(node)
-              }
-              vlinks <- lapply(object@biocViews, buildViewLink)
-              args <- list(name="div")
-              if (length(vlinks) > 0)
-                args <- c(args, list(vlinks[[1]]))
-              if (length(vlinks) > 1) {
-                  for (v in vlinks[2:length(vlinks)]) {
-                      args <- c(args, list(", "), list(v))
-                  }
-              }
-              args[["attrs"]] <- c(class="views")
-              views <- do.call("xmlNode", args)
-
-              ## handle URL separately
-              buildURLLink <- function(u) {
-                  if (!length(u) || nchar(u) == 0)
-                    return("")
-                  node <- xmlNode("a", u, attrs=c(href=u))
-                  return(node)
-              }
-
-              formatField <- function(x) paste(slot(object, x), collapse=", ")
-              tableDat <- lapply(flds, formatField)
+              tableDat <- vector("list", length = length(flds))
               names(tableDat) <- flds
-              tableDat[["biocViews"]] <- views
+
+              ## add biocViews info
+              tableDat[["biocViews"]] <- buildViewLinks(object@biocViews)
+
+              ## add Depends, Suggests, Imports, dependsOnMe, suggestsMe info
+              pkgFlds <-
+                c("Depends", "Suggests", "Imports", "dependsOnMe", "suggestsMe")
+              tableDat[pkgFlds] <-
+                lapply(pkgFlds, function(x) buildPkgLinks(slot(object, x)))
+
+              ## add SystemRequirements and License info
+              otherFlds <- c("SystemRequirements", "License")
+              tableDat[otherFlds] <-
+                lapply(otherFlds, function(x) paste(slot(object, x), collapse=", "))
+
+              ## add URL info
               tableDat[["URL"]] <- buildURLLink(object@URL)
+              
               domValue <- tableHelper(tableDat,
                                       table.attrs=list(class="details"))
               domValue

@@ -112,11 +112,15 @@ pd <- new("PackageDetail",
           Author="A. Coder",
           Maintainer="A. Coder <acoder@foo.bar.net>",
           Depends="methods",
+          Imports="ASimplePackage",
+          Suggests="MyDataPackage",
+          biocViews="Infrastructure",
           vignettes=c("vignettes/MyFancyPackage/inst/doc/MFP1.pdf",
             "vignettes/MyFancyPackage/inst/doc/MFP2.pdf"),
-          source.ver="src/contrib/MyFancypackage_1.2.3.tar.gz",
+          source.ver="src/contrib/MyFancyPackage_1.2.3.tar.gz",
           win.binary.ver="bin/windows/contrib/2.3/MyFancyPackge_1.2.2.zip",
-          dependsOnMe="AnEvenFancierPackage",
+          mac.binary.ver="bin/windows/contrib/2.3/MyFancyPackge_1.2.3.tgz",
+          dependsOnMe=c("AnEvenFancierPackage","AMuchFancierPackage"),
           reposRoot="http://foo.bar.org")
 
 html <- htmlValue(pd)
