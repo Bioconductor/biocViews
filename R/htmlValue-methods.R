@@ -156,8 +156,9 @@ setMethod("htmlValue", signature(object="pdDetailsInfo"),
                   nodes <-
                     lapply(x,
                            function(y) {
-                               node <- y
-                               if (nchar(y) > 0 && length(root) > 0) {
+                               if (nchar(y) == 0 || length(root) == 0) {
+                                   link <- y
+                               } else {
                                    link <- paste(root, "/", y, ".html", sep="")
                                    if (check) {
                                        oldWarn <- options()[["warn"]]
@@ -165,14 +166,14 @@ setMethod("htmlValue", signature(object="pdDetailsInfo"),
                                        con <- try(url(link, "r"), silent = TRUE)
                                        options(warn = oldWarn)
                                        if (class(con)[[1]] == "try-error") {
-                                           node <- y
+                                           link <- y
                                        } else {
                                            close(con)
-                                           node <- xmlNode("a", y, attrs=c(href=link))
+                                           link <- xmlNode("a", y, attrs=c(href=link))
                                        }
                                    }
                                }
-                               return(node)
+                               return(link)
                            })
                   if (length(nodes) == 0) {
                       args <- list()
