@@ -156,9 +156,8 @@ setMethod("htmlValue", signature(object="pdDetailsInfo"),
                   nodes <-
                     lapply(x,
                            function(y) {
-                               if (nchar(y) == 0 || !length(root)) {
-                                   node <- y
-                               } else {
+                               node <- y
+                               if (nchar(y) > 0 && length(root) > 0) {
                                    link <- paste(root, "/", y, ".html", sep="")
                                    if (check) {
                                        oldWarn <- options()[["warn"]]
