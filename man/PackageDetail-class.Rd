@@ -63,8 +63,12 @@ Objects can be created by calls of the form \code{new("PackageDetail", ...)}.
     packages found in the repository that suggest this package}
     \item{\code{functionIndex}:}{Object of class \code{"character"} Not
     used.  Intended to hold function index data. }
+    \item{\code{reposFullRoot}:}{Object of class \code{"character"} The URL
+    for the full path of the root of the repository. }
     \item{\code{reposRoot}:}{Object of class \code{"character"} The URL
     for the root of the repository. }
+    \item{\code{viewRoot}:}{Object of class \code{"character"} The URL
+    for the view of the repository. }
   }
 }
 \section{Extends}{

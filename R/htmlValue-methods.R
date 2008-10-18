@@ -194,7 +194,7 @@ setMethod("htmlValue", signature(object="pdDetailsInfo"),
               }
               buildViewLinks <- function(x) buildLinks(x, object@viewRoot, class="views")
               buildPkgLinks <- function(x)
-                buildLinks(x, paste(object@reposRoot, "/html", sep=""),
+                buildLinks(x, paste(object@reposFullRoot, "/html", sep=""),
                            class="packages", check=TRUE)
               buildURLLink <- function(u) {
                   if (!length(u) || nchar(u) == 0)
