@@ -26,7 +26,7 @@ setClass("PackageDetail", contains="Htmlized",
                         "dependsOnMe"="character",
                         "suggestsMe"="character",
                         "functionIndex"="character",
-                        "reposFullRoot"="character",
+                        "reposFullUrl"="character",
                         "reposRoot"="character",
                         "viewRoot"="character"))
 

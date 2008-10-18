@@ -22,7 +22,7 @@ createPackageDetailList <- function(viewMat, reposUrl="..",
     names(pkgList) <- viewMat[, "Package"]
     pkgList <- setDependsOnMeSuggestsMe(pkgList)
     pkgList <- lapply(pkgList, function(p) {
-        p@reposFullRoot <- reposFullUrl
+        p@reposFullUrl <- reposFullUrl
         p@reposRoot <- reposUrl
         p@viewRoot <- viewUrl
         p
