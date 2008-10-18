@@ -160,17 +160,23 @@ setMethod("htmlValue", signature(object="pdDetailsInfo"),
                                if (nchar(y) == 0 || length(root) == 0) {
                                    urlError <- TRUE
                                } else {
-                                   link <- paste(root, "/", y, ".html", sep="")
                                    if (check) {
                                        oldWarn <- options()[["warn"]]
                                        options(warn = -1)
-                                       con <- try(url(link, "r"), silent = TRUE)
+                                       for (i in seq_len(length(root))) {
+                                           link <- paste(root[i], "/", y, ".html", sep="")
+                                           con <- try(url(link, "r"), silent = TRUE)
+                                           if (class(con)[[1]] != "try-error")
+                                               break;
+                                       }
                                        options(warn = oldWarn)
                                        if (class(con)[[1]] == "try-error") {
                                            urlError <- TRUE
                                        } else {
                                            close(con)
                                        }
+                                   } else {
+                                       link <- paste(root[1], "/", y, ".html", sep="")
                                    }
                                }
                                if (urlError) {
