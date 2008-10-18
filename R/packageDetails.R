@@ -49,8 +49,8 @@ setDependsOnMeSuggestsMe <- function(pkgDetailsList) {
     setDepsSugs <- function(pkg) {
         deps <- pkgNames[which(depMat[pkg@Package, ])]
         sugs <- pkgNames[which(sugMat[pkg@Package, ])]
-        pkg@dependsOnMe <- paste(deps, collapse=", ")
-        pkg@suggestsMe <- paste(sugs, collapse=", ")
+        pkg@dependsOnMe <- deps
+        pkg@suggestsMe <- sugs
         return(pkg)
     }
     return(lapply(pkgDetailsList, setDepsSugs))
