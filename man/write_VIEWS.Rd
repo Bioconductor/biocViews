@@ -11,7 +11,9 @@
   available binary packages and vignettes is centralized here.
 }
 \usage{
-write_VIEWS(reposRootPath, fields = NULL, type = c("source", "mac.binary", "win.binary"), verbose = FALSE, vignette.dir = "vignettes")
+write_VIEWS(reposRootPath, fields = NULL,
+            type = c("source", "mac.binary", "mac.binary.universal", "mac.binary.leopard", "win.binary"),
+            verbose = FALSE, vignette.dir = "vignettes")
 }
 \arguments{
   \item{reposRootPath}{character vector containing the path to the
@@ -19,8 +21,9 @@ write_VIEWS(reposRootPath, fields = NULL, type = c("source", "mac.binary", "win.
   \item{fields}{Any additional fields to include.  You shouldn't need
     this, but if you have added fields to the DESCRIPTION files of the
     packages in the repository, you may want it.}
-  \item{type}{One of \code{source}, \code{mac.binary}, or
-    \code{win.binary} indicating which set of packages should be used to
+  \item{type}{One of \code{source}, \code{mac.binary},
+    \code{mac.binary.universal}, \code{mac.binary.leopard},
+    or \code{win.binary} indicating which set of packages should be used to
     build up the "shared" information.  Since a repository can contain
     different versions of the same package (source vs binary) the shared
     information may be a lie.}
@@ -40,4 +43,4 @@ write_VIEWS(reposRootPath, fields = NULL, type = c("source", "mac.binary", "win.
   \code{\link{write_REPOSITORY}}
 }
 
-\keyword{utilities }
+\keyword{utilities}

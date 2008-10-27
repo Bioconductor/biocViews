@@ -20,9 +20,10 @@ write_REPOSITORY(reposRootPath, contribPaths)
   \item{reposRootPath}{character vector containing the path to the
   CRAN-style repository root directory.}
   \item{contribPaths}{A named character vector.  Valid names are
-    \code{source}, \code{win.binary}, and \code{mac.binary}.  Values
-    indicate the paths to the package archives relative to the
-    \code{reposRoot}.}
+    \code{source}, \code{win.binary}, \code{mac.binary},
+    \code{mac.binary.universal}, and \code{mac.binary.leopard}.
+    Values indicate the paths to the package archives relative to
+    the \code{reposRoot}.}
 }
 \author{Seth Falcon}
 

@@ -53,8 +53,10 @@ Objects can be created by calls of the form \code{new("PackageDetail", ...)}.
     string for the source package}
     \item{\code{win.binary.ver}:}{Object of class \code{"character"}
     version string for the Windows binary package }
-    \item{\code{mac.binary.ver}:}{Object of class \code{"character"}
-    version string for the OS X binary package }
+    \item{\code{mac.binary.universal.ver}:}{Object of class \code{"character"}
+    version string for the OS X Tiger binary package }
+    \item{\code{mac.binary.leopard.ver}:}{Object of class \code{"character"}
+    version string for the OS X Leopard binary package }
     \item{\code{manuals}:}{Object of class \code{"character"} Not used.
     Intended to hold paths to pdf manuals in the repository}
     \item{\code{dependsOnMe}:}{Object of class \code{"character"} giving
@@ -123,7 +125,8 @@ pd <- new("PackageDetail",
             "vignettes/MyFancyPackage/inst/doc/MFP2.pdf"),
           source.ver="src/contrib/MyFancyPackage_1.2.3.tar.gz",
           win.binary.ver="bin/windows/contrib/2.3/MyFancyPackge_1.2.2.zip",
-          mac.binary.ver="bin/windows/contrib/2.3/MyFancyPackge_1.2.3.tgz",
+          mac.binary.universal.ver="bin/macosx/universal/contrib/2.3/MyFancyPackge_1.2.3.tgz",
+          mac.binary.leopard.ver="bin/macosx/leopard/contrib/2.3/MyFancyPackge_1.2.3.tgz",
           dependsOnMe=c("AnEvenFancierPackage","AMuchFancierPackage"),
           reposRoot="http://foo.bar.org")
 

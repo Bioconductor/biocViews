@@ -127,10 +127,12 @@ setMethod("htmlValue", signature(object="pdDownloadInfo"),
           function(object) {
               flds <- c(source="source.ver",
                         win.binary="win.binary.ver",
-                        mac.binary="mac.binary.ver")
+                        mac.binary.universal="mac.binary.universal.ver",
+                        mac.binary.leopard="mac.binary.leopard.ver")
               
-              fileTypes <- list(source="Source", win.binary="Windows binary",
-                                mac.binary="OS X binary")
+              fileTypes <- list(source="Package source", win.binary="Windows binary",
+                                mac.binary.universal="MacOS X 10.4 (Tiger) binary",
+                                mac.binary.leopard="MacOS X 10.5 (Leopard) binary")
               makeLinkHelper <- function(type) {
                   pkgPath <- slot(object, flds[type])
                   if (!is.na(pkgPath) && length(pkgPath) > 0 && pkgPath != "") {

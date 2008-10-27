@@ -9,6 +9,9 @@ genReposControlFiles <- function(reposRoot, contribPaths)
     names(packagesPaths) <- names(contribPaths)
     for (type in names(packagesPaths)) {
         path <- packagesPaths[[type]]
+        if(substr(type, 1, 10) == "mac.binary") {
+            type <- "mac.binary"
+        }
         write_PACKAGES(path, type=type)
     }
     ## Write a VIEWS file at the top-level containing
@@ -125,7 +128,8 @@ write_REPOSITORY <- function(reposRootPath, contribPaths) {
 
 
 write_VIEWS <- function(reposRootPath, fields = NULL,
-                        type = c("source", "mac.binary", "win.binary"),
+                        type = c("source", "mac.binary", "mac.binary.universal",
+                                 "mac.binary.leopard", "win.binary"),
                         verbose = FALSE, vignette.dir="vignettes") {
     ## Copied from tools::write_PACKAGES
     if (is.null(fields))
@@ -156,7 +160,8 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
         cPath <- reposInfo[, ctype]
         buildPkgPath <- function(pkgs, vers) {
             ext <- switch(ctype, source=".tar.gz", win.binary=".zip",
-                          mac.binary=".tgz", stop("unknown type"))
+                          mac.binary=, mac.binary.universal=, mac.binary.leopard=".tgz",
+                          stop("unknown type"))
             paste(cPath, "/", pkgs, "_", vers, ext, sep="")
         }
         packagesFile <- file.path(reposRootPath, cPath, "PACKAGES")
