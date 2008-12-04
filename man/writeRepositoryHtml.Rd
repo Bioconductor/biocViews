@@ -7,7 +7,8 @@
   listing of the packages.
 }
 \usage{
-writeRepositoryHtml(reposRoot, title, reposUrl = "..", viewUrl = "../..", reposFullUrl=reposUrl, link.rel = TRUE)
+writeRepositoryHtml(reposRoot, title, reposUrl = "..", viewUrl = "../..", reposFullUrl=reposUrl,
+                    downloadStatsUrl="", link.rel = TRUE)
 }
 \arguments{
   \item{reposRoot}{string specifying the path to the root of the
@@ -15,8 +16,8 @@ writeRepositoryHtml(reposRoot, title, reposUrl = "..", viewUrl = "../..", reposF
   \item{title}{string giving the title for the repository}
   \item{reposUrl}{string giving the prefix for URL in links
     generated on the package description pages.  The default is
-    \code{".."} which works well if the package description HTML files are
-    written to an \code{html} subdirectory under the root of the
+    \code{"..."} which works well if the package description HTML files
+    are written to an \code{html} subdirectory under the root of the
     repository.}
   \item{viewUrl}{string giving the prefix for the URL in links to the
     view pages.  The biocViews terms will be linked to views summary
@@ -24,6 +25,8 @@ writeRepositoryHtml(reposRoot, title, reposUrl = "..", viewUrl = "../..", reposF
   \item{reposFullUrl}{string giving the full prefix for URL in links
     generated on the package description pages.  The default is
     \code{reposUrl}.}
+  \item{downloadStatsUrl}{string giving the prefix for the URL in links
+    to the download history statistics pages.}
   \item{link.rel}{logical indicating whether the index page should
     generate relative URL links.  The default is \code{TRUE}.  If you are
     generating HTML for a remote repository, you will want to set this to

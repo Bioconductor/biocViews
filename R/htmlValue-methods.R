@@ -145,6 +145,13 @@ setMethod("htmlValue", signature(object="pdDownloadInfo"),
               }
               fileLinks <- lapply(names(fileTypes), makeLinkHelper)
               names(fileLinks) <- fileTypes
+              downloadStatsUrl <- slot(object, "downloadStatsUrl")
+              if ((length(downloadStatsUrl) == 1) && 
+                  (nchar(downloadStatsUrl) > 0)) {
+                  fileLinks <- c(fileLinks,
+                                 xmlNode("a", "Download History Statistics",
+                                         attrs=c(href=downloadStatsUrl)))
+              }
               domValue <- tableHelper(fileLinks,
                                       table.attrs=list(class="downloads"))
               domValue

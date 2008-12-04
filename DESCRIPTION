@@ -1,5 +1,5 @@
 Package: biocViews
-Version: 1.11.1
+Version: 1.11.2
 Title: Categorized views of R package repositories
 Author: VJ Carey <stvjc@channing.harvard.edu>, BJ Harshfield <rebjh@channing.harvard.edu>, S Falcon <sfalcon@fhcrc.org>
 Maintainer: Biocore Team c/o BioC user list <bioconductor@stat.math.ethz.ch>

@@ -57,6 +57,8 @@ Objects can be created by calls of the form \code{new("PackageDetail", ...)}.
     version string for the OS X Tiger binary package }
     \item{\code{mac.binary.leopard.ver}:}{Object of class \code{"character"}
     version string for the OS X Leopard binary package }
+    \item{\code{downloadStatsUrl}:}{Object of class \code{"character"} An
+    optional URL for the download history statistics. }
     \item{\code{manuals}:}{Object of class \code{"character"} Not used.
     Intended to hold paths to pdf manuals in the repository}
     \item{\code{dependsOnMe}:}{Object of class \code{"character"} giving
@@ -107,7 +109,7 @@ Class \code{"Htmlized"}, directly.
   
 }
 
-\author{ Seth Falcon}
+\author{Seth Falcon}
 
 \examples{
 pd <- new("PackageDetail",
