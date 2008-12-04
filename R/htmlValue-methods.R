@@ -150,7 +150,9 @@ setMethod("htmlValue", signature(object="pdDownloadInfo"),
                   (nchar(downloadStatsUrl) > 0)) {
                   fileLinks <- c(fileLinks,
                                  xmlNode("a", "Download History Statistics",
-                                         attrs=c(href=downloadStatsUrl)))
+                                         attrs=c(href=paste(downloadStatsUrl, "/",
+                                                            slot(object, "Package"),
+                                                            ".html", sep=""))))
               }
               domValue <- tableHelper(fileLinks,
                                       table.attrs=list(class="downloads"))
