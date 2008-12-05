@@ -1,5 +1,5 @@
 loadPackageDetails <- function(reposRoot, reposUrl="..", viewUrl="../..", reposFullUrl=reposUrl,
-                               downloadStatsUrl="")
+                               downloadStatsUrl="", devHistoryUrl="")
 {
     ## Return a list of PackageDetail objects representing
     ## the packages contained in the repository located
@@ -11,19 +11,22 @@ loadPackageDetails <- function(reposRoot, reposUrl="..", viewUrl="../..", reposF
     ## FIXME: should allow reading VIEWS from a URL also.
     viewsFile <- file.path(reposRoot, "VIEWS")
     pkgMat <- read.dcf(viewsFile)
-    createPackageDetailList(pkgMat, reposUrl, viewUrl, reposFullUrl, downloadStatsUrl)
+    createPackageDetailList(pkgMat, reposUrl, viewUrl, reposFullUrl, downloadStatsUrl,
+                            devHistoryUrl)
 }
 
 
 createPackageDetailList <- function(viewMat, reposUrl="..",
                                     viewUrl=character(0),
                                     reposFullUrl=reposUrl,
-                                    downloadStatsUrl="")
+                                    downloadStatsUrl="",
+                                    devHistoryUrl="")
 {
     pkgList <- apply(viewMat, 1, viewRowToPackageDetail)
     names(pkgList) <- viewMat[, "Package"]
     pkgList <- setDependsOnMeSuggestsMe(pkgList)
     pkgList <- lapply(pkgList, function(p) {
+        p@devHistoryUrl <- devHistoryUrl
         p@downloadStatsUrl <- downloadStatsUrl
         p@reposFullUrl <- reposFullUrl
         p@reposRoot <- reposUrl

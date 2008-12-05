@@ -73,6 +73,8 @@ Objects can be created by calls of the form \code{new("PackageDetail", ...)}.
     for the root of the repository. }
     \item{\code{viewRoot}:}{Object of class \code{"character"} The URL
     for the view of the repository. }
+    \item{\code{devHistoryUrl}:}{Object of class \code{"character"} The URL
+    for the development changelog. }
   }
 }
 \section{Extends}{

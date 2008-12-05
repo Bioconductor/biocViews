@@ -222,9 +222,13 @@ setMethod("htmlValue", signature(object="pdDetailsInfo"),
               }
 
               ## create list elements for fields
-              flds <- c("biocViews", "Depends", "Suggests", "Imports",
-                        "SystemRequirements", "License", "URL", "dependsOnMe",
-                        "suggestsMe")
+              flds <- c("biocViews"="biocViews", "Depends"="Depends",
+                        "Suggests"="Suggests", "Imports"="Imports",
+                        "System Requirements"="SystemRequirements",
+                        "License"="License", "URL"="URL",
+                        "Depends On Me"="dependsOnMe",
+                        "Suggests Me"="suggestsMe",
+                        "Development History"="devHistoryUrl")
               tableDat <- vector("list", length = length(flds))
               names(tableDat) <- flds
 
@@ -244,7 +248,23 @@ setMethod("htmlValue", signature(object="pdDetailsInfo"),
 
               ## add URL info
               tableDat[["URL"]] <- buildURLLink(object@URL)
-              
+
+              ## add development history
+              devHistoryUrl <- object@devHistoryUrl
+              if ((length(devHistoryUrl) == 1) && 
+                  (nchar(devHistoryUrl) > 0)) {
+                  tableDat[["devHistoryUrl"]] <-
+                    xmlNode("a", "Bioconductor Changelog",
+                            attrs=c(href=paste(devHistoryUrl, "/",
+                                               object@Package, sep="")))
+              } else {
+                  flds <- flds[- match("devHistoryUrl", flds)]
+                  tableDat[["devHistoryUrl"]] <- NULL
+              }
+
+              ## rename rows
+              names(tableDat) <- names(flds)
+
               domValue <- tableHelper(tableDat,
                                       table.attrs=list(class="details"))
               domValue

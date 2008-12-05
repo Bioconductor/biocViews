@@ -8,7 +8,7 @@
 }
 \usage{
 writeRepositoryHtml(reposRoot, title, reposUrl = "..", viewUrl = "../..", reposFullUrl=reposUrl,
-                    downloadStatsUrl="", link.rel = TRUE)
+                    downloadStatsUrl="", devHistoryUrl="", link.rel = TRUE)
 }
 \arguments{
   \item{reposRoot}{string specifying the path to the root of the
@@ -27,6 +27,8 @@ writeRepositoryHtml(reposRoot, title, reposUrl = "..", viewUrl = "../..", reposF
     \code{reposUrl}.}
   \item{downloadStatsUrl}{string giving the prefix for the URL in links
     to the download history statistics pages.}
+  \item{devHistoryUrl}{string giving the prefix for the URL in links
+    to the development changelog.}
   \item{link.rel}{logical indicating whether the index page should
     generate relative URL links.  The default is \code{TRUE}.  If you are
     generating HTML for a remote repository, you will want to set this to
