@@ -150,7 +150,7 @@ setMethod("htmlValue", signature(object="pdDownloadInfo"),
                   (nchar(downloadStatsUrl) > 0)) {
                   fileLinks <- c(fileLinks,
                                  list("Package Downloads Report" =
-                                      xmlNode("a", "Package Downloads Stats",
+                                      xmlNode("a", "Downloads Stats",
                                               attrs=c(href=paste(downloadStatsUrl, "/",
                                                                  slot(object, "Package"),
                                                                  ".html", sep="")))))
