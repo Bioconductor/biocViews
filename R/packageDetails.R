@@ -44,12 +44,12 @@ setDependsOnMeSuggestsMe <- function(pkgDetailsList) {
     pkgNames <- names(pkgDetailsList)
     depCols <- lapply(pkgDetailsList,
                          function(x) pkgNames %in% x@Depends)
-    depMat <- do.call("cbind", depCols)
+    depMat <- do.call(cbind, depCols)
     colnames(depMat) <- rownames(depMat) <- pkgNames
 
     sugCols <- lapply(pkgDetailsList,
                          function(x) pkgNames %in% x@Suggests)
-    sugMat <- do.call("cbind", sugCols)
+    sugMat <- do.call(cbind, sugCols)
     colnames(sugMat) <- rownames(sugMat) <- pkgNames
     
     setDepsSugs <- function(pkg) {

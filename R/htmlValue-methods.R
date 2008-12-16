@@ -208,7 +208,7 @@ setMethod("htmlValue", signature(object="pdDetailsInfo"),
                       args[seq(2, 2*(length(nodes) - 1), by = 2)] <- list(", ")
                   }
                   args <- c(list(name = "div"), args, list(attrs = c(class=class)))
-                  return(do.call("xmlNode", args))
+                  return(do.call(xmlNode, args))
               }
               buildViewLinks <- function(x) buildLinks(x, object@viewRoot, class="views")
               buildPkgLinks <- function(x)

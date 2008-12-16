@@ -148,7 +148,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     ## by parsing the .tar.gz files
     pkg.dir <- file.path(reposRootPath, reposInfo[, "source"])
     db <- tools:::.build_repository_package_db(pkg.dir, fields, type, verbose)
-    dbMat <- do.call("rbind", db)
+    dbMat <- do.call(rbind, db)
 
     ## Integrate version and archive file path info for the different contrib
     ## paths in this repos.  We duplicate the source path info here, but that
