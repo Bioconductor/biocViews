@@ -5,6 +5,7 @@ Author: VJ Carey <stvjc@channing.harvard.edu>, BJ Harshfield <rebjh@channing.har
 Maintainer: Biocore Team c/o BioC user list <bioconductor@stat.math.ethz.ch>
 Depends: R (>= 2.4.0), methods, utils
 Imports: tools, graph (>= 1.9.26), RBGL (>= 1.13.5), XML
+Suggests: Biobase
 Description: structures for vocabularies and narratives of views
 License: Artistic-2.0
 URL: http://www.bioconductor.org/packages/release/BiocViews.html
