@@ -132,9 +132,9 @@ contains a slot to hold the DOM tree and provides a place to put
 methods that are not specific to any given HTML outputting class.
 
 In terms of extending this to generate the biocViews, have a look at
-\Rfunction{setDependsOnMeSuggestsMe} which builds up an adjacency
-matrix representing package dependencies (and suggstions).  The
-matrix is square with rows and columns labeled with the names of the
+\Rfunction{setDependsOnMeImportsMeSuggestsMe} which builds up an adjacency
+matrix representing package dependencies, importations, and suggestions.
+The matrix is square with rows and columns labeled with the names of the
 packages.  The entries are 0/1 with $a_{ij}=1$ meaning that package
 $j$ depends on package $i$.
 

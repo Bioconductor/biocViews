@@ -224,10 +224,11 @@ setMethod("htmlValue", signature(object="pdDetailsInfo"),
 
               ## create list elements for fields
               flds <- c("biocViews"="biocViews", "Depends"="Depends",
-                        "Suggests"="Suggests", "Imports"="Imports",
+                        "Imports"="Imports", "Suggests"="Suggests",
                         "System Requirements"="SystemRequirements",
                         "License"="License", "URL"="URL",
                         "Depends On Me"="dependsOnMe",
+                        "Imports Me"="importsMe",
                         "Suggests Me"="suggestsMe",
                         "Development History"="devHistoryUrl")
               tableDat <- vector("list", length = length(flds))
@@ -236,9 +237,10 @@ setMethod("htmlValue", signature(object="pdDetailsInfo"),
               ## add biocViews info
               tableDat[["biocViews"]] <- buildViewLinks(object@biocViews)
 
-              ## add Depends, Suggests, Imports, dependsOnMe, suggestsMe info
+              ## add Depends, Imports, Suggests, dependsOnMe, importsMe, suggestsMe
               pkgFlds <-
-                c("Depends", "Suggests", "Imports", "dependsOnMe", "suggestsMe")
+                c("Depends", "Imports", "Suggests",
+                  "dependsOnMe", "importsMe", "suggestsMe")
               tableDat[pkgFlds] <-
                 lapply(pkgFlds, function(x) buildPkgLinks(slot(object, x)))
 

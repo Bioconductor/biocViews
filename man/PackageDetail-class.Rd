@@ -39,8 +39,8 @@ Objects can be created by calls of the form \code{new("PackageDetail", ...)}.
     \item{\code{Maintainer}:}{Object of class \code{"character"} see
       DESCRIPTION }
     \item{\code{Depends}:}{Object of class \code{"character"} see DESCRIPTION }
-    \item{\code{Suggests}:}{Object of class \code{"character"} see DESCRIPTION }
     \item{\code{Imports}:}{Object of class \code{"character"} see DESCRIPTION }
+    \item{\code{Suggests}:}{Object of class \code{"character"} see DESCRIPTION }
     \item{\code{SystemRequirements}:}{Object of class \code{"character"}
       see DESCRIPTION }
     \item{\code{License}:}{Object of class \code{"character"} see DESCRIPTION }
@@ -63,6 +63,8 @@ Objects can be created by calls of the form \code{new("PackageDetail", ...)}.
     Intended to hold paths to pdf manuals in the repository}
     \item{\code{dependsOnMe}:}{Object of class \code{"character"} giving
     packages found in the repository that depend on this package}
+    \item{\code{importsMe}:}{Object of class \code{"character"} giving
+    packages found in the repository that imports this package}
     \item{\code{suggestsMe}:}{Object of class \code{"character"} giving
     packages found in the repository that suggest this package}
     \item{\code{functionIndex}:}{Object of class \code{"character"} Not
@@ -131,7 +133,9 @@ pd <- new("PackageDetail",
           win.binary.ver="bin/windows/contrib/2.3/MyFancyPackge_1.2.2.zip",
           mac.binary.universal.ver="bin/macosx/universal/contrib/2.3/MyFancyPackge_1.2.3.tgz",
           mac.binary.leopard.ver="bin/macosx/leopard/contrib/2.3/MyFancyPackge_1.2.3.tgz",
-          dependsOnMe=c("AnEvenFancierPackage","AMuchFancierPackage"),
+          dependsOnMe=c("PackageThatExposesMe"),
+          importsMe=c("AnEvenFancierPackage","AMuchFancierPackage"),
+          suggestsMe="PackageThatUsesMeInVignette",
           reposRoot="http://foo.bar.org")
 
 html <- htmlValue(pd)
