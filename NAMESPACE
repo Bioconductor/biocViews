@@ -1,3 +1,23 @@
+importMethodsFrom(graph,
+                  acc,
+                  adj,
+                  edges,
+                  inEdges,
+                  nodes,
+                  subGraph)
+
+importFrom(RBGL,
+           sp.between)
+
+importFrom(XML,
+           saveXML,
+           xmlNode,
+           xmlOutputDOM,
+           xmlTree)
+
+importFrom(tools,
+           write_PACKAGES)
+
 exportClasses("Htmlized",
 
               "PackageDetail", "pdAuthorMaintainerInfo", "pdVignetteInfo",

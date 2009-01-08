@@ -1,6 +1,5 @@
 
 showVoc <- function(g,outfile=tempfile()) {
- require(XML)
  top <- adj(g, nodes(g)[1])[[1]]
  dd <- xmlTree("a")
  dd$addTag("body", close=FALSE)
