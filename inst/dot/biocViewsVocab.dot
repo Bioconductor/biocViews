@@ -59,6 +59,7 @@ AssayTechnologies -> Sequencing;
 /* Microarray subview */
 Microarray -> OneChannel;
 Microarray -> TwoChannel;
+Microarray -> MultiChannel;
 
 
 /* BiologicalDomains subview */
