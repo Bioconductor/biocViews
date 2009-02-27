@@ -21,8 +21,8 @@ Software -> Annotation;
 Software -> AssayDomains;
 Software -> AssayTechnologies;
 Software -> BiologicalDomains;
-Software -> ComputationalDomains;
-Software -> Statistics;
+Software -> Computation/Infrastructure;
+Software -> Statistics/Bioinformatics;
 
 
 /* Annotation subview */
@@ -68,22 +68,22 @@ BiologicalDomains -> Genetics;
 BiologicalDomains -> Proteomics;
 
 
-/* computationalDomains subview */
-ComputationalDomains -> DataImport;
-ComputationalDomains -> GraphsAndNetworks;
-ComputationalDomains -> GUI;
-ComputationalDomains -> Infrastructure;
-ComputationalDomains -> Preprocessing;
-ComputationalDomains -> QualityControl;
-ComputationalDomains -> Visualization;
+/* Computation/Infrastructure subview */
+Computation/Infrastructure -> DataImport;
+Computation/Infrastructure -> GraphsAndNetworks;
+Computation/Infrastructure -> GUI;
+Computation/Infrastructure -> Infrastructure;
+Computation/Infrastructure -> Visualization;
 
 
-/* Statistics subview */
-Statistics -> Clustering;
-Statistics -> Classification;
-Statistics -> MultipleComparisons;
-Statistics -> TimeCourse;
-Statistics -> SequenceMatching;
+/* Statistics/Bioinformatics subview */
+Statistics/Bioinformatics -> Clustering;
+Statistics/Bioinformatics -> Classification;
+Statistics/Bioinformatics -> MultipleComparisons;
+Statistics/Bioinformatics -> Preprocessing;
+Statistics/Bioinformatics -> QualityControl;
+Statistics/Bioinformatics -> SequenceMatching;
+Statistics/Bioinformatics -> TimeCourse;
 
 
 
