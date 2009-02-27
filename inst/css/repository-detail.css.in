@@ -1,6 +1,6 @@
 body
 {
-    background-color: @BACKGROUND_COLOR@
+    background-color: @BACKGROUND_COLOR@;
     margin-left:10%;       
     margin-right:10%;       
 }
