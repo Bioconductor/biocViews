@@ -15,7 +15,8 @@ repository.
 Package: \tab biocViews\cr
 Version: \tab 1.11.4\cr
 Depends: \tab R (>= 2.4.0), methods, utils\cr
-Imports: \tab tools, graph (>= 1.9.26), RBGL (>= 1.13.5), XML\cr
+Imports: \tab tools, Biobase, graph (>= 1.9.26), RBGL (>= 1.13.5), XML\cr
+Suggests: \tab Biobase\cr
 License: \tab Artistic-2.0\cr
 URL: \tab http://www.bioconductor.org/packages/release/BiocViews.html\cr
 biocViews: \tab Infrastructure\cr
