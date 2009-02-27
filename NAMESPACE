@@ -1,22 +1,12 @@
-importMethodsFrom(graph,
-                  acc,
-                  adj,
-                  edges,
-                  inEdges,
-                  nodes,
-                  subGraph)
+importMethodsFrom(graph, acc, adj, edges, inEdges, nodes, subGraph)
 
-importFrom(RBGL,
-           sp.between)
+importFrom(Biobase, copySubstitute)
 
-importFrom(XML,
-           saveXML,
-           xmlNode,
-           xmlOutputDOM,
-           xmlTree)
+importFrom(RBGL, sp.between)
 
-importFrom(tools,
-           write_PACKAGES)
+importFrom(XML, saveXML, xmlNode, xmlOutputDOM, xmlTree)
+
+importFrom(tools, write_PACKAGES)
 
 exportClasses("Htmlized",
 
@@ -29,12 +19,9 @@ exportClasses("Htmlized",
               "BiocView", "bvTitle", "bvPackageTable", "bvSubViews",
               "bvParentViews")
 
-
 exportMethods("coerce", "show", "htmlDoc", "htmlValue", "htmlFilename")
-
 
 export("writeBiocViews", "getBiocViews", "write_VIEWS", "write_REPOSITORY",
        "genReposControlFiles", "extractVignettes", "writeRepositoryHtml",
        "writePackageDetailHtml", "getSubTerms", "getBiocSubViews",
        "writeTopLevelView", "writeHtmlDoc", "write_SYMBOLS")
-

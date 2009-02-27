@@ -204,7 +204,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
 writeRepositoryHtml <- function(reposRoot, title, reposUrl="..",
                                 viewUrl="../..", reposFullUrl=reposUrl,
                                 downloadStatsUrl="", devHistoryUrl="",
-                                link.rel=TRUE) {
+                                link.rel=TRUE, backgroundColor="transparent") {
     ## Writes package description html under reposRoot/html and an index.html
     ## file under reposRoot.
     ##
@@ -212,18 +212,23 @@ writeRepositoryHtml <- function(reposRoot, title, reposUrl="..",
     ## prefix.
     pkgList <- loadPackageDetails(reposRoot, reposUrl, viewUrl, reposFullUrl,
                                   downloadStatsUrl, devHistoryUrl)
-    writePackageDetailHtml(pkgList, file.path(reposRoot, "html"))
+    writePackageDetailHtml(pkgList, file.path(reposRoot, "html"),
+                           backgroundColor=backgroundColor)
     writeRepositoryIndexHtml(pkgList, reposRoot, title, link.rel=link.rel)
 
     ## copy the css stylesheet
     cssName <- "repository-detail.css"
-    cssPath <- system.file(file.path("css", cssName), package="biocViews")
-    res <- try(file.copy(cssPath, file.path(reposRoot, cssName),
-                         overwrite=TRUE), silent=TRUE)
+    cssPath <- system.file(file.path("css", paste(cssName, ".in", sep="")),
+                           package="biocViews")
+    res <- try(copySubstitute(cssPath, file.path(reposRoot, cssName),
+                        symbolValues=list("BACKGROUND_COLOR"=backgroundColor)),
+               silent=TRUE)
+    res
 }
 
 
-writePackageDetailHtml <- function(pkgList, htmlDir="html") {
+writePackageDetailHtml <- function(pkgList, htmlDir="html",
+                                   backgroundColor="transparent") {
     if (!file.exists(htmlDir))
       dir.create(htmlDir)
     for (pkg in pkgList) {
@@ -233,10 +238,12 @@ writePackageDetailHtml <- function(pkgList, htmlDir="html") {
     }
     ## copy the package detail css stylesheet
     cssName <- "package-detail.css"
-    cssPath <- system.file(file.path("css", cssName), package="biocViews")
-    res <- try(file.copy(cssPath, file.path(htmlDir, cssName),
-                         overwrite=TRUE), silent=TRUE)
-
+    cssPath <- system.file(file.path("css", paste(cssName, ".in", sep="")),
+                           package="biocViews")
+    res <- try(copySubstitute(cssPath, file.path(htmlDir, cssName),
+                        symbolValues=list("BACKGROUND_COLOR"=backgroundColor)),
+               silent=TRUE)
+    res
 }
 
 

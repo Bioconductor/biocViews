@@ -1,4 +1,4 @@
-writeBiocViews <- function(bvList, dir) {
+writeBiocViews <- function(bvList, dir, backgroundColor="transparent") {
     ## bvList is a list of BiocViews objects
     ## dir is the output directory in which to write the views.
     for (bv in bvList) {
@@ -8,8 +8,12 @@ writeBiocViews <- function(bvList, dir) {
     }
     ## copy the css
     cssName <- "repository-detail.css"
-    cssPath <- system.file(file.path("css", cssName), package="biocViews")
-    res <- try(file.copy(cssPath, file.path(dir, cssName)), silent=TRUE)
+    cssPath <- system.file(file.path("css", paste(cssName, ".in", sep="")),
+                           package="biocViews")
+    res <- try(copySubstitute(cssPath, file.path(dir, cssName),
+                        symbolValues=list("BACKGROUND_COLOR"=backgroundColor)),
+               silent=TRUE)
+    res
 }
 
 

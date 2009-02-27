@@ -6,12 +6,14 @@
   objects to a series of HTML files.
 }
 \usage{
-writeBiocViews(bvList, dir)
+writeBiocViews(bvList, dir, backgroundColor="transparent")
 }
 \arguments{
   \item{bvList}{A list of \code{BiocView-class} objects}
   \item{dir}{A character vector giving the directory where the HTML
     files will be written.}
+  \item{backgroundColor}{A character vector giving the background color
+    for the body in the CSS file.}
 }
 \author{Seth Falcon}
 
@@ -21,4 +23,4 @@ writeBiocViews(bvList, dir)
   \code{\link{write_VIEWS}}
 }
 
-\keyword{utilities }
+\keyword{utilities}

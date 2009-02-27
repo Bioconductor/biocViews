@@ -1,5 +1,6 @@
 body
 {
+    background-color: @BACKGROUND_COLOR@
     margin-left:15%;       
     margin-right:15%;       
 }
