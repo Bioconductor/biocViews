@@ -103,6 +103,7 @@ setMethod("htmlValue", signature(object="pdVignetteInfo"),
           function(object) {
               dom <- xmlOutputDOM("table", attrs=c(class="vignette"))
               odd <- TRUE
+              rowClass <- "row_odd"
               if (length(object@vignettes) > 0) {
                   for (i in seq_len(length(object@vignettes))) {
                       vigTitle <- if(length(object@vignetteTitles) >= i) {
@@ -111,7 +112,6 @@ setMethod("htmlValue", signature(object="pdVignetteInfo"),
                           basename(object@vignettes[i])
                       }
                       rowClass <- if(odd) "row_odd" else "row_even"
-                      odd <- !odd
                       dom$addTag("tr", attrs=c(class=rowClass), close=FALSE)
                       dom$addTag("td", close=FALSE)
                       vlink <-
@@ -119,11 +119,28 @@ setMethod("htmlValue", signature(object="pdVignetteInfo"),
                       dom$addTag("a", vigTitle, attrs=c(href=vlink))
                       dom$closeTag()
                       dom$closeTag() ## end tr
+                      odd <- !odd
                   }
               } else {
-                  dom$addTag("tr", attrs=c(class="row_odd"), close=FALSE)
+                  dom$addTag("tr", attrs=c(class=rowClass), close=FALSE)
                   dom$addTag("td", "No vignettes available")
                   dom$closeTag()
+                  odd <- !odd
+              }
+              rowClass <- if(odd) "row_odd" else "row_even"
+              if (length(object@manuals) > 0 && !is.na(object@manuals[1])) {
+                  dom$addTag("tr", attrs=c(class=rowClass), close=FALSE)
+                  dom$addTag("td", close=FALSE)
+                  mlink <- paste(object@reposRoot, object@manuals[1], sep="/")
+                  dom$addTag("a", "Reference Manual", attrs=c(href=mlink))
+                  dom$closeTag()
+                  dom$closeTag() ## end tr
+                  odd <- !odd
+              } else {
+                  dom$addTag("tr", attrs=c(class=rowClass), close=FALSE)
+                  dom$addTag("td", "No reference manual available")
+                  dom$closeTag()
+                  odd <- !odd
               }
               dom$value()
           })
@@ -324,7 +341,7 @@ setMethod("htmlValue", signature(object="PackageDetail"),
               dom$addTag("tr", close=FALSE)
               dom$addTag("td", close=FALSE)
               ## Vignettes
-              dom$addTag("h3", "Vignettes (Documentation)")
+              dom$addTag("h3", "Documentation")
               dom$closeTag()
               dom$addTag("td", close=FALSE)
               ## Download links

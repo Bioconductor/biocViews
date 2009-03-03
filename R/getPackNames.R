@@ -15,6 +15,22 @@ readPackageInfo <- function(file, fields = NULL, all = FALSE) {
                                            }), collapse = ",\n")
                               })))
     }
+    ## TODO: make the 'manuals' path configurable
+    if ("Package" %in% colnames(info)) {
+        info <-
+          cbind(info,
+                "manuals" =
+                unlist(lapply(info[,"Package"],
+                              function(pkg) {
+                                  man <-
+                                    file.path("manuals", pkg, "man",
+                                              paste(pkg, ".pdf", sep = ""))
+                                  if (file.exists(man))
+                                      man
+                                  else
+                                      NA_character_
+                              })))
+    }
     info
 }
 

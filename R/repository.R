@@ -25,6 +25,82 @@ genReposControlFiles <- function(reposRoot, contribPaths)
 }
 
 
+extractManuals <- function(reposRoot, srcContrib, destDir) {
+    ## Extract Rd man pages from source package tarballs and
+    ## convert to pdf documents
+    ##
+    ## reposRoot - Top level path for CRAN-style repos
+    ## srcContrib - Location of source packages
+    ## destDir - where to extract.
+    ##
+    ## Notes:
+    ## Under destDir, for tarball foo_1.2.3.tar.gz, you will
+    ## get destDir/foo/man/*.pdf
+    ##
+
+    if (missing(destDir))
+        destDir <- file.path(reposRoot, "manuals")
+
+    cleanUnpackDir <- function(tarball, unpackDir) {
+        ## Delete manuals from a previous extraction
+        pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
+        pkgDir <- file.path(unpackDir, pkg, "man")
+        rmRegex <- ".*\\.(pdf|Rd)$"
+        if (!file.exists(pkgDir))
+            return(FALSE)
+        oldFiles <- list.files(pkgDir, pattern=rmRegex, full.names=TRUE)
+        if (length(oldFiles) > 0)
+            try(file.remove(oldFiles), silent=TRUE)
+    }
+    
+    buildManualsFromTarball <- function(tarball, unpackDir=".") {
+        ## helper function to unpack pdf & Rnw files from the vig
+        manPat <- "--wildcards '*/man/*.Rd'"
+        tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, manPat)
+        cleanUnpackDir(tarball, unpackDir)
+        cat("Extracting man pages from", tarball, "\n")
+        ret <- system(tarCmd)
+        if (ret != 0)
+            warning("tar had non-zero exit status for man pages extract of: ", tarball)
+        else {
+            pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
+            pkgDir <- file.path(unpackDir, pkg, "man")
+            RCmd <- file.path(Sys.getenv("R_HOME"), "bin", "R")
+            Rd2pdfCmd <-
+              paste(RCmd, " CMD Rd2dvi --no-preview --pdf --output=", pkgDir, "/",
+                    pkg, ".pdf --title=", pkg, " ", pkgDir, "/*.Rd", sep = "")
+            cat("Building pdf reference manual for", pkg, "\n")
+            ret <- system(Rd2pdfCmd)
+            if (ret != 0)
+                warning("R had non-zero exit status for building ref man for: ", pkg)
+        }
+    }
+    
+    tarballs <- list.files(file.path(reposRoot, srcContrib),
+            pattern="\\.tar\\.gz$", full.names=TRUE)
+    if (!file.exists(destDir))
+        dir.create(destDir, recursive=TRUE)
+    if (!file.info(destDir)$isdir)
+        stop("destDir must specify a directory")
+    lapply(tarballs, buildManualsFromTarball, unpackDir=destDir)
+}
+
+
+getRefmanLinks <- function(pkgList, reposRootPath, refman.dir) {
+    unlist(lapply(pkgList, function(pkg) {
+        refmanSubDir <- "man"
+        refmanDir <- file.path(reposRootPath, refman.dir, pkg, refmanSubDir)
+        if (file.exists(refmanDir)) {
+            refmans <- list.files(refmanDir, pattern=".*\\.pdf$")
+            refmans <- paste(refman.dir, pkg, refmanSubDir, refmans, sep="/",
+                    collapse=", ")
+        } else
+            refmans <- NA_character_
+        refmans
+    }))
+}
+
+
 extractVignettes <- function(reposRoot, srcContrib, destDir) {
     ## Extract pdf vignettes from source package tarballs
     ##
@@ -44,7 +120,7 @@ extractVignettes <- function(reposRoot, srcContrib, destDir) {
         ## Delete vignettes from a previous extraction
         pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
         pkgDir <- file.path(unpackDir, pkg, "inst", "doc")
-        rmRegex <- ".*\\.(pdf|Rnw)$$"
+        rmRegex <- ".*\\.(pdf|Rnw)$"
         if (!file.exists(pkgDir))
           return(FALSE)
         oldFiles <- list.files(pkgDir, pattern=rmRegex, full.names=TRUE)
@@ -74,8 +150,7 @@ extractVignettes <- function(reposRoot, srcContrib, destDir) {
 
 
 getVignetteLinks <- function(pkgList, reposRootPath, vignette.dir) {
-    vigList <- list()
-    for (pkg in pkgList) {
+    unlist(lapply(pkgList, function(pkg) {
         vigSubDir <- "inst/doc"
         vigDir <- file.path(reposRootPath, vignette.dir, pkg, vigSubDir)
         if (file.exists(vigDir)) {
@@ -83,11 +158,9 @@ getVignetteLinks <- function(pkgList, reposRootPath, vignette.dir) {
             vigs <- paste(vignette.dir, pkg, vigSubDir, vigs, sep="/",
                           collapse=", ")
         } else
-          vigs <- NA
-        vigList[[pkg]] <- vigs
-    }
-    ## use unlist, as.character does NA --> "NA" ?!
-    unlist(vigList)
+          vigs <- NA_character_
+        vigs
+    }))
 }
 
 
@@ -140,7 +213,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     type <- match.arg(type)
 
     ## Read REPOSITORY file for contrib path info
-    reposInfo <- readPackageInfo(file.path(reposRootPath, "REPOSITORY"))
+    reposInfo <- read.dcf(file.path(reposRootPath, "REPOSITORY"))
     provided <- strsplit(reposInfo[, "provides"], ", *")[[1]]
 
     ## Use code from tools to build a matrix of package info
@@ -172,7 +245,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
             next
         }
         readOk <- tryCatch({
-            cDat <- readPackageInfo(packagesFile)
+            cDat <- read.dcf(packagesFile)
             TRUE
         }, error=function(e) FALSE)
         if (!readOk)

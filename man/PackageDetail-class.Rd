@@ -61,8 +61,8 @@ Objects can be created by calls of the form \code{new("PackageDetail", ...)}.
     version string for the OS X Leopard binary package }
     \item{\code{downloadStatsUrl}:}{Object of class \code{"character"} An
     optional URL for the download history statistics. }
-    \item{\code{manuals}:}{Object of class \code{"character"} Not used.
-    Intended to hold paths to pdf manuals in the repository}
+    \item{\code{manuals}:}{Object of class \code{"character"} giving paths to
+    reference manual pdf files in the repository}
     \item{\code{dependsOnMe}:}{Object of class \code{"character"} giving
     packages found in the repository that depend on this package}
     \item{\code{importsMe}:}{Object of class \code{"character"} giving

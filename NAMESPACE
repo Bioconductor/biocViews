@@ -22,6 +22,6 @@ exportClasses("Htmlized",
 exportMethods("coerce", "show", "htmlDoc", "htmlValue", "htmlFilename")
 
 export("writeBiocViews", "getBiocViews", "write_VIEWS", "write_REPOSITORY",
-       "genReposControlFiles", "extractVignettes", "writeRepositoryHtml",
-       "writePackageDetailHtml", "getSubTerms", "getBiocSubViews",
-       "writeTopLevelView", "writeHtmlDoc", "write_SYMBOLS")
+       "genReposControlFiles", "extractVignettes", "extractManuals",
+       "writeRepositoryHtml", "writePackageDetailHtml", "getSubTerms",
+       "getBiocSubViews", "writeTopLevelView", "writeHtmlDoc", "write_SYMBOLS")
