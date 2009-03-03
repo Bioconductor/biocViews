@@ -44,7 +44,7 @@ extractVignettes <- function(reposRoot, srcContrib, destDir) {
         ## Delete vignettes from a previous extraction
         pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
         pkgDir <- file.path(unpackDir, pkg, "inst", "doc")
-        rmRegex <- ".*\\.pdf$"
+        rmRegex <- ".*\\.(pdf|Rnw)$$"
         if (!file.exists(pkgDir))
           return(FALSE)
         oldFiles <- list.files(pkgDir, pattern=rmRegex, full.names=TRUE)
@@ -53,8 +53,8 @@ extractVignettes <- function(reposRoot, srcContrib, destDir) {
     }
     
     extractVignettesFromTarball <- function(tarball, unpackDir=".") {
-        ## helper function to unpack pdf files from the vig
-        vigPat <- "--wildcards '*/doc/*.pdf'"
+        ## helper function to unpack pdf & Rnw files from the vig
+        vigPat <- "--wildcards '*/doc/*.[pR][dn][fw]'"
         tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, vigPat)
         cleanUnpackDir(tarball, unpackDir)
         cat("Extracting vignettes from", tarball, "\n")
@@ -69,7 +69,7 @@ extractVignettes <- function(reposRoot, srcContrib, destDir) {
       dir.create(destDir, recursive=TRUE)
     if (!file.info(destDir)$isdir)
       stop("destDir must specify a directory")
-    junk <- lapply(tarballs, extractVignettesFromTarball, unpackDir=destDir)
+    lapply(tarballs, extractVignettesFromTarball, unpackDir=destDir)
 }
 
 
@@ -111,8 +111,7 @@ write_REPOSITORY <- function(reposRootPath, contribPaths) {
         ##FIXME: gzfile writing segfaults for me
         ##outgz <- gzfile(file.path(dir, gzname), "wt")
         for (i in seq(length = nrow(db))) {
-            dbi <- db[i, !(is.na(db[i, ]) | (db[i, ] == 
-                                                   "")), drop = FALSE]
+            dbi <- db[i, !(is.na(db[i, ]) | (db[i, ] == "")), drop = FALSE]
             write.dcf(dbi, file = out)
             ##FIXME: writing to the gz file segfaults for me
             ##write.dcf(dbi, file = outgz)
@@ -141,7 +140,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     type <- match.arg(type)
 
     ## Read REPOSITORY file for contrib path info
-    reposInfo <- read.dcf(file.path(reposRootPath, "REPOSITORY"))
+    reposInfo <- readPackageInfo(file.path(reposRootPath, "REPOSITORY"))
     provided <- strsplit(reposInfo[, "provides"], ", *")[[1]]
 
     ## Use code from tools to build a matrix of package info
@@ -160,7 +159,8 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
         cPath <- reposInfo[, ctype]
         buildPkgPath <- function(pkgs, vers) {
             ext <- switch(ctype, source=".tar.gz", win.binary=".zip",
-                          mac.binary=, mac.binary.universal=, mac.binary.leopard=".tgz",
+                          mac.binary=, mac.binary.universal=,
+                          mac.binary.leopard=".tgz",
                           stop("unknown type"))
             paste(cPath, "/", pkgs, "_", vers, ext, sep="")
         }
@@ -172,7 +172,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
             next
         }
         readOk <- tryCatch({
-            cDat <- read.dcf(packagesFile)
+            cDat <- readPackageInfo(packagesFile)
             TRUE
         }, error=function(e) FALSE)
         if (!readOk)

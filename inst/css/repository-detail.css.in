@@ -8,18 +8,18 @@ body
 
 p.description
 {
-    background-color: #E7EFF8;
+    background-color: #CE8;
     margin-right:20%;
 }
 
 tr.row_odd
 {
-    background-color: #9EBFE3;
+    background-color: #FFF;
 }
 
 tr.row_even
 {
-    background-color: #E7EFF8;
+    background-color: #DDD;
 }
 
 td 

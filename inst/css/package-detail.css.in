@@ -7,18 +7,18 @@ body
 
 p.description
 {
-    background-color: #9EBFE3;
+    background-color: #CE8;
     padding:10px;
 }
 
 tr.row_odd
 {
-    background-color: #9EBFE3;
+    background-color: #FFF;
 }
 
 tr.row_even
 {
-    background-color: #E7EFF8;
+    background-color: #DDD;
 }
 
 td 
@@ -51,5 +51,5 @@ table.author_info {
 }
 
 div.installInstruct {
-    background-color: #FFFF66;
+    background-color: #FFF;
 }

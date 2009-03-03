@@ -49,6 +49,8 @@ Objects can be created by calls of the form \code{new("PackageDetail", ...)}.
       DESCRIPTION }
     \item{\code{vignettes}:}{Object of class \code{"character"} giving
     paths to vignette pdf files in the repository }
+    \item{\code{vignetteTitles}:}{Object of class \code{"character"} giving
+    the titles of the vignette files in the repository }
     \item{\code{source.ver}:}{Object of class \code{"character"} version
     string for the source package}
     \item{\code{win.binary.ver}:}{Object of class \code{"character"}
@@ -127,12 +129,12 @@ pd <- new("PackageDetail",
           Imports="ASimplePackage",
           Suggests="MyDataPackage",
           biocViews="Infrastructure",
-          vignettes=c("vignettes/MyFancyPackage/inst/doc/MFP1.pdf",
-            "vignettes/MyFancyPackage/inst/doc/MFP2.pdf"),
+          vignettes="vignettes/MyFancyPackage/inst/doc/MFP1.pdf,\nvignettes/MyFancyPackage/inst/doc/MFP2.pdf",
+          vignetteTitles="MFP1 Document,\nMFP2 Document",
           source.ver="src/contrib/MyFancyPackage_1.2.3.tar.gz",
-          win.binary.ver="bin/windows/contrib/2.3/MyFancyPackge_1.2.2.zip",
-          mac.binary.universal.ver="bin/macosx/universal/contrib/2.3/MyFancyPackge_1.2.3.tgz",
-          mac.binary.leopard.ver="bin/macosx/leopard/contrib/2.3/MyFancyPackge_1.2.3.tgz",
+          win.binary.ver="bin/windows/contrib/2.3/MyFancyPackage_1.2.2.zip",
+          mac.binary.universal.ver="bin/macosx/universal/contrib/2.3/MyFancyPackage_1.2.3.tgz",
+          mac.binary.leopard.ver="bin/macosx/leopard/contrib/2.3/MyFancyPackage_1.2.3.tgz",
           dependsOnMe=c("PackageThatExposesMe"),
           importsMe=c("AnEvenFancierPackage","AMuchFancierPackage"),
           suggestsMe="PackageThatUsesMeInVignette",

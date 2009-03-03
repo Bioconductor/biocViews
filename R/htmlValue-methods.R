@@ -104,13 +104,19 @@ setMethod("htmlValue", signature(object="pdVignetteInfo"),
               dom <- xmlOutputDOM("table", attrs=c(class="vignette"))
               odd <- TRUE
               if (length(object@vignettes) > 0) {
-                  for (vig in object@vignettes) {
+                  for (i in seq_len(length(object@vignettes))) {
+                      vigTitle <- if(length(object@vignetteTitles) >= i) {
+                          object@vignetteTitles[i]
+                      } else {
+                          basename(object@vignettes[i])
+                      }
                       rowClass <- if(odd) "row_odd" else "row_even"
                       odd <- !odd
                       dom$addTag("tr", attrs=c(class=rowClass), close=FALSE)
                       dom$addTag("td", close=FALSE)
-                      vlink <- paste(object@reposRoot, vig, sep="/")
-                      dom$addTag("a", basename(vig), attrs=c(href=vlink))
+                      vlink <-
+                        paste(object@reposRoot, object@vignettes[i], sep="/")
+                      dom$addTag("a", vigTitle, attrs=c(href=vlink))
                       dom$closeTag()
                       dom$closeTag() ## end tr
                   }

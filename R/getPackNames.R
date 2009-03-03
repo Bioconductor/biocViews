@@ -1,3 +1,24 @@
+readPackageInfo <- function(file, fields = NULL, all = FALSE) {
+    info <- read.dcf(file = file, fields = fields, all = all)
+    if ("vignettes" %in% colnames(info)) {
+        info <-
+          cbind(info,
+                "vignetteTitles" =
+                unlist(lapply(strsplit(info[,"vignettes"], ",\n"),
+                              function(vigs) {
+                              paste(lapply(sub("pdf$", "Rnw", vigs),
+                                           function(v) {
+                                           if (file.exists(v))
+                                               tools:::vignetteInfo(v)[["title"]]
+                                           else
+                                               sub("Rnw$", "pdf", basename(v))
+                                           }), collapse = ",\n")
+                              })))
+    }
+    info
+}
+
+
 writeBiocViews <- function(bvList, dir, backgroundColor="transparent") {
     ## bvList is a list of BiocViews objects
     ## dir is the output directory in which to write the views.
@@ -79,7 +100,7 @@ getPacksAndViews <- function(reposURL, vocab, defaultView, local=FALSE)
     ## FIXME: needs error checking and to look for VIEWS.gz first
     z <- download.file(url=paste(reposURL, "VIEWS", sep="/"), destfile=tmpf,
                        method=method, cacheOK=FALSE, quiet=TRUE, mode="wb")
-    pmat <- read.dcf(file=tmpf)
+    pmat <- readPackageInfo(file=tmpf)
     ns <- pmat[,"Package"]
     ## The DESCRIPTION fields we try to parse for tags
     DESC_FIELDS <- c("biocViews")

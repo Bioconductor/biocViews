@@ -10,7 +10,7 @@ loadPackageDetails <- function(reposRoot, reposUrl="..", viewUrl="../..", reposF
     
     ## FIXME: should allow reading VIEWS from a URL also.
     viewsFile <- file.path(reposRoot, "VIEWS")
-    pkgMat <- read.dcf(viewsFile)
+    pkgMat <- readPackageInfo(viewsFile)
     createPackageDetailList(pkgMat, reposUrl, viewUrl, reposFullUrl, downloadStatsUrl,
                             devHistoryUrl)
 }
@@ -73,7 +73,8 @@ setDependsOnMeImportsMeSuggestsMe <- function(pkgDetailsList) {
 
 viewRowToPackageDetail <- function(row) {
     ## Given a row from a VIEWS package description matrix as returned by
-    ## calling read.dcf on a VIEWS file, return a PackageDetail instance.
+    ## calling read.dcf through readPackageInfo on a VIEWS file, return a
+    ## PackageDetail instance.
 
     pkg <- new("PackageDetail")
     ## assume we have names on the row
@@ -120,6 +121,7 @@ viewRowToPackageDetail <- function(row) {
     pkg@Imports <- cleanPkgField(pkg@Imports)
     pkg@biocViews <- cleanField(pkg@biocViews)
     pkg@vignettes <- cleanVigs(pkg@vignettes)
+    pkg@vignetteTitles <- cleanVigs(pkg@vignetteTitles)
     
     return(pkg)
 }
