@@ -10,8 +10,13 @@ readPackageInfo <- function(file, fields = NULL, all = FALSE) {
                                            function(v) {
                                            if (file.exists(v))
                                                tools:::vignetteInfo(v)[["title"]]
-                                           else
-                                               sub("Rnw$", "pdf", basename(v))
+                                           else {
+                                               v <- sub("Rnw$", "rnw", v)
+                                               if (file.exists(v))
+                                                   tools:::vignetteInfo(v)[["title"]]
+                                               else
+                                                   sub("rnw$", "pdf", basename(v))
+                                           }
                                            }), collapse = ",\n")
                               })))
     }

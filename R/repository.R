@@ -54,7 +54,7 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
     }
     
     buildManualsFromTarball <- function(tarball, unpackDir=".") {
-        ## helper function to unpack pdf & Rnw files from the vig
+        ## helper function to unpack pdf & Rd files from the vig
         manPat <- "--wildcards '*/man/*.[Rr]d'"
         tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, manPat)
         cleanUnpackDir(tarball, unpackDir)
@@ -120,7 +120,7 @@ extractVignettes <- function(reposRoot, srcContrib, destDir) {
         ## Delete vignettes from a previous extraction
         pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
         pkgDir <- file.path(unpackDir, pkg, "inst", "doc")
-        rmRegex <- ".*\\.(pdf|Rnw)$"
+        rmRegex <- ".*\\.(pdf|Rnw|rnw)$"
         if (!file.exists(pkgDir))
           return(FALSE)
         oldFiles <- list.files(pkgDir, pattern=rmRegex, full.names=TRUE)
@@ -130,7 +130,7 @@ extractVignettes <- function(reposRoot, srcContrib, destDir) {
     
     extractVignettesFromTarball <- function(tarball, unpackDir=".") {
         ## helper function to unpack pdf & Rnw files from the vig
-        vigPat <- "--wildcards '*/doc/*.[pR][dn][fw]'"
+        vigPat <- "--wildcards '*/doc/*.[pRr][dn][fw]'"
         tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, vigPat)
         cleanUnpackDir(tarball, unpackDir)
         cat("Extracting vignettes from", tarball, "\n")
