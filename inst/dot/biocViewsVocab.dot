@@ -21,8 +21,8 @@ Software -> Annotation;
 Software -> AssayDomains;
 Software -> AssayTechnologies;
 Software -> BiologicalDomains;
-Software -> Computation/Infrastructure;
-Software -> Statistics/Bioinformatics;
+Software -> Infrastructure;
+Software -> Bioinformatics;
 
 
 /* Annotation subview */
