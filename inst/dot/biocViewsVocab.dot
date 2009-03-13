@@ -68,22 +68,22 @@ BiologicalDomains -> Genetics;
 BiologicalDomains -> Proteomics;
 
 
-/* Computation/Infrastructure subview */
-Computation/Infrastructure -> DataImport;
-Computation/Infrastructure -> GraphsAndNetworks;
-Computation/Infrastructure -> GUI;
-Computation/Infrastructure -> Infrastructure;
-Computation/Infrastructure -> Visualization;
+/* Infrastructure subview */
+Infrastructure -> DataImport;
+Infrastructure -> GraphsAndNetworks;
+Infrastructure -> GUI;
+Infrastructure -> Infrastructure;
+Infrastructure -> Visualization;
 
 
-/* Statistics/Bioinformatics subview */
-Statistics/Bioinformatics -> Clustering;
-Statistics/Bioinformatics -> Classification;
-Statistics/Bioinformatics -> MultipleComparisons;
-Statistics/Bioinformatics -> Preprocessing;
-Statistics/Bioinformatics -> QualityControl;
-Statistics/Bioinformatics -> SequenceMatching;
-Statistics/Bioinformatics -> TimeCourse;
+/* Bioinformatics subview */
+Bioinformatics -> Clustering;
+Bioinformatics -> Classification;
+Bioinformatics -> MultipleComparisons;
+Bioinformatics -> Preprocessing;
+Bioinformatics -> QualityControl;
+Bioinformatics -> SequenceMatching;
+Bioinformatics -> TimeCourse;
 
 
 
