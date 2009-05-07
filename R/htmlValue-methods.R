@@ -321,7 +321,7 @@ setMethod("htmlValue", signature(object="PackageDetail"),
               authorInfo <- as(object, "pdAuthorMaintainerInfo")
               dom$addNode(htmlValue(authorInfo))
 
-              ## install instructions
+              ## Installation Instructions
               dom$addTag("div", attrs=c(class="installInstruct"), close=FALSE)
               dom$addTag("p", paste("To install this package,",
                                     "start R and enter:"),
@@ -332,39 +332,22 @@ setMethod("htmlValue", signature(object="PackageDetail"),
                                "http://bioconductor.org/biocLite.R\")",
                                "\n    biocLite(\"", object@Package, "\")",
                                sep=""))
-              dom$closeTag()            # div
+              dom$closeTag() # div
 
-              ## Create a table for Vignettes and Downloads
-              ## FIXME: clean this up so it is readable!
-              dom$addTag("table", attrs=c(class="vigsAndDownloads"),
-                         close=FALSE)
-              dom$addTag("tr", close=FALSE)
-              dom$addTag("td", close=FALSE)
-              ## Vignettes
+              ## Documentation
               dom$addTag("h3", "Documentation")
-              dom$closeTag()
-              dom$addTag("td", close=FALSE)
-              ## Download links
-              dom$addTag("h3", "Package Downloads")
-              dom$closeTag()            # td
-              dom$closeTag()            # tr
-
-              dom$addTag("tr", close=FALSE)
-              dom$addTag("td", close=FALSE)
               vigInfo <- as(object, "pdVignetteInfo")
               dom$addNode(htmlValue(vigInfo))
-              dom$closeTag()
-              dom$addTag("td", close=FALSE)
-              downloadInfo <- as(object, "pdDownloadInfo")
-              dom$addNode(htmlValue(downloadInfo))
-              dom$closeTag() ## td
-              dom$closeTag() ## tr
-              dom$closeTag() ## table
-              
+
               ## Details
               dom$addTag("h3", "Details")
               detailsInfo <- as(object, "pdDetailsInfo")
               dom$addNode(htmlValue(detailsInfo))
+
+              ## Package Downloads
+              dom$addTag("h3", "Package Downloads")
+              downloadInfo <- as(object, "pdDownloadInfo")
+              dom$addNode(htmlValue(downloadInfo))
 
               return(dom$value())
           })
