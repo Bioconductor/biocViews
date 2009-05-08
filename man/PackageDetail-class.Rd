@@ -49,6 +49,8 @@ Objects can be created by calls of the form \code{new("PackageDetail", ...)}.
       DESCRIPTION }
     \item{\code{vignettes}:}{Object of class \code{"character"} giving
     paths to vignette pdf files in the repository }
+    \item{\code{vignetteScripts}:}{Object of class \code{"character"} giving
+    paths to vignette Stangled R files in the repository }
     \item{\code{vignetteTitles}:}{Object of class \code{"character"} giving
     the titles of the vignette files in the repository }
     \item{\code{source.ver}:}{Object of class \code{"character"} version
@@ -130,6 +132,7 @@ pd <- new("PackageDetail",
           Suggests="MyDataPackage",
           biocViews="Infrastructure",
           vignettes="vignettes/MyFancyPackage/inst/doc/MFP1.pdf,\nvignettes/MyFancyPackage/inst/doc/MFP2.pdf",
+          vignetteScripts="vignettes/MyFancyPackage/inst/doc/MFP1.R\nvignettes/MyFancyPackage/inst/doc/MFP2.R",
           vignetteTitles="MFP1 Document,\nMFP2 Document",
           source.ver="src/contrib/MyFancyPackage_1.2.3.tar.gz",
           win.binary.ver="bin/windows/contrib/2.3/MyFancyPackage_1.2.2.zip",

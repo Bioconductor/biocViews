@@ -3,6 +3,30 @@ readPackageInfo <- function(file, fields = NULL, all = FALSE) {
     if ("vignettes" %in% colnames(info)) {
         info <-
           cbind(info,
+                "vignetteScripts" =
+                unlist(lapply(strsplit(info[,"vignettes"], ",\n"),
+                              function(vigs) {
+                              paste(lapply(sub("pdf$", "Rnw", vigs),
+                                           function(v) {
+                                           if (file.exists(v)) {
+                                               Stangle(v)
+                                               rfile <- sub("Rnw$", "R", basename(v))
+                                               file.copy(rfile, dirname(v))
+                                               file.remove(rfile)
+                                               sub("Rnw$", "R", v)
+                                           } else {
+                                               v <- sub("Rnw$", "rnw", v)
+                                               if (file.exists(v)) {
+                                                   Stangle(v)
+                                                   rfile <- sub("rnw$", "R", basename(v))
+                                                   file.copy(rfile, dirname(v))
+                                                   file.remove(rfile)
+                                                   sub("rnw$", "R", v)
+                                               } else
+                                                   ""
+                                           }
+                                           }), collapse = ",\n")
+                              })),
                 "vignetteTitles" =
                 unlist(lapply(strsplit(info[,"vignettes"], ",\n"),
                               function(vigs) {

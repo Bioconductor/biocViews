@@ -113,11 +113,20 @@ setMethod("htmlValue", signature(object="pdVignetteInfo"),
                       }
                       rowClass <- if(odd) "row_odd" else "row_even"
                       dom$addTag("tr", attrs=c(class=rowClass), close=FALSE)
+                      dom$addTag("th", vigTitle)
                       dom$addTag("td", close=FALSE)
-                      vlink <-
+                      pdflink <-
                         paste(object@reposRoot, object@vignettes[i], sep="/")
-                      dom$addTag("a", vigTitle, attrs=c(href=vlink))
+                      dom$addTag("a", "PDF", attrs=c(href=pdflink))
                       dom$closeTag()
+                      if (nchar(object@vignetteScripts[i]) > 0) {
+                          dom$addTag("td", close=FALSE)
+                          Rlink <-
+                            paste(object@reposRoot, object@vignetteScripts[i],
+                                  sep="/")
+                          dom$addTag("a", "R Script", attrs=c(href=Rlink))
+                          dom$closeTag()
+                      }
                       dom$closeTag() ## end tr
                       odd <- !odd
                   }

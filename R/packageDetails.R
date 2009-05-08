@@ -121,6 +121,7 @@ viewRowToPackageDetail <- function(row) {
     pkg@Imports <- cleanPkgField(pkg@Imports)
     pkg@biocViews <- cleanField(pkg@biocViews)
     pkg@vignettes <- cleanVigs(pkg@vignettes)
+    pkg@vignetteScripts <- cleanVigs(pkg@vignetteScripts)
     pkg@vignetteTitles <- cleanVigs(pkg@vignetteTitles)
     
     return(pkg)
