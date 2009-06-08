@@ -9,29 +9,20 @@
 
 digraph G {
 
-/* Root */
+/****************************************************************************
+ *                               Software                                   *
+ ****************************************************************************/
 BiocViews -> Software;
-BiocViews -> AnnotationData;
-BiocViews -> ExperimentData;
 
-
-/* Software */
+/* Software -> Annotation */
 Software -> Annotation;
-Software -> AssayDomains;
-Software -> AssayTechnologies;
-Software -> BiologicalDomains;
-Software -> Infrastructure;
-Software -> Bioinformatics;
-
-
-/* Annotation subview */
 Annotation -> GO;
 Annotation -> Pathways;
 Annotation -> ProprietaryPlatforms;
 Annotation -> ReportWriting;
 
-
-/* AssayDomains subview */
+/* Software -> AssayDomains */
+Software -> AssayDomains;
 AssayDomains -> aCGH;
 AssayDomains -> CellBasedAssays;
 AssayDomains -> ChIPchip;
@@ -45,37 +36,37 @@ AssayDomains -> GeneticVariability;
 AssayDomains -> SNP;
 AssayDomains -> Transcription;
 
-
-/* AssayTechnologies subview */
+/* Software -> AssayTechnologies */
+Software -> AssayTechnologies;
 AssayTechnologies -> Microarray;
+Microarray -> OneChannel;
+Microarray -> TwoChannel;
+Microarray -> MultiChannel;
 AssayTechnologies -> MicrotitrePlateAssay;
 AssayTechnologies -> MassSpectrometry;
 AssayTechnologies -> SAGE;
 AssayTechnologies -> FlowCytometry;
 AssayTechnologies -> Sequencing;
+AssayTechnologies -> HighThroughputSequencing;
+HighThroughputSequencing -> ChIPseq;
+HighThroughputSequencing -> RNAseq;
 
-
-/* Microarray subview */
-Microarray -> OneChannel;
-Microarray -> TwoChannel;
-Microarray -> MultiChannel;
-
-
-/* BiologicalDomains subview */
+/* Software -> BiologicalDomains */
+Software -> BiologicalDomains;
 BiologicalDomains -> CellBiology;
 BiologicalDomains -> Genetics;
 BiologicalDomains -> Proteomics;
 
-
-/* Infrastructure subview */
+/* Software -> Infrastructure */
+Software -> Infrastructure;
 Infrastructure -> DataImport;
 Infrastructure -> DataRepresentation;
 Infrastructure -> GraphsAndNetworks;
 Infrastructure -> GUI;
 Infrastructure -> Visualization;
 
-
-/* Bioinformatics subview */
+/* Software -> Bioinformatics */
+Software -> Bioinformatics;
 Bioinformatics -> Clustering;
 Bioinformatics -> Classification;
 Bioinformatics -> MultipleComparisons;
@@ -86,9 +77,12 @@ Bioinformatics -> TimeCourse;
 
 
 
-/* AnnotationData */
+/****************************************************************************
+ *                            AnnotationData                                *
+ ****************************************************************************/
+BiocViews -> AnnotationData;
 
-/* AnnotationData Organisms */
+/* AnnotationData -> Organism */
 AnnotationData -> Organism;
 Organism -> Anopheles_gambiae;
 Organism -> Arabidopsis_thaliana;
@@ -127,15 +121,8 @@ Organism -> Xenopus_laevis;
 Organism -> Xenopus_tropicalis;
 Organism -> Zea_mays;
 
-
-/* AnnotationData Misc */
+/* AnnotationData -> ChipManufacturer */
 AnnotationData -> ChipManufacturer;
-AnnotationData -> CustomCDF;
-AnnotationData -> CustomArray;
-AnnotationData -> CustomDBSchema;
-AnnotationData -> FunctionalAnnotation;
-AnnotationData -> SequenceAnnotation;
-
 ChipManufacturer -> AffymetrixChip;
 ChipManufacturer -> AgilentChip;
 ChipManufacturer -> ClonetechChip;
@@ -147,14 +134,27 @@ ChipManufacturer -> RNG_MRCChip;
 ChipManufacturer -> RocheChip;
 ChipManufacturer -> UniversityHealthNetwork;
 
-/* AnnotationData Chip CustomCDF */
+/* AnnotationData -> CustomCDF */
+AnnotationData -> CustomCDF;
 CustomCDF -> GACustomCDF;
 CustomCDF -> MBNICustomCDF;
 
-/* AnnotationData CustomDBSchema */
+/* AnnotationData -> CustomArray */
+AnnotationData -> CustomArray;
+
+/* AnnotationData -> CustomDBSchema */
+AnnotationData -> CustomDBSchema;
 CustomDBSchema -> GeneCardsCustomSchema;
 
-/* AnnotationData Chip Names */
+/* AnnotationData -> FunctionalAnnotation */
+AnnotationData -> FunctionalAnnotation;
+
+/* AnnotationData -> SequenceAnnotation */
+AnnotationData -> SequenceAnnotation;
+SequenceAnnotation -> GenomicSequence;
+SequenceAnnotation -> miRNA;
+
+/* AnnotationData -> ChipName */
 AnnotationData -> ChipName;
 ChipName -> adme16cod;
 ChipName -> ag;
@@ -258,27 +258,28 @@ ChipName -> hcgi8k;
 
 
 
-/* ExperimentData */
-ExperimentData -> BiologicalDomains
+/****************************************************************************
+ *                            ExperimentData                                *
+ ****************************************************************************/
+BiocViews -> ExperimentData;
+
+/* ExperimentData -> Cancer */
 ExperimentData -> Cancer;
+Cancer -> Breast;
+Cancer -> Leukemia;
+Cancer -> Ovarian;
+Cancer -> Prostate;
+
+/* others */
 ExperimentData -> CGH;
-ExperimentData -> ChIPchip;
+ExperimentData -> ChIPchipData;
 ExperimentData -> HapMap;
-ExperimentData -> HighThroughputSequencing;
+ExperimentData -> HighThroughputSequencingData;
 ExperimentData -> HIV;
 ExperimentData -> Proteome;
 ExperimentData -> QualityAndTesting;
 ExperimentData -> SpikeIns;
 ExperimentData -> StemCells;
 ExperimentData -> Yeast;
-
-
-/* Cancer subview*/
-Cancer -> Breast;
-Cancer -> Leukemia;
-Cancer -> Ovarian;
-Cancer -> Prostate;
-
-
 
 }
