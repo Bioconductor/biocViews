@@ -8,8 +8,9 @@ GXL=inst/dot/biocViewsVocab.gxl
 RDA=data/biocViewsVocab.rda
 SQLITE=data/biocViewsVocab.sqlite
 
-$DOT2GXL $DOT > $GXL
+rm -f $RDA $SQLITE
 
+$DOT2GXL $DOT > $GXL
 
 R_SCRIPT="library('graph')"
 R_SCRIPT="$R_SCRIPT; con <- file('$GXL', open='r')"
@@ -26,5 +27,7 @@ R_SCRIPT="$R_SCRIPT; if(!res) warning('Failed writing data to database')"
 R_SCRIPT="$R_SCRIPT; res <- dbDisconnect(con)}"
 
 echo "$R_SCRIPT" | $R_EXE --slave
+
+rm -f $GXL
 
 echo "DONE"
