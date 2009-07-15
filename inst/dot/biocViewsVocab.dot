@@ -29,7 +29,6 @@ AssayDomains -> ChIPchip;
 AssayDomains -> CopyNumberVariants;
 AssayDomains -> CpGIsland;
 AssayDomains -> DifferentialExpression;
-AssayDomains -> DNACopyNumber;
 AssayDomains -> DNAMethylation;
 AssayDomains -> ExonArray;
 AssayDomains -> GeneExpression;
