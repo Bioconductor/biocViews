@@ -266,13 +266,18 @@ BiocViews -> ExperimentData;
 /* ExperimentData -> Cancer */
 ExperimentData -> Cancer;
 Cancer -> Breast;
+Cancer -> Colon;
+Cancer -> Kidney;
 Cancer -> Leukemia;
+Cnacer -> Lung;
 Cancer -> Ovarian;
 Cancer -> Prostate;
 
 /* others */
 ExperimentData -> CGH;
 ExperimentData -> ChIPchipData;
+ExperimentData -> E.ColiData;
+ExperimentData -> FlowCytData;
 ExperimentData -> HapMap;
 ExperimentData -> HighThroughputSequencingData;
 ExperimentData -> HIV;
