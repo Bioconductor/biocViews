@@ -1,7 +1,7 @@
 Package: biocViews
-Version: 1.13.6
+Version: 1.13.7
 Title: Categorized views of R package repositories
-Author: VJ Carey <stvjc@channing.harvard.edu>, BJ Harshfield <rebjh@channing.harvard.edu>, S Falcon <sfalcon@fhcrc.org>
+Author: VJ Carey <stvjc@channing.harvard.edu>, BJ Harshfield <rebjh@channing.harvard.edu>, S Falcon <sfalcon@fhcrc.org> 
 Maintainer: Biocore Team c/o BioC user list <bioconductor@stat.math.ethz.ch>
 Depends: R (>= 2.4.0), methods, utils
 Imports: tools, Biobase, graph (>= 1.9.26), RBGL (>= 1.13.5), XML

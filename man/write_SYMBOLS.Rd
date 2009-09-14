@@ -34,7 +34,7 @@ write_SYMBOLS(dir, verbose = FALSE, source.dirs=FALSE)
 }
 \author{S. Falcon}
 \seealso{
-  \code{\link[tools]{write_PACKAGES}}
+  \code{\link[tools:writePACKAGES]{write_PACKAGES}}
   \code{\link{write_VIEWS}}
 }
 \keyword{utilities}

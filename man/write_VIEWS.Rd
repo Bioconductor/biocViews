@@ -37,7 +37,7 @@ write_VIEWS(reposRootPath, fields = NULL,
 }
 
 \seealso{
-  \code{\link[tools]{write_PACKAGES}},
+  \code{\link[tools:writePACKAGES]{write_PACKAGES}},
   \code{\link{extractVignettes}},
   \code{\link{genReposControlFiles}},
   \code{\link{write_REPOSITORY}}
