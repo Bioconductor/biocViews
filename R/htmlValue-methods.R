@@ -105,15 +105,13 @@ setMethod("htmlValue", signature(object="pdVignetteInfo"),
               odd <- TRUE
               rowClass <- "row_odd"
               if (length(object@vignettes) > 0) {
-                  for (i in seq_len(length(object@vignettes))) {
-                      vigTitle <- if(length(object@vignetteTitles) >= i) {
-                          object@vignetteTitles[i]
-                      } else {
-                          basename(object@vignettes[i])
-                      }
+                  vignetteTitles <-
+                    ifelse(nzchar(object@vignetteTitles), object@vignetteTitles,
+                           basename(object@vignettes))
+                  for (i in order(vignetteTitles)) {
                       rowClass <- if(odd) "row_odd" else "row_even"
                       dom$addTag("tr", attrs=c(class=rowClass), close=FALSE)
-                      dom$addTag("th", vigTitle)
+                      dom$addTag("th", vignetteTitles[i])
                       dom$addTag("td", close=FALSE)
                       pdflink <-
                         paste(object@reposRoot, object@vignettes[i], sep="/")
