@@ -177,8 +177,10 @@ write_REPOSITORY <- function(reposRootPath, contribPaths) {
 ##         fields <- colnames(db[[1]])
 ##         db <- matrix(unlist(db), ncol = length(fields), byrow = TRUE)
 ##         colnames(db) <- fields
-        noPack <- is.na(db[, "Package"])
-        db[noPack, "Package"] <- db[noPack, "Bundle"]
+        if ("Bundle" %in% colnames(db)) {
+            noPack <- is.na(db[, "Package"])
+            db[noPack, "Package"] <- db[noPack, "Bundle"]
+        }
         gzname <- paste(fname, "gz", sep=".")
         out <- file(file.path(dir, fname), "wt")
         ##FIXME: gzfile writing segfaults for me
