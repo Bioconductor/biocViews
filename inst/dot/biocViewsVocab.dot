@@ -276,6 +276,7 @@ Cancer -> Prostate;
 /* others */
 ExperimentData -> CGH;
 ExperimentData -> ChIPchipData;
+ExperimentData -> ChIPseqData;
 ExperimentData -> EColiData;
 ExperimentData -> FlowCytData;
 ExperimentData -> HapMap;
@@ -283,6 +284,7 @@ ExperimentData -> HighThroughputSequencingData;
 ExperimentData -> HIV;
 ExperimentData -> Proteome;
 ExperimentData -> QualityAndTesting;
+ExperimentData -> RNAseqData;
 ExperimentData -> SpikeIns;
 ExperimentData -> StemCells;
 ExperimentData -> Yeast;
