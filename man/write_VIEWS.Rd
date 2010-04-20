@@ -12,7 +12,8 @@
 }
 \usage{
 write_VIEWS(reposRootPath, fields = NULL,
-            type = c("source", "mac.binary", "mac.binary.universal", "mac.binary.leopard", "win.binary"),
+            type = c("source", "win.binary", "win64.binary", "mac.binary",
+                     "mac.binary.universal", "mac.binary.leopard"),
             verbose = FALSE, vignette.dir = "vignettes")
 }
 \arguments{
@@ -21,12 +22,12 @@ write_VIEWS(reposRootPath, fields = NULL,
   \item{fields}{Any additional fields to include.  You shouldn't need
     this, but if you have added fields to the DESCRIPTION files of the
     packages in the repository, you may want it.}
-  \item{type}{One of \code{source}, \code{mac.binary},
-    \code{mac.binary.universal}, \code{mac.binary.leopard},
-    or \code{win.binary} indicating which set of packages should be used to
-    build up the "shared" information.  Since a repository can contain
-    different versions of the same package (source vs binary) the shared
-    information may be a lie.}
+  \item{type}{One of \code{source}, \code{win.binary}, \code{win64.binary},
+    \code{mac.binary}, \code{mac.binary.universal}, or
+    \code{mac.binary.leopard} indicating which set of packages should be
+    used to build up the "shared" information.  Since a repository can
+    contain different versions of the same package (source vs binary) the
+    shared information may not be reliable.}
   \item{verbose}{logical, if \code{TRUE}, print progress messages.}
   \item{vignette.dir}{character specifying where to look for vignettes.}
 }

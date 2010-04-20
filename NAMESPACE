@@ -1,12 +1,17 @@
+import(methods)
+
 importMethodsFrom(graph, acc, adj, edges, inEdges, nodes, subGraph)
 
 importFrom(Biobase, copySubstitute)
 
 importFrom(RBGL, sp.between)
 
-importFrom(XML, saveXML, xmlNode, xmlOutputDOM, xmlTree)
-
 importFrom(tools, write_PACKAGES)
+
+importFrom(utils, download.file, Stangle)
+
+importMethodsFrom(XML, saveXML)
+importFrom(XML, xmlNode, xmlOutputDOM, xmlTree)
 
 exportClasses("Htmlized",
 
