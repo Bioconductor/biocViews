@@ -205,7 +205,7 @@ write_REPOSITORY <- function(reposRootPath, contribPaths) {
 
 write_VIEWS <- function(reposRootPath, fields = NULL,
                         type = c("source", "win.binary", "win64.binary",
-                                 "mac.binary", "mac.binary.universal", "mac.binary.leopard"),
+                                 "mac.binary", "mac.binary.leopard"),
                         verbose = FALSE, vignette.dir="vignettes") {
     ## Copied from tools::write_PACKAGES
     if (is.null(fields))
@@ -218,7 +218,8 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
 
     ## Read REPOSITORY file for contrib path info
     reposInfo <- read.dcf(file.path(reposRootPath, "REPOSITORY"))
-    provided <- strsplit(reposInfo[, "provides"], ", *")[[1]]
+    provided <-
+      strsplit(gsub("[ \t\r\n\v\f]", "", reposInfo[, "provides"]), ",")[[1]]
 
     ## Use code from tools to build a matrix of package info
     ## by parsing the .tar.gz files
@@ -237,8 +238,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
         buildPkgPath <- function(pkgs, vers) {
             ext <- switch(ctype,
                           source=".tar.gz", win.binary=, win64.binary=".zip",
-                          mac.binary=, mac.binary.universal=,
-                          mac.binary.leopard=".tgz",
+                          mac.binary=, mac.binary.leopard=".tgz",
                           stop("unknown type"))
             paste(cPath, "/", pkgs, "_", vers, ext, sep="")
         }
