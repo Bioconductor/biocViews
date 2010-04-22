@@ -269,7 +269,7 @@ Cancer -> Breast;
 Cancer -> Colon;
 Cancer -> Kidney;
 Cancer -> Leukemia;
-Cnacer -> Lung;
+Cancer -> Lung;
 Cancer -> Ovarian;
 Cancer -> Prostate;
 
