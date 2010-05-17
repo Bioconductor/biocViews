@@ -11,7 +11,8 @@ readPackageInfo <- function(file, fields = NULL, all = FALSE) {
                                            if (file.exists(v)) {
                                                Stangle(v)
                                                rfile <- sub("Rnw$", "R", basename(v))
-                                               file.copy(rfile, dirname(v))
+                                               file.copy(rfile, dirname(v),
+                                                         overwrite = TRUE)
                                                file.remove(rfile)
                                                sub("Rnw$", "R", v)
                                            } else {
@@ -19,7 +20,8 @@ readPackageInfo <- function(file, fields = NULL, all = FALSE) {
                                                if (file.exists(v)) {
                                                    Stangle(v)
                                                    rfile <- sub("rnw$", "R", basename(v))
-                                                   file.copy(rfile, dirname(v))
+                                                   file.copy(rfile, dirname(v),
+                                                             overwrite = TRUE)
                                                    file.remove(rfile)
                                                    sub("rnw$", "R", v)
                                                } else
