@@ -23,7 +23,7 @@ getBiocSubViews(reposUrl, vocab, topTerm, local = FALSE, htmlDir = "")
   \item{local}{logical indicating whether to assume a local package
   repository.  The default is \code{FALSE} in which case absolute links
   to package detail pages are created.}
-  \item{htmlDir}{if the \code{local} argument is \code{FALSE}, this will
+  \item{htmlDir}{if the \code{local} argument is \code{TRUE}, this will
   be used as the relative path for package HTML files.}
 }
 \details{
