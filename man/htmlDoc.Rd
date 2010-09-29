@@ -1,5 +1,4 @@
 \name{htmlDoc}
-\docType{genericFunction}
 \alias{htmlDoc}
 
 \title{Create a complete HTML document representation of an object}

@@ -1,5 +1,4 @@
 \name{htmlValue}
-\docType{genericFunction}
 
 \alias{htmlValue}
 

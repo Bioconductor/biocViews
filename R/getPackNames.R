@@ -94,26 +94,30 @@ writeTopLevelView <- function(dir, vocab) {
 }
 
 
-getBiocViews <- function(reposUrl, vocab, defaultView, local=FALSE) {
+getBiocViews <- function(reposUrl, vocab, defaultView, local=FALSE, htmlDir="") {
     viewList <- getPacksAndViews(reposUrl, vocab, defaultView, local)
     viewRoster <- permulist(viewList$views, vocab)
-    if (local)
+    if (local) {
       reposUrl <- character(0)
-    biocViews <- loadViews(vocab, viewRoster, viewList$pkgList, reposUrl)
+      if (!htmlDir == "") {
+        htmlDir <- htmlDir
+      }
+    }
+    biocViews <- loadViews(vocab, viewRoster, viewList$pkgList, reposUrl, htmlDir)
     biocViews
 }
 
 
-getBiocSubViews <- function(reposUrl, vocab, topTerm, local=FALSE) {
+getBiocSubViews <- function(reposUrl, vocab, topTerm, local=FALSE, htmlDir="") {
     root <- getRootNode(vocab)
     terms <- getSubTerms(vocab, topTerm)
     subVocab <- subGraph(c(root, terms), vocab)
-    bvl <- getBiocViews(reposUrl, subVocab, topTerm, local)
+    bvl <- getBiocViews(reposUrl, subVocab, topTerm, local, htmlDir)
     bvl[terms] ## exclude root
 }
 
 
-loadViews <- function(viewGraph, viewRoster, pkgList, reposUrl) {
+loadViews <- function(viewGraph, viewRoster, pkgList, reposUrl, htmlDir="html") {
     views <- nodes(viewGraph)
     viewmat <- as(viewGraph, "matrix")
     viewFactory <- function(name) {
@@ -132,7 +136,7 @@ loadViews <- function(viewGraph, viewRoster, pkgList, reposUrl) {
         } else
           pkgsInView <- list()
         new("BiocView", name=name, subViews=subViews, parentViews=parentViews,
-            packageList=pkgsInView, htmlDir="html", reposRoot=reposUrl)
+            packageList=pkgsInView, htmlDir=htmlDir, reposRoot=reposUrl)
     }
     biocViews <- lapply(views, viewFactory)
     names(biocViews) <- views

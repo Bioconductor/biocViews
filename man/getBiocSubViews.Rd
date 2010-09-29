@@ -9,7 +9,7 @@
   \code{topTerm} and all of its decendents.
 }
 \usage{
-getBiocSubViews(reposUrl, vocab, topTerm, local = FALSE)
+getBiocSubViews(reposUrl, vocab, topTerm, local = FALSE, htmlDir = "")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -23,6 +23,8 @@ getBiocSubViews(reposUrl, vocab, topTerm, local = FALSE)
   \item{local}{logical indicating whether to assume a local package
   repository.  The default is \code{FALSE} in which case absolute links
   to package detail pages are created.}
+  \item{htmlDir}{if the \code{local} argument is \code{FALSE}, this will
+  be used as the relative path for package HTML files.}
 }
 \details{
   The root of the vocabulary DAG is implicitly included in the view

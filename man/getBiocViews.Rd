@@ -8,14 +8,14 @@
   \code{\link{BiocView-class}} objects.
 }
 \usage{
-getBiocViews(reposUrl, vocab, defaultView, local = FALSE)
+getBiocViews(reposUrl, vocab, defaultView, local = FALSE, htmlDir = "")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{reposUrl}{URL for a CRAN-style repository that hosts a
   \code{VIEWS} file at the top-level.}
   \item{vocab}{A \code{\link[graph]{graph-class}} object representing
-    the ontologyof views.  This graph should be a directed acyclic graph
+    the ontology of views.  This graph should be a directed acyclic graph
     (DAG).}
   \item{defaultView}{A string giving the term to use for packages that
     do not list a term of their own via the \code{biocViews} field in the
@@ -23,6 +23,8 @@ getBiocViews(reposUrl, vocab, defaultView, local = FALSE)
   \item{local}{logical indicating whether to assume a local package
   repository.  The default is \code{FALSE} in which case absolute links
   to package detail pages are created.}
+  \item{htmlDir}{if the \code{local} argument is \code{FALSE}, this will
+  be used as the relative path for package HTML files.}
 }
 \value{
   A list of \code{BiocView-class} objects.  The names of the list give
