@@ -282,6 +282,7 @@ ExperimentData -> FlowCytData;
 ExperimentData -> HapMap;
 ExperimentData -> HighThroughputSequencingData;
 ExperimentData -> HIV;
+ExperimentData -> MassSpectrometryData;
 ExperimentData -> Proteome;
 ExperimentData -> QualityAndTesting;
 ExperimentData -> RNAseqData;
