@@ -269,6 +269,14 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
         col <- paste(ctype, "ver", sep=".")
         dbMat[dbMatIdx, col] <- buildPkgPath(cDat[cDatGood, "Package"],
                                              cDat[cDatGood, "Version"])
+        
+        if (length((grep("^win",ctype,value=TRUE)) > 0)  && ("Archs" %in% colnames(cDat))) {
+          which1 <- which(dbMat[,"Package"] %in% cDat[,"Package"])
+          which2 <- which(cDat[,"Package"] %in% dbMat[,"Package"])
+          dbMat[which1, "Archs"] <- cDat[which2, "Archs"]
+        }
+        
+        
     }
     ## Add vignette path info
     vigs <- getVignetteLinks(dbMat[, "Package"], reposRootPath, vignette.dir)

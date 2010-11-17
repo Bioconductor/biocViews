@@ -165,8 +165,25 @@ setMethod("htmlValue", signature(object="pdDownloadInfo"),
                                 win64.binary="Windows 64-bit binary",
                                 mac.binary.leopard="MacOS X 10.5 (Leopard) binary")
               makeLinkHelper <- function(type) {
+                
+                
+                  isAvailable = TRUE
+                  archs <- slot(object, "Archs")
+                  if (length(archs) > 0 && nchar(archs) > 0) {
+                    if (type == "win64.binary") {
+                      if (length(grep("x64", archs, value=TRUE)) == 0) {
+                        isAvailable = FALSE
+                      } 
+                    } else if (type == "win.binary") {
+                      if (length(grep("i386", archs, value=TRUE)) == 0) {
+                        isAvailable = FALSE
+                      } 
+                    }
+                  }
+                  
+                
                   pkgPath <- slot(object, flds[type])
-                  if (!is.na(pkgPath) && length(pkgPath) > 0 && pkgPath != "") {
+                  if (isAvailable && !is.na(pkgPath) && length(pkgPath) > 0 && pkgPath != "") {
                       ref <- paste(object@reposRoot, pkgPath, sep="/")
                       aTag <- xmlNode("a", basename(pkgPath), attrs=c(href=ref))
                   } else {
