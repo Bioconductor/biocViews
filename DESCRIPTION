@@ -6,7 +6,7 @@ Maintainer: Biocore Team c/o BioC user list <bioconductor@stat.math.ethz.ch>
 Depends: R (>= 2.4.0)
 Imports: Biobase, graph (>= 1.9.26), methods, RBGL (>= 1.13.5), tools, utils, XML
 Suggests: Biobase
-Description: structures for vocabularies and narratives of views 
+Description: structures for vocabularies and narratives of views
 License: Artistic-2.0
 URL: http://www.bioconductor.org/packages/release/BiocViews.html
 Collate: AllClasses.R
