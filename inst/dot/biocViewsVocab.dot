@@ -85,6 +85,7 @@ BiocViews -> AnnotationData;
 /* AnnotationData -> Organism */
 AnnotationData -> Organism;
 Organism -> Anopheles_gambiae;
+Organism -> Apis_mellifera;
 Organism -> Arabidopsis_thaliana;
 Organism -> Bacillus_subtilis;
 Organism -> Bos_taurus;
@@ -96,6 +97,7 @@ Organism -> Drosophila_melanogaster;
 Organism -> Eremothecium_gossypii;
 Organism -> Escherichia_coli;
 Organism -> Gallus_gallus;
+Organism -> Gasterosteus_aculeatus;
 Organism -> Glycine_max;
 Organism -> Homo_sapiens;
 Organism -> Hordeum_vulgare;
