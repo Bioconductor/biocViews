@@ -6,7 +6,7 @@ R_EXE=R
 DOT=inst/dot/biocViewsVocab.dot
 GXL=inst/dot/biocViewsVocab.gxl
 RDA=data/biocViewsVocab.rda
-SQLITE=data/biocViewsVocab.sqlite
+SQLITE=inst/extdata/biocViewsVocab.sqlite
 
 rm -f $RDA $SQLITE
 
