@@ -22,6 +22,8 @@ createPackageDetailList <- function(viewMat, reposUrl="..",
                                     downloadStatsUrl="",
                                     devHistoryUrl="")
 {
+    if (nrow(viewMat) == 0L)
+        return(list())
     pkgList <- apply(viewMat, 1, viewRowToPackageDetail)
     names(pkgList) <- viewMat[, "Package"]
     pkgList <- setDependsOnMeImportsMeSuggestsMe(pkgList)
