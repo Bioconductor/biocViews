@@ -225,6 +225,8 @@ getSubTerms <- function(dag, term) {
 
 
 permulist <- function(allv, vocab, interp=TRUE) {
+    if (length(allv) == 0L)
+        return(list())
     lens <- sapply(allv, length)
     packnames <- names(allv)
     repp <- rep(packnames, lens)
