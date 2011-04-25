@@ -152,6 +152,8 @@ extractVignettes <- function(reposRoot, srcContrib, destDir) {
 
 
 getVignetteLinks <- function(pkgList, reposRootPath, vignette.dir) {
+    if (length(pkgList) == 0L)
+        return(character(0))
     unlist(lapply(pkgList, function(pkg) {
         vigSubDir <- "inst/doc"
         vigDir <- file.path(reposRootPath, vignette.dir, pkg, vigSubDir)
@@ -175,31 +177,25 @@ write_REPOSITORY <- function(reposRootPath, contribPaths) {
 }
 
 .write_repository_db <- function(db, dir, fname) {
-    if (length(db)) {
-##         fields <- colnames(db[[1]])
-##         db <- matrix(unlist(db), ncol = length(fields), byrow = TRUE)
-##         colnames(db) <- fields
-        if ("Bundle" %in% colnames(db)) {
-            noPack <- is.na(db[, "Package"])
-            db[noPack, "Package"] <- db[noPack, "Bundle"]
-        }
-        gzname <- paste(fname, "gz", sep=".")
-        out <- file(file.path(dir, fname), "wt")
-        ##FIXME: gzfile writing segfaults for me
-        ##outgz <- gzfile(file.path(dir, gzname), "wt")
-        for (i in seq(length = nrow(db))) {
-            dbi <- db[i, !(is.na(db[i, ]) | (db[i, ] == "")), drop = FALSE]
-            write.dcf(dbi, file = out)
-            ##FIXME: writing to the gz file segfaults for me
-            ##write.dcf(dbi, file = outgz)
-            cat("\n", file=out)
-        }
-        close(out)
-        ##FIXME: writing to the gz file segfaults
-        ##close(outgz)
-        invisible(nrow(db))
+    if ("Bundle" %in% colnames(db)) {
+        noPack <- is.na(db[, "Package"])
+        db[noPack, "Package"] <- db[noPack, "Bundle"]
     }
-    else invisible(0)
+    gzname <- paste(fname, "gz", sep=".")
+    out <- file(file.path(dir, fname), "wt")
+    ##FIXME: gzfile writing segfaults for me
+    ##outgz <- gzfile(file.path(dir, gzname), "wt")
+    for (i in seq_len(nrow(db))) {
+        dbi <- db[i, !(is.na(db[i, ]) | (db[i, ] == "")), drop = FALSE]
+        write.dcf(dbi, file = out)
+        ##FIXME: writing to the gz file segfaults for me
+        ##write.dcf(dbi, file = outgz)
+        cat("\n", file=out)
+    }
+    close(out)
+    ##FIXME: writing to the gz file segfaults
+    ##close(outgz)
+    invisible(nrow(db))
 }
 
 
@@ -225,7 +221,15 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     ## by parsing the .tar.gz files
     pkg.dir <- file.path(reposRootPath, reposInfo[, "source"])
     db <- tools:::.build_repository_package_db(pkg.dir, fields, type, verbose)
-    dbMat <- do.call(rbind, db)
+
+    ## Turn 'db' into a matrix with 1 row per package
+    if (length(db) != 0L) {
+        dbMat <- do.call(rbind, db)
+    } else {
+        fields <- unique(c(tools:::.get_standard_repository_db_fields(), fields))
+        dbMat <- matrix(nrow=0L, ncol=length(fields))
+        colnames(dbMat) <- fields
+    }
 
     ## Integrate version and archive file path info for the different contrib
     ## paths in this repos.  We duplicate the source path info here, but that
@@ -275,8 +279,6 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
           which2 <- which(cDat[,"Package"] %in% dbMat[,"Package"])
           dbMat[which1, "Archs"] <- cDat[which2, "Archs"]
         }
-        
-        
     }
     ## Add vignette path info
     vigs <- getVignetteLinks(dbMat[, "Package"], reposRootPath, vignette.dir)
