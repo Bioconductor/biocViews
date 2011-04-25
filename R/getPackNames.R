@@ -152,10 +152,12 @@ getPacksAndViews <- function(reposURL, vocab, defaultView, local=FALSE)
     z <- download.file(url=paste(reposURL, "VIEWS", sep="/"), destfile=tmpf,
                        method=method, cacheOK=FALSE, quiet=TRUE, mode="wb")
     pmat <- readPackageInfo(file=tmpf)
+    bcvl <- pkgList <- vector(mode="list", length=nrow(pmat))
+    if (nrow(pmat) == 0L)
+        return(list(views=bcvl, pkgList=pkgList))
     ns <- pmat[,"Package"]
     ## The DESCRIPTION fields we try to parse for tags
     DESC_FIELDS <- c("biocViews")
-    bcvl <- vector(mode="list", length=nrow(pmat))
     names(bcvl) <- ns
     for (tagCol in DESC_FIELDS) {
         if (tagCol %in% colnames(pmat)) {
