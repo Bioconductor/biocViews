@@ -288,6 +288,15 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     .write_repository_db(dbMat, reposRootPath, "VIEWS")
 }
 
+writeRFilesFromVignettes <- function(reposRoot, reposUrl="..",
+                                viewUrl="../..", reposFullUrl=reposUrl,
+                                downloadStatsUrl="", devHistoryUrl="") {
+
+    pkgList <- loadPackageDetails(reposRoot, reposUrl, viewUrl, reposFullUrl,
+          downloadStatsUrl, devHistoryUrl)
+}
+
+
 
 writeRepositoryHtml <- function(reposRoot, title, reposUrl="..",
                                 viewUrl="../..", reposFullUrl=reposUrl,
