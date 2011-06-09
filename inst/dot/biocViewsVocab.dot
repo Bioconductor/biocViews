@@ -50,6 +50,7 @@ AssayTechnologies -> Sequencing;
 AssayTechnologies -> HighThroughputSequencing;
 HighThroughputSequencing -> ChIPseq;
 HighThroughputSequencing -> RNAseq;
+HighThroughputSequencing -> Methylseq;
 
 /* Software -> BiologicalDomains */
 Software -> BiologicalDomains;
@@ -86,6 +87,7 @@ BiocViews -> AnnotationData;
 AnnotationData -> Organism;
 Organism -> Anopheles_gambiae;
 Organism -> Apis_mellifera;
+Organism -> Arabidopsis_lyrata;
 Organism -> Arabidopsis_thaliana;
 Organism -> Bacillus_subtilis;
 Organism -> Bos_taurus;
@@ -291,6 +293,7 @@ ExperimentData -> Proteome;
 ExperimentData -> QualityAndTesting;
 ExperimentData -> RNAExpressionData;
 ExperimentData -> RNAseqData;
+ExperimentData -> MethylseqData;
 ExperimentData -> SpikeIns;
 ExperimentData -> StemCells;
 ExperimentData -> Yeast;
