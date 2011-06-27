@@ -48,6 +48,7 @@ AssayTechnologies -> SAGE;
 AssayTechnologies -> FlowCytometry;
 AssayTechnologies -> Sequencing;
 AssayTechnologies -> HighThroughputSequencing;
+MicrotitrePlateAssay -> qPCR;
 HighThroughputSequencing -> ChIPseq;
 HighThroughputSequencing -> RNAseq;
 HighThroughputSequencing -> Methylseq;
