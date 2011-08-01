@@ -102,6 +102,51 @@ getRefmanLinks <- function(pkgList, reposRootPath, refman.dir) {
     }))
 }
 
+extractReadmes <- function(reposRoot, srcContrib, destDir) {
+    ## Extract README files from source package tarballs
+    ##
+    ## reposRoot - Top level path for CRAN-style repos
+    ## srcContrib - Location of source packages
+    ## destDir - where to extract.
+    ##
+    ## Notes:
+    ## Under destDir, for tarball foo_1.2.3.tar.gz, you will
+    ## get destDir/foo/inst/doc/*.pdf
+    ##
+
+    if (missing(destDir))
+      destDir <- file.path(reposRoot, "readmes")
+
+
+    cleanUnpackDir <- function(tarball, unpackDir) {
+        ## Delete readmes from a previous extraction
+        pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
+        pkgDir <- file.path(unpackDir, pkg)
+        if (!file.exists(pkgDir))
+          return(FALSE)
+        oldFiles <- list.files(pkgDir, pattern="README", full.names=TRUE)
+        if (length(oldFiles) > 0)
+          try(file.remove(oldFiles), silent=TRUE)
+    }
+    
+    extractReadmeFromTarball <- function(tarball, unpackDir=".") {
+        pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
+        readmePat <- file.path(pkg, "README")
+        tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, readmePat)
+        cleanUnpackDir(tarball, unpackDir)
+        cat("Attempting to extract README from", tarball, "\n")
+        system(tarCmd, ignore.stdout=TRUE, ignore.stderr=TRUE)
+    }
+    
+    tarballs <- list.files(file.path(reposRoot, srcContrib),
+                           pattern="\\.tar\\.gz$", full.names=TRUE)
+    if (!file.exists(destDir))
+      dir.create(destDir, recursive=TRUE)
+    if (!file.info(destDir)$isdir)
+      stop("destDir must specify a directory")
+    lapply(tarballs, extractReadmeFromTarball, unpackDir=destDir)
+    invisible(NULL)
+}
 
 extractVignettes <- function(reposRoot, srcContrib, destDir) {
     ## Extract pdf vignettes from source package tarballs
@@ -207,7 +252,8 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     if (is.null(fields))
       fields <- c("Title", "Description", "biocViews",
                   "Author", "Maintainer", "URL", "License",
-                  "SystemRequirements", "organism", "manufacturer")
+                  "SystemRequirements", "organism", "manufacturer",
+                  "hasReadme")
     if (missing(type))
       type <- "source"
     type <- match.arg(type)

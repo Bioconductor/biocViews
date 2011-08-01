@@ -57,6 +57,7 @@ HighThroughputSequencing -> Methylseq;
 Software -> BiologicalDomains;
 BiologicalDomains -> CellBiology;
 BiologicalDomains -> Genetics;
+BiologicalDomains -> Metabolomics;
 BiologicalDomains -> Proteomics;
 
 /* Software -> Infrastructure */
