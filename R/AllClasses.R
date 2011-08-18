@@ -1,4 +1,4 @@
-## TODO: make the reposInfo list into an S4 class to represent 
+## TODO: make the reposInfo list into an S4 class to represent
 ## repository data
 
 setClass("Htmlized", representation("VIRTUAL"))
