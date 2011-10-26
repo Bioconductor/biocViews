@@ -12,6 +12,7 @@ importFrom(utils, download.file, Stangle)
 
 importMethodsFrom(XML, saveXML)
 importFrom(XML, xmlNode, xmlOutputDOM, xmlTree)
+importFrom(RCurl, getURL)
 
 exportClasses("Htmlized",
 
