@@ -32,4 +32,5 @@ export("writeBiocViews", "getBiocViews", "write_VIEWS", "write_REPOSITORY",
        "extractReadmes",
        "writeRepositoryHtml", "writePackageDetailHtml", "getSubTerms",
        "getBiocSubViews", "writeTopLevelView", "writeHtmlDoc", "write_SYMBOLS",
-       "writeRFilesFromVignettes")
+       "writeRFilesFromVignettes",
+       "getPackageNEWS", "printNEWS")

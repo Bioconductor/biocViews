@@ -22,5 +22,5 @@ Collate: AllClasses.R
          pump.R
          repository.R
          showvoc.R
-         collatePackageNEWS.R
+         getPackageNEWS.R
 biocViews: Infrastructure
