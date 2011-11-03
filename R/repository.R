@@ -69,7 +69,7 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
             pkgDir <- file.path(unpackDir, pkg, "man")
             RCmd <- file.path(Sys.getenv("R_HOME"), "bin", "R")
             Rd2pdfCmd <-
-              paste(RCmd, " CMD Rd2dvi --no-preview --pdf --output=", pkgDir, "/",
+              paste(RCmd, " CMD Rd2pdf --no-preview --output=", pkgDir, "/",
                     pkg, ".pdf --title=", pkg, " ", pkgDir, "/*.[Rr]d", sep = "")
             cat("Building pdf reference manual for", pkg, "\n")
             ret <- system(Rd2pdfCmd)
