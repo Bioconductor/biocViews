@@ -46,6 +46,62 @@ getPackageNEWS <-
            Map(getNews, names(vers), vers, srcDir))
 }
 
+
+## based on tools:::.build_news_db()
+getNewsFromFile <- function (dir, destfile, format = NULL, reader = NULL,
+    output=c("md", "text")) 
+{
+    
+    mdIfy <- function(txt) 
+    {
+        lines <- strsplit(txt, "\n")
+        segs <- lines[[1]]
+        segs <- sub("^    o +", "- ", segs)
+        segs <- sub("^\t", "  ", segs)
+        return(paste(segs, collapse="\n"))
+    }
+    
+    newsRdFile <- file.path(dir, "NEWS.Rd")
+    newsRdFile2 <- file.path(dir, "inst", "NEWS.Rd")
+    
+    if (!file_test("-f", newsRdFile) && !file_test("-f", newsRdFile2)) {
+        nfile <- file.path(dir, "NEWS")
+        nfile2 <- file.path(dir, "inst", "NEWS")
+
+        if (!file_test("-f", nfile) && !file_test("-f", nfile2))
+            return(invisible())
+
+        nfile <- ifelse(file_test("-f", nfile), nfile, nfile2)
+
+        if (!is.null(format)) 
+            .NotYetUsed("format", FALSE)
+        if (!is.null(reader)) 
+            .NotYetUsed("reader", FALSE)
+
+        file <- file(destfile, "w+")
+        on.exit(close(file))
+        news <- paste(readLines(nfile), collapse="\n")
+        if ("md" == output)
+            news = mdIfy(news)
+        cat(news, file=file)
+        return(invisible())
+    }
+
+    newsRdFile <- ifelse(file_test("-f", newsRdFile), newsRdFile, newsRdFile2)
+    
+    file <- file(destfile, "w+")
+    on.exit(close(file))
+    db <- tools:::.build_news_db_from_package_NEWS_Rd(newsRdFile)
+    news <- capture.output(print(db))
+    news <- paste(news, collapse="\n")
+    cat(paste("output ="), output, "\n")
+    if ("md" == output)
+        news <- mdIfy(news)
+    cat(news, file=file)
+    return(invisible())
+}
+
+
 printNEWS <- function(dbs, destfile, overwrite=FALSE, width=68,
                       output=c("md", "text"), ...)
 {
