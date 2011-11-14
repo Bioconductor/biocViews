@@ -170,7 +170,10 @@ extractNEWS <- function(reposRoot, srcContrib, destDir) {
     extractNewsFromTarball <- function(tarball, unpackDir=".") {
         pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
         newsPat <- "*NEWS*"
-        tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, newsPat)
+        wildcards <- ifelse(Sys.info()["sysname"] == "Darwin", "",
+          "--wildcards") 
+        tarCmd <- paste("tar", wildcards, "-C", unpackDir, "-xzf",
+          tarball, newsPat)
         cleanUnpackDir(tarball, unpackDir)
         cat("Attempting to extract NEWS from", tarball, "\n")
         system(tarCmd, ignore.stdout=TRUE, ignore.stderr=TRUE)
