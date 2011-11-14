@@ -60,8 +60,8 @@ getNEWSFromFile <- function (dir, destfile, format = NULL, reader = NULL,
         return(paste(segs, collapse="\n"))
     }
     
-    newsRdFile <- file.path(dir, "NEWS.Rd")
-    newsRdFile2 <- file.path(dir, "inst", "NEWS.Rd")
+    newsRdFile <- file.path(dir, "NEWS.Rd") ## should never be found
+    newsRdFile2 <- file.path(dir, "inst", "NEWS.Rd") 
     
     if (!file_test("-f", newsRdFile) && !file_test("-f", newsRdFile2)) {
         nfile <- file.path(dir, "NEWS")
