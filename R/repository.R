@@ -148,6 +148,63 @@ extractReadmes <- function(reposRoot, srcContrib, destDir) {
     invisible(NULL)
 }
 
+
+
+extractNEWS <- function(reposRoot, srcContrib, destDir) {
+
+    if (missing(destDir))
+      destDir <- file.path(reposRoot, "news")
+
+
+    cleanUnpackDir <- function(tarball, unpackDir) {
+        ## Delete NEWS from a previous extraction
+        pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
+        pkgDir <- file.path(unpackDir, pkg)
+        if (!file.exists(pkgDir))
+          return(FALSE)
+        oldFiles <- list.files(pkgDir, pattern="NEWS", full.names=TRUE)
+        if (length(oldFiles) > 0)
+          try(file.remove(oldFiles), silent=TRUE)
+    }
+    
+    extractNewsFromTarball <- function(tarball, unpackDir=".") {
+        pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
+        newsPat <- "*NEWS*"
+        tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, newsPat)
+        cleanUnpackDir(tarball, unpackDir)
+        cat("Attempting to extract NEWS from", tarball, "\n")
+        system(tarCmd, ignore.stdout=TRUE, ignore.stderr=TRUE)
+    }
+    
+    convertNEWSToText <- function(tarball, srcDir, destDir)
+    {
+        segs <- strsplit(tarball, "_", fixed=TRUE)
+        pkgName <- segs[[1]][1]
+        segs <- strsplit(pkgName, .Platform$file.sep, fixed=TRUE)
+        pkgName <- segs[[1]][length(segs[[1]])]
+        file.path()
+        srcDir <- file.path(srcDir, pkgName)
+        destDir <- file.path(destDir, pkgName)
+        if (!file.exists(destDir))
+            dir.create(destDir, recursive=TRUE)
+        destFile <- file.path(destDir, "NEWS")
+        getNEWSFromFile(srcDir, destFile, output="text")
+    }
+    
+    tarballs <- list.files(file.path(reposRoot, srcContrib),
+                           pattern="\\.tar\\.gz$", full.names=TRUE)
+    if (!file.exists(destDir))
+      dir.create(destDir, recursive=TRUE)
+    if (!file.info(destDir)$isdir)
+      stop("destDir must specify a directory")
+    unpackDir <- tempdir()
+    lapply(tarballs, extractNewsFromTarball, unpackDir=unpackDir)
+    lapply(tarballs, convertNEWSToText, srcDir=unpackDir, destDir=destDir)
+    
+    invisible(NULL)
+}
+
+
 extractVignettes <- function(reposRoot, srcContrib, destDir) {
     ## Extract pdf vignettes from source package tarballs
     ##

@@ -48,10 +48,9 @@ getPackageNEWS <-
 
 
 ## based on tools:::.build_news_db()
-getNewsFromFile <- function (dir, destfile, format = NULL, reader = NULL,
+getNEWSFromFile <- function (dir, destfile, format = NULL, reader = NULL,
     output=c("md", "text")) 
 {
-    
     mdIfy <- function(txt) 
     {
         lines <- strsplit(txt, "\n")
@@ -94,7 +93,6 @@ getNewsFromFile <- function (dir, destfile, format = NULL, reader = NULL,
     db <- tools:::.build_news_db_from_package_NEWS_Rd(newsRdFile)
     news <- capture.output(print(db))
     news <- paste(news, collapse="\n")
-    cat(paste("output ="), output, "\n")
     if ("md" == output)
         news <- mdIfy(news)
     cat(news, file=file)
