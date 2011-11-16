@@ -29,7 +29,7 @@ exportMethods("coerce", "show", "htmlDoc", "htmlValue", "htmlFilename")
 
 export("writeBiocViews", "getBiocViews", "write_VIEWS", "write_REPOSITORY",
        "genReposControlFiles", "extractVignettes", "extractManuals",
-       "extractNEWS", "extractReadmes",
+       "extractNEWS", "extractTopLevelFiles",
        "writeRepositoryHtml", "writePackageDetailHtml", "getSubTerms",
        "getBiocSubViews", "writeTopLevelView", "writeHtmlDoc", "write_SYMBOLS",
        "writeRFilesFromVignettes",

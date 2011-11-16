@@ -102,6 +102,43 @@ getRefmanLinks <- function(pkgList, reposRootPath, refman.dir) {
     }))
 }
 
+extractTopLevelFiles <- function(reposRoot, srcContrib, destDir, fileName) {
+
+    cleanUnpackDir <- function(tarball, unpackDir) {
+        ## Delete files from a previous extraction
+        pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
+        pkgDir <- file.path(unpackDir, pkg)
+        if (!file.exists(pkgDir))
+          return(FALSE)
+        oldFiles <- list.files(pkgDir, pattern=fileName, full.names=TRUE)
+        if (length(oldFiles) > 0)
+          try(file.remove(oldFiles), silent=TRUE)
+    }
+    
+    extractFileFromTarball <- function(tarball, unpackDir=".") {
+        pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
+        pat <- file.path(pkg, fileName)
+        tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, pat)
+        cleanUnpackDir(tarball, unpackDir)
+        cat(paste("Attempting to extract", fileName, "from", tarball, "\n"))
+        system(tarCmd, ignore.stdout=TRUE, ignore.stderr=TRUE)
+    }
+    
+    tarballs <- list.files(file.path(reposRoot, srcContrib),
+                           pattern="\\.tar\\.gz$", full.names=TRUE)
+    if (!file.exists(destDir))
+      dir.create(destDir, recursive=TRUE)
+    if (!file.info(destDir)$isdir)
+      stop("destDir must specify a directory")
+    lapply(tarballs, extractFileFromTarball, unpackDir=destDir)
+    invisible(NULL)
+    
+}
+
+extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
+    extractTopLevelFiles(reposRoot, srcContrib, destDir, "INSTALL")
+}
+
 extractReadmes <- function(reposRoot, srcContrib, destDir) {
     ## Extract README files from source package tarballs
     ##
@@ -113,39 +150,7 @@ extractReadmes <- function(reposRoot, srcContrib, destDir) {
     ## Under destDir, for tarball foo_1.2.3.tar.gz, you will
     ## get destDir/foo/inst/doc/*.pdf
     ##
-
-    if (missing(destDir))
-      destDir <- file.path(reposRoot, "readmes")
-
-
-    cleanUnpackDir <- function(tarball, unpackDir) {
-        ## Delete readmes from a previous extraction
-        pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
-        pkgDir <- file.path(unpackDir, pkg)
-        if (!file.exists(pkgDir))
-          return(FALSE)
-        oldFiles <- list.files(pkgDir, pattern="README", full.names=TRUE)
-        if (length(oldFiles) > 0)
-          try(file.remove(oldFiles), silent=TRUE)
-    }
-    
-    extractReadmeFromTarball <- function(tarball, unpackDir=".") {
-        pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
-        readmePat <- file.path(pkg, "README")
-        tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, readmePat)
-        cleanUnpackDir(tarball, unpackDir)
-        cat("Attempting to extract README from", tarball, "\n")
-        system(tarCmd, ignore.stdout=TRUE, ignore.stderr=TRUE)
-    }
-    
-    tarballs <- list.files(file.path(reposRoot, srcContrib),
-                           pattern="\\.tar\\.gz$", full.names=TRUE)
-    if (!file.exists(destDir))
-      dir.create(destDir, recursive=TRUE)
-    if (!file.info(destDir)$isdir)
-      stop("destDir must specify a directory")
-    lapply(tarballs, extractReadmeFromTarball, unpackDir=destDir)
-    invisible(NULL)
+    extractTopLevelFiles(reposRoot, srcContrib, destDir, "README")
 }
 
 

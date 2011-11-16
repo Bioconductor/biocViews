@@ -15,8 +15,9 @@
 \usage{
 getPackageNEWS(prevRepos="http://www.bioconductor.org/packages/2.8/bioc", 
                currRepos="http://www.bioconductor.org/packages/2.9/bioc", 
-               srcDir, tarred = TRUE)
-printNEWS(dbs, destfile, overwrite = FALSE, width = 68, ...)
+               srcDir)
+printNEWS(dbs, destfile, overwrite = FALSE, width = 68,
+          output=c("md", "text"), ...)
 }
 
 \arguments{
@@ -27,9 +28,6 @@ printNEWS(dbs, destfile, overwrite = FALSE, width = 68, ...)
 
   \item{srcDir}{\code{character(1)} directory containing the source all
     current pacakges}
-
-  \item{tarred}{\code{logical(1)} indicating whether the source packages
-    are in tar.gz (e.g., repository src/), or source (e.g., svn root)}
 
   \item{dbs}{A list of \code{news_db} elements, as returned by
     \code{getPackageNEWS}.}
@@ -42,6 +40,8 @@ printNEWS(dbs, destfile, overwrite = FALSE, width = 68, ...)
 
   \item{width}{\code{numeric(1)} number of characters news items are to
     be wrapped to, excluding indent.}
+
+  \item{output}{\code{character(1)} output to text or markdown format.}
 
   \item{...}{additional arguments, unused.}
 
