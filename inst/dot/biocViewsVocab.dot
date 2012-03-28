@@ -106,6 +106,7 @@ Organism -> Glycine_max;
 Organism -> Homo_sapiens;
 Organism -> Hordeum_vulgare;
 Organism -> Kluyveromyces_lactis;
+Organism -> Macaca_mulatta;
 Organism -> Magnaporthe_grisea;
 Organism -> Medicago_truncatula;
 Organism -> Mus_musculus;
