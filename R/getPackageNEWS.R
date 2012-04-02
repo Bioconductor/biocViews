@@ -42,8 +42,11 @@ getPackageNEWS <-
         }, error=function(...) NULL)
     }
 
-    Filter(function(x) !is.null(x) && 0L != nrow(x),
+    ret <- Filter(function(x) !is.null(x) && 0L != nrow(x),
            Map(getNews, names(vers), vers, srcDir))
+    nms <- names(ret)
+    s <- sort(nms)
+    newRet <- ret[s]
 }
 
 
