@@ -14,6 +14,8 @@ importMethodsFrom(XML, saveXML)
 importFrom(XML, xmlNode, xmlOutputDOM, xmlTree)
 importFrom(RCurl, getURL)
 
+importFrom(RUnit, checkTrue)
+
 exportClasses("Htmlized",
 
               "PackageDetail", "pdAuthorMaintainerInfo", "pdVignetteInfo",
@@ -31,6 +33,6 @@ export("writeBiocViews", "getBiocViews", "write_VIEWS", "write_REPOSITORY",
        "genReposControlFiles", "extractVignettes", "extractManuals",
        "extractNEWS", "extractTopLevelFiles",
        "writeRepositoryHtml", "writePackageDetailHtml", "getSubTerms",
-       "getBiocSubViews", "writeTopLevelView", "writeHtmlDoc", "write_SYMBOLS",
-       "writeRFilesFromVignettes",
+       "getBiocSubViews", "validate_bioc_views", "writeTopLevelView",
+       "writeHtmlDoc", "write_SYMBOLS", "writeRFilesFromVignettes",
        "getPackageNEWS", "printNEWS")
