@@ -60,13 +60,26 @@ BiologicalDomains -> Genetics;
 BiologicalDomains -> Metabolomics;
 BiologicalDomains -> Proteomics;
 
+/* BiologicalDomains -> Regulation */
+BiologicalDomains -> Regulation;
+Regulation -> GeneRegulation;
+Regulation -> Signaling;
+Regulation -> Epigenetics;
+
+
 /* Software -> Infrastructure */
 Software -> Infrastructure;
 Infrastructure -> DataImport;
-Infrastructure -> DataRepresentation;
-Infrastructure -> GraphsAndNetworks;
 Infrastructure -> GUI;
-Infrastructure -> Visualization;
+/* Infrastructure -> Visualization; */
+Infrastructure -> ConnectTools;
+
+/* Infrastructure -> DataRepresentation */
+Infrastructure -> DataRepresentation;
+DataRepresentation -> Sequences;
+DataRepresentation -> ExperimentData;
+DataRepresentation -> GraphsAndNetworks;
+
 
 /* Software -> Bioinformatics */
 Software -> Bioinformatics;
@@ -77,6 +90,33 @@ Bioinformatics -> Preprocessing;
 Bioinformatics -> QualityControl;
 Bioinformatics -> SequenceMatching;
 Bioinformatics -> TimeCourse;
+
+
+/* Bioinformatics -> Infrastructure */
+
+
+/* Bioinformatics -> SequenceMatching */
+Bioinformatics -> SequenceMatching;
+SequenceMatching -> Alignment;
+SequenceMatching -> MotifDiscovery;
+
+/* Bioinformatics -> Networks */
+Bioinformatics -> Networks;
+Networks -> NetworkInference;
+Networks -> NetworkAnalysis;
+/* Networks -> NetworkVisualization; */
+
+
+/* Bioinformatics -> Enrichment */
+Bioinformatics -> Enrichment;
+Enrichment -> GeneSetEnrichment;
+Enrichment -> NetworkEnrichment;
+
+
+/* Bioinformatics -> Visualization */
+Bioinformatics -> Visualization;
+Visualization -> NetworkVisualization;
+
 
 
 
@@ -160,6 +200,7 @@ AnnotationData -> FunctionalAnnotation;
 AnnotationData -> SequenceAnnotation;
 SequenceAnnotation -> GenomicSequence;
 SequenceAnnotation -> miRNA;
+SequenceAnnotation -> MotifAnnotation;
 
 /* AnnotationData -> ChipName */
 AnnotationData -> ChipName;
