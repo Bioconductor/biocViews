@@ -77,7 +77,6 @@ Infrastructure -> ConnectTools;
 /* Infrastructure -> DataRepresentation */
 Infrastructure -> DataRepresentation;
 DataRepresentation -> Sequences;
-DataRepresentation -> ExperimentData;
 DataRepresentation -> GraphsAndNetworks;
 
 
