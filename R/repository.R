@@ -261,6 +261,17 @@ extractVignettes <- function(reposRoot, srcContrib, destDir) {
 }
 
 
+getFileExistsAttr <- function(pkgList, reposRootPath, dir, filename) {
+    unlist(lapply(pkgList, function(pkg) {
+        ret <- logical(0)
+        filedir <- file.path(reposRootPath, dir, pkg)
+        file <- file.path(filedir, filename)
+        exists <- file.exists(filedir) && file.exists(file)
+        ret <- c(ret, exists)
+        ret
+    }))
+}
+
 getVignetteLinks <- function(pkgList, reposRootPath, vignette.dir) {
     if (length(pkgList) == 0L)
         return(character(0))
@@ -442,9 +453,17 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     ## Add vignette path info
     vigs <- getVignetteLinks(dbMat[, "Package"], reposRootPath, vignette.dir)
     vtitles <- getVignetteTitles(dbMat[, "Package"], reposRootPath, vignette.dir)
+    readmes <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "readmes", "README")
+    news <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "news", "NEWS")
+    install <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "install", "INSTALL")
     dbMat <- cbind(dbMat, vigs)
     dbMat <- cbind(dbMat, vtitles)
-    colnames(dbMat) <- c(fldNames, "vignettes", "vignetteTitles")
+    dbMat <- cbind(dbMat, readmes)
+    dbMat <- cbind(dbMat, news)
+    dbMat <- cbind(dbMat, install)
+    
+    colnames(dbMat) <- c(fldNames, "vignettes", "vignetteTitles", "hasREADME",
+        "hasNEWS", "hasINSTALL")
 
     .write_repository_db(dbMat, reposRootPath, "VIEWS")
 }
