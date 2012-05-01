@@ -278,6 +278,54 @@ getVignetteLinks <- function(pkgList, reposRootPath, vignette.dir) {
 }
 
 
+getVignetteTitlesFromListOfPdfs <- function(vigs) {
+    rnws <- gsub(".pdf", ".Rnw", vigs, fixed=TRUE)
+    vignetteTitles <- character()
+    for (vignette in rnws) {
+        titles <- character()
+        rnwnames = unlist(strsplit(vignette, ", ", fixed=TRUE))
+        for (rnwname in rnwnames) {
+            #if(is.null(rnwname)) rnwname <- rnwnames ## why?
+            if (file.exists(rnwname)) {
+                lines <- readLines(rnwname, warn=FALSE)
+                title  <- suppressWarnings(grep("VignetteIndexEntry\\{", lines, value=TRUE))
+                segs = unlist(strsplit(title, "\\{|\\}"))
+                title <- segs[length(segs)]
+                title <- gsub(",", ",,", title, fixed=TRUE)
+                titles <- c(titles, title)
+            } else {
+                pdfName = sub(".Rnw", ".pdf", rnwname, fixed=TRUE)
+                segs = unlist(strsplit(pdfName, "/", fixed=TRUE))
+                titles <- c(titles, segs[length(segs)])
+            }
+        }
+        tmp <- paste(titles, collapse=", ")
+        vignetteTitles <- c(vignetteTitles, tmp)
+    }
+    vignetteTitles
+}
+
+
+getVignetteTitles <- function(pkgList, reposRootPath, vignette.dir) {
+    if (length(pkgList) == 0L)
+        return(character(0))
+    unlist(lapply(pkgList, function(pkg) {
+        vigSubDir <- "inst/doc"
+        vigDir <- file.path(reposRootPath, vignette.dir, pkg, vigSubDir)
+        if (file.exists(vigDir)) {
+            vigs <- list.files(vigDir, pattern=".*\\.pdf$")
+            vigs <- paste(vignette.dir, pkg, vigSubDir, vigs, sep="/",
+                          collapse=", ")
+            vigTitles <- getVignetteTitlesFromListOfPdfs(vigs)
+        } else {
+          vigTitles <- NA_character_
+        }
+        vigTitles
+    }))
+}
+
+
+
 write_REPOSITORY <- function(reposRootPath, contribPaths) {
     contrib <- as.list(contribPaths)
     names(contrib) <- names(contribPaths)
@@ -393,8 +441,10 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     }
     ## Add vignette path info
     vigs <- getVignetteLinks(dbMat[, "Package"], reposRootPath, vignette.dir)
+    vtitles <- getVignetteTitles(dbMat[, "Package"], reposRootPath, vignette.dir)
     dbMat <- cbind(dbMat, vigs)
-    colnames(dbMat) <- c(fldNames, "vignettes")
+    dbMat <- cbind(dbMat, vtitles)
+    colnames(dbMat) <- c(fldNames, "vignettes", "vignetteTitles")
 
     .write_repository_db(dbMat, reposRootPath, "VIEWS")
 }
