@@ -263,7 +263,6 @@ extractVignettes <- function(reposRoot, srcContrib, destDir) {
 
 getDcfValues <- function(values) {
     if (is.na(values)) return (character(0))
-    #values <- gsub(" ", "", values, fixed=TRUE)
     values <- gsub("\n", " ", values, fixed=TRUE)
     l <- unlist(strsplit(values, ", ", fixed=TRUE))
     res <- unlist(lapply(l, function(x) {
@@ -273,40 +272,6 @@ getDcfValues <- function(values) {
     res
 }
 
-
-addDependsOnMeImportsMeSuggestsMe <- function(pkgDb) {
-    ## Add list of packages that depend on and suggest each package
-    ## listed in pkgDb, a matrix of packages (one per row)
-
-    pkgNames <- pkgDb([, "Package"])
-    names(pkgNames) <- NULL
-
-    depCols <- lapply(pkgDetailsList,
-                      function(x) pkgNames %in% x@Depends)
-    depMat <- do.call(cbind, depCols)
-    colnames(depMat) <- rownames(depMat) <- pkgNames
-
-    impCols <- lapply(pkgDetailsList,
-                      function(x) pkgNames %in% x@Imports)
-    impMat <- do.call(cbind, impCols)
-    colnames(impMat) <- rownames(impMat) <- pkgNames
-
-    sugCols <- lapply(pkgDetailsList,
-                      function(x) pkgNames %in% x@Suggests)
-    sugMat <- do.call(cbind, sugCols)
-    colnames(sugMat) <- rownames(sugMat) <- pkgNames
-
-    setDepsImpsSugs <- function(pkg) {
-        deps <- pkgNames[which(depMat[pkg@Package, ])]
-        imps <- pkgNames[which(impMat[pkg@Package, ])]
-        sugs <- pkgNames[which(sugMat[pkg@Package, ])]
-        pkg@dependsOnMe <- deps
-        pkg@importsMe <- imps
-        pkg@suggestsMe <- sugs
-        return(pkg)
-    }
-    return(lapply(pkgDetailsList, setDepsImpsSugs))
-}
 
 
 getFileExistsAttr <- function(pkgList, reposRootPath, dir, filename) {
@@ -511,9 +476,15 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     dbMat <- cbind(dbMat, install)
     
     colnames(dbMat) <- c(fldNames, "vignettes", "vignetteTitles", "hasREADME",
-        "hasNEWS", "hasINSTALL", "dependsOnMe", "importsMe", "suggestsMe")
+        "hasNEWS", "hasINSTALL")
     
-    addDependsOnMeImportsMeSuggestsMe(dbMat)
+    dependsOnMe <- getReverseDepends(dbMat, "Depends")
+    dbMat <- cbind(dbMat, dependsOnMe)
+    importsMe <- getReverseDepends(dbMat, "Imports")
+    dbMat <- cbind(dbMat, importsMe)
+    suggestsMe <- getReverseDepends(dbMat, "Suggests")
+    dbMat <- cbind(dbMat, suggestsMe)
+    
     .write_repository_db(dbMat, reposRootPath, "VIEWS")
 }
 
@@ -527,13 +498,13 @@ getReverseDepends <- function(db, fieldName) {
     })
     depMat <- do.call(cbind, depCols)
     colnames(depMat) <- rownames(depMat) <- pkgNames
-    e <- new.env()
+    ret <- character()
     bar <- function(x) {
         deps <- pkgNames[which(depMat[x, ])]
-        assign(x, unlist(paste(deps, collapse=", ")), env=e)
+        ret <- c(ret, unlist(paste(deps, collapse=", ")))
     }
-    lapply(pkgNames, bar)
-    e
+    ret <- lapply(pkgNames, bar)
+    unlist(ret)
 }
 
 writeRFilesFromVignettes <- function(reposRoot, reposUrl="..",
