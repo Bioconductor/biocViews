@@ -139,6 +139,8 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
     extractTopLevelFiles(reposRoot, srcContrib, destDir, "INSTALL")
 }
 
+
+
 extractReadmes <- function(reposRoot, srcContrib, destDir) {
     ## Extract README files from source package tarballs
     ##
@@ -283,6 +285,25 @@ getFileExistsAttr <- function(pkgList, reposRootPath, dir, filename) {
         ret <- c(ret, exists)
         ret
     }))
+}
+
+
+getFileLinks <- function(pkgList, reposRootPath, vignette.dir, ext) {
+    if (length(pkgList) == 0L)
+        return(character(0))
+    unlist(lapply(pkgList, function(pkg) {
+        vigSubDir <- "inst/doc"
+        vigDir <- file.path(reposRootPath, vignette.dir, pkg, vigSubDir)
+        if (file.exists(vigDir)) {
+            pattern <- paste(".*\\.", ext, "$", sep="")
+            vigs <- list.files(vigDir, pattern=pattern)
+            vigs <- paste(vignette.dir, pkg, vigSubDir, vigs, sep="/",
+                          collapse=", ")
+        } else
+          vigs <- NA_character_
+        vigs
+    }))
+    
 }
 
 getVignetteLinks <- function(pkgList, reposRootPath, vignette.dir) {
@@ -464,19 +485,21 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
         }
     }
     ## Add vignette path info
-    vigs <- getVignetteLinks(dbMat[, "Package"], reposRootPath, vignette.dir)
+    vigs <- getFileLinks(dbMat[, "Package"], reposRootPath, vignette.dir, "pdf")
     vtitles <- getVignetteTitles(dbMat[, "Package"], reposRootPath, vignette.dir)
     readmes <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "readmes", "README")
     news <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "news", "NEWS")
     install <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "install", "INSTALL")
+    license <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "licenses", "LICENSE")
     dbMat <- cbind(dbMat, vigs)
     dbMat <- cbind(dbMat, vtitles)
     dbMat <- cbind(dbMat, readmes)
     dbMat <- cbind(dbMat, news)
     dbMat <- cbind(dbMat, install)
+    dbMat <- cbind(dbMat, license)
     
     colnames(dbMat) <- c(fldNames, "vignettes", "vignetteTitles", "hasREADME",
-        "hasNEWS", "hasINSTALL")
+        "hasNEWS", "hasINSTALL", "hasLICENSE")
     
     dependsOnMe <- getReverseDepends(dbMat, "Depends")
     dbMat <- cbind(dbMat, dependsOnMe)
