@@ -14,7 +14,7 @@ genReposControlFiles <- function(reposRoot, contribPaths)
         } else if (substr(type, 1, 10) == "mac.binary") {
             type <- "mac.binary"
         }
-        write_PACKAGES(path, type=type)
+        write_PACKAGES(path, type=type, fields=c("InstallableEverywhere"))
     }
     ## Write a VIEWS file at the top-level containing
     ## detailed package info
