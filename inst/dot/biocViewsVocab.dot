@@ -304,6 +304,31 @@ ChipName -> hcgi12k;
 ChipName -> hcgi8k;
 
 
+/* AnnotationData -> OrgDb */
+AnnotationData -> OrgDb;
+
+/* AnnotationData -> ChipDb */
+AnnotationData -> ChipDb;
+
+/* AnnotationData -> TranscriptDb */
+AnnotationData -> TranscriptDb;
+
+/* AnnotationData -> InparanoidDb */
+AnnotationData -> InparanoidDb;
+
+/* AnnotationData -> cdf */
+AnnotationData -> cdf;
+
+/* AnnotationData -> probe */
+AnnotationData -> probe;
+
+/* AnnotationData -> db0 */
+AnnotationData -> db0;
+
+/* AnnotationData -> BSgenome */
+AnnotationData -> BSgenome;
+
+
 
 /****************************************************************************
  *                            ExperimentData                                *
