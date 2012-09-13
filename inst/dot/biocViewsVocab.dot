@@ -316,6 +316,9 @@ AnnotationData -> TranscriptDb;
 /* AnnotationData -> InparanoidDb */
 AnnotationData -> InparanoidDb;
 
+/* AnnotationData -> OrganismDb */
+AnnotationData -> OrganismDb;
+
 /* AnnotationData -> cdf */
 AnnotationData -> cdf;
 
