@@ -38,20 +38,41 @@ AssayDomains -> Transcription;
 
 /* Software -> AssayTechnologies */
 Software -> AssayTechnologies;
+AssayTechnologies -> FlowCytometry;
+AssayTechnologies -> HighThroughputSequencing;
+HighThroughputSequencing -> ChIPseq;
+HighThroughputSequencing -> Methylseq;
+HighThroughputSequencing -> RNAseq;
+AssayTechnologies -> MassSpectrometry;
 AssayTechnologies -> Microarray;
+Microarray -> MultiChannel;
 Microarray -> OneChannel;
 Microarray -> TwoChannel;
-Microarray -> MultiChannel;
 AssayTechnologies -> MicrotitrePlateAssay;
-AssayTechnologies -> MassSpectrometry;
-AssayTechnologies -> SAGE;
-AssayTechnologies -> FlowCytometry;
-AssayTechnologies -> Sequencing;
-AssayTechnologies -> HighThroughputSequencing;
 MicrotitrePlateAssay -> qPCR;
-HighThroughputSequencing -> ChIPseq;
-HighThroughputSequencing -> RNAseq;
-HighThroughputSequencing -> Methylseq;
+AssayTechnologies -> SAGE;
+AssayTechnologies -> Sequencing;
+
+/* Software -> Bioinformatics */
+Software -> Bioinformatics;
+Bioinformatics -> Classification;
+Bioinformatics -> Clustering;
+Bioinformatics -> Enrichment;
+Enrichment -> GeneSetEnrichment;
+Enrichment -> NetworkEnrichment;
+Bioinformatics -> MultipleComparisons;
+Bioinformatics -> Networks;
+Networks -> NetworkAnalysis;
+Networks -> NetworkInference;
+Bioinformatics -> Preprocessing;
+Bioinformatics -> QualityControl;
+Bioinformatics -> SequenceMatching;
+SequenceMatching -> Alignment;
+SequenceMatching -> MotifDiscovery;
+Bioinformatics -> Survival;
+Bioinformatics -> TimeCourse;
+Bioinformatics -> Visualization;
+Visualization -> NetworkVisualization;
 
 /* Software -> BiologicalDomains */
 Software -> BiologicalDomains;
@@ -59,63 +80,19 @@ BiologicalDomains -> CellBiology;
 BiologicalDomains -> Genetics;
 BiologicalDomains -> Metabolomics;
 BiologicalDomains -> Proteomics;
-
-/* BiologicalDomains -> Regulation */
 BiologicalDomains -> Regulation;
 Regulation -> GeneRegulation;
 Regulation -> Signaling;
 Regulation -> Epigenetics;
 
-
 /* Software -> Infrastructure */
 Software -> Infrastructure;
-Infrastructure -> DataImport;
-Infrastructure -> GUI;
-/* Infrastructure -> Visualization; */
 Infrastructure -> ConnectTools;
-
-/* Infrastructure -> DataRepresentation */
+Infrastructure -> DataImport;
 Infrastructure -> DataRepresentation;
 DataRepresentation -> Sequences;
 DataRepresentation -> GraphsAndNetworks;
-
-
-/* Software -> Bioinformatics */
-Software -> Bioinformatics;
-Bioinformatics -> Clustering;
-Bioinformatics -> Classification;
-Bioinformatics -> MultipleComparisons;
-Bioinformatics -> Preprocessing;
-Bioinformatics -> QualityControl;
-Bioinformatics -> SequenceMatching;
-Bioinformatics -> TimeCourse;
-
-
-/* Bioinformatics -> Infrastructure */
-
-
-/* Bioinformatics -> SequenceMatching */
-Bioinformatics -> SequenceMatching;
-SequenceMatching -> Alignment;
-SequenceMatching -> MotifDiscovery;
-
-/* Bioinformatics -> Networks */
-Bioinformatics -> Networks;
-Networks -> NetworkInference;
-Networks -> NetworkAnalysis;
-/* Networks -> NetworkVisualization; */
-
-
-/* Bioinformatics -> Enrichment */
-Bioinformatics -> Enrichment;
-Enrichment -> GeneSetEnrichment;
-Enrichment -> NetworkEnrichment;
-
-
-/* Bioinformatics -> Visualization */
-Bioinformatics -> Visualization;
-Visualization -> NetworkVisualization;
-
+Infrastructure -> GUI;
 
 
 
@@ -303,33 +280,20 @@ ChipName -> zebrafish;
 ChipName -> hcgi12k;
 ChipName -> hcgi8k;
 
-
-/* AnnotationData -> OrgDb */
-AnnotationData -> OrgDb;
-
-/* AnnotationData -> ChipDb */
-AnnotationData -> ChipDb;
-
-/* AnnotationData -> TranscriptDb */
-AnnotationData -> TranscriptDb;
-
-/* AnnotationData -> InparanoidDb */
-AnnotationData -> InparanoidDb;
-
-/* AnnotationData -> OrganismDb */
-AnnotationData -> OrganismDb;
-
-/* AnnotationData -> cdf */
-AnnotationData -> cdf;
-
-/* AnnotationData -> probe */
-AnnotationData -> probe;
-
-/* AnnotationData -> db0 */
-AnnotationData -> db0;
-
-/* AnnotationData -> BSgenome */
-AnnotationData -> BSgenome;
+/* AnnotationData -> PackageType */
+AnnotationData -> PackageType;
+PackageType -> BSgenome;
+PackageType -> cdf;
+PackageType -> ChipDb;
+PackageType -> db0;
+PackageType -> InparanoidDb;
+PackageType -> OrganismDb;
+PackageType -> OrgDb;
+PackageType -> PolyPhen;
+PackageType -> probe;
+PackageType -> SIFT;
+PackageType -> SNPlocs;
+PackageType -> TranscriptDb;
 
 
 
