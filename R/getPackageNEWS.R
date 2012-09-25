@@ -94,7 +94,12 @@ getNEWSFromFile <- function (dir, destfile, format = NULL, reader = NULL,
     file <- file(destfile, "w+")
     on.exit(close(file))
     db <- tools:::.build_news_db_from_package_NEWS_Rd(newsRdFile)
-    news <- capture.output(print(db))
+    news <- NULL
+    try(news <- capture.output(print(db)))
+    if (is.null(news))
+    {
+        return(invisible())
+    }
     news <- paste(news, collapse="\n")
     if ("md" == output)
         news <- mdIfy(news)
