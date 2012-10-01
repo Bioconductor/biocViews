@@ -10,8 +10,8 @@
 ## prevRepos, and membership in currRepos as references. Package
 ## source tree rooted at srcDir, possibiblly as tarred files
 getPackageNEWS <-
-    function(prevRepos="http://www.bioconductor.org/packages/2.8/bioc",
-             currRepos="http://www.bioconductor.org/packages/2.9/bioc",
+    function(prevRepos="http://www.bioconductor.org/packages/2.10/bioc",
+             currRepos="http://www.bioconductor.org/packages/2.11/bioc",
              srcDir)
 {
     prev <- available.packages(contrib.url(prevRepos, "source"))
