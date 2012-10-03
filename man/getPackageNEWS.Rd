@@ -13,8 +13,8 @@
   in the current repository.
 }
 \usage{
-getPackageNEWS(prevRepos="http://www.bioconductor.org/packages/2.8/bioc", 
-               currRepos="http://www.bioconductor.org/packages/2.9/bioc", 
+getPackageNEWS(prevRepos="http://www.bioconductor.org/packages/2.10/bioc", 
+               currRepos="http://www.bioconductor.org/packages/2.11/bioc", 
                srcDir)
 printNEWS(dbs, destfile, overwrite = FALSE, width = 68,
           output=c("md", "text"), ...)
