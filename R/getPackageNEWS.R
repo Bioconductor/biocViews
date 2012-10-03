@@ -98,6 +98,8 @@ getNEWSFromFile <- function (dir, destfile, format = NULL, reader = NULL,
     try(news <- capture.output(print(db)))
     if (is.null(news))
     {
+        message(sprintf("Error building news database for %s/%s",
+            dir, destfile))
         return(invisible())
     }
     news <- paste(news, collapse="\n")
