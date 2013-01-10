@@ -336,6 +336,7 @@ getVignetteTitlesFromListOfPdfs <- function(vigs) {
                 title  <- suppressWarnings(grep("VignetteIndexEntry\\{", lines, value=TRUE))
                 segs = unlist(strsplit(title, "\\{|\\}"))
                 segs <- segs[!grepl("\\\\", segs, fixed=TRUE)]
+                segs <- segs[!grepl("^ $", segs, fixed=FALSE)]
                 title <- segs[length(segs)]
                 title <- gsub(",", ",,", title, fixed=TRUE)
                 titles <- c(titles, title)
