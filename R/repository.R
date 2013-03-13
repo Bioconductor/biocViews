@@ -488,6 +488,8 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     }
     ## Add vignette path info
     vigs <- getFileLinks(dbMat[, "Package"], reposRootPath, vignette.dir, "pdf")
+    rfiles <- getFileLinks(dbMat[, "Package"], reposRootPath, vignette.dir, "R")
+    #rfiles <- rfiles[grep("\\.R$", rfiles)]
     vtitles <- getVignetteTitles(dbMat[, "Package"], reposRootPath, vignette.dir)
     readmes <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "readmes", "README")
     news <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "news", "NEWS")
@@ -499,11 +501,15 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     dbMat <- cbind(dbMat, news)
     dbMat <- cbind(dbMat, install)
     dbMat <- cbind(dbMat, license)
+    dbMat <- cbind(dbMat, rfiles)
     
     colnames(dbMat) <- c(fldNames, "vignettes", "vignetteTitles", "hasREADME",
-        "hasNEWS", "hasINSTALL", "hasLICENSE")
-    
+        "hasNEWS", "hasINSTALL", "hasLICENSE", "Rfiles")
     dependsOnMe <- getReverseDepends(dbMat, "Depends")
+    
+    index <- grep("\\.R$", dbMat[, "Rfiles"], invert=TRUE)
+    dbMat[index, "Rfiles"] <- NA
+
     dbMat <- cbind(dbMat, dependsOnMe)
     importsMe <- getReverseDepends(dbMat, "Imports")
     dbMat <- cbind(dbMat, importsMe)
