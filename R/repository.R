@@ -263,6 +263,62 @@ extractVignettes <- function(reposRoot, srcContrib, destDir) {
 }
 
 
+#
+
+
+extractHTMLDocuments <- function(reposRoot, srcContrib, destDir) {
+    ## Extract HTML documents from source package tarballs
+    ## IF any HTML document is present in inst/doc.
+    ##
+    ## reposRoot - Top level path for CRAN-style repos
+    ## srcContrib - Location of source packages
+    ## destDir - where to extract.
+    ##
+    ## Notes:
+    ## Under destDir, for tarball foo_1.2.3.tar.gz, you will
+    ## get destDir/foo/inst/doc/*.pdf
+    ##
+
+    if (missing(destDir))
+      destDir <- file.path(reposRoot, "vignettes")
+
+    
+    extractHTMLDocumentsFromTarball <- function(tarball, unpackDir=".") {
+        ## helper function to unpack HTML documents and deps from tarball
+
+        ## here we untar twice, once (just listing files) to see
+        ## if there are html files in inst/doc, then if there are,
+        ## we untar again (extracting). Optimal?
+        fileList <- untar(tarball, list=TRUE)
+        if (length(grep("inst/doc/.*\\.html$", fileList, ignore.case=TRUE)))
+        {
+            cat("Found HTML document in", tarball, "\n")
+            ## This extracts everything, including 
+            ## Rnw and Rmd files...too liberal? Then use vignettes/ dir
+            pat <-  "--wildcards '*/inst/doc/*'"
+            tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, pat)
+            cat("Extracting HTML documents from", tarball, "\n")
+            ret <- system(tarCmd)
+            if (ret != 0)
+              warning("tar had non-zero exit status for HTML extract of: ", tarball)
+        }
+    }
+
+    tarballs <- list.files(file.path(reposRoot, srcContrib),
+                           pattern="\\.tar\\.gz$", full.names=TRUE)
+    if (!file.exists(destDir))
+      dir.create(destDir, recursive=TRUE)
+    if (!file.info(destDir)$isdir)
+      stop("destDir must specify a directory")
+    invisible(lapply(tarballs, extractHTMLDocumentsFromTarball,
+        unpackDir=destDir))
+}
+
+
+
+#
+
+
 getDcfValues <- function(values) {
     if (is.na(values)) return (character(0))
     values <- gsub("\n", " ", values, fixed=TRUE)
@@ -288,7 +344,8 @@ getFileExistsAttr <- function(pkgList, reposRootPath, dir, filename) {
 }
 
 
-getFileLinks <- function(pkgList, reposRootPath, vignette.dir, ext) {
+getFileLinks <- function(pkgList, reposRootPath, vignette.dir, ext,
+    ignore.case=FALSE) {
     if (length(pkgList) == 0L)
         return(character(0))
     unlist(lapply(pkgList, function(pkg) {
@@ -296,7 +353,8 @@ getFileLinks <- function(pkgList, reposRootPath, vignette.dir, ext) {
         vigDir <- file.path(reposRootPath, vignette.dir, pkg, vigSubDir)
         if (file.exists(vigDir)) {
             pattern <- paste(".*\\.", ext, "$", sep="")
-            vigs <- list.files(vigDir, pattern=pattern)
+            vigs <- list.files(vigDir, pattern=pattern,
+                ignore.case=ignore.case)
             vigs <- paste(vignette.dir, pkg, vigSubDir, vigs, sep="/",
                           collapse=", ")
         } else
@@ -489,6 +547,10 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     ## Add vignette path info
     vigs <- getFileLinks(dbMat[, "Package"], reposRootPath, vignette.dir, "pdf")
     rfiles <- getFileLinks(dbMat[, "Package"], reposRootPath, vignette.dir, "R")
+
+    htmlDocs <- getFileLinks(dbMat[, "Package"],
+        reposRootPath, vignette.dir, "html", TRUE)
+
     #rfiles <- rfiles[grep("\\.R$", rfiles)]
     vtitles <- getVignetteTitles(dbMat[, "Package"], reposRootPath, vignette.dir)
     readmes <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "readmes", "README")
@@ -502,13 +564,20 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     dbMat <- cbind(dbMat, install)
     dbMat <- cbind(dbMat, license)
     dbMat <- cbind(dbMat, rfiles)
+    dbMat <- cbind(dbMat, htmlDocs)
     
     colnames(dbMat) <- c(fldNames, "vignettes", "vignetteTitles", "hasREADME",
-        "hasNEWS", "hasINSTALL", "hasLICENSE", "Rfiles")
+        "hasNEWS", "hasINSTALL", "hasLICENSE", "Rfiles", "htmlDocs")
     dependsOnMe <- getReverseDepends(dbMat, "Depends")
     
     index <- grep("\\.R$", dbMat[, "Rfiles"], invert=TRUE)
     dbMat[index, "Rfiles"] <- NA
+
+
+    index <- grep("\\.html$", dbMat[, "htmlDocs"],
+        invert=TRUE, ignore.case=TRUE)
+    dbMat[index, "htmlDocs"] <- NA
+
 
     dbMat <- cbind(dbMat, dependsOnMe)
     importsMe <- getReverseDepends(dbMat, "Imports")
