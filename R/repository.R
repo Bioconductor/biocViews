@@ -611,8 +611,11 @@ writeRFilesFromVignettes <- function(reposRoot, reposUrl="..",
                                 viewUrl="../..", reposFullUrl=reposUrl,
                                 downloadStatsUrl="", devHistoryUrl="") {
 
-    pkgList <- loadPackageDetails(reposRoot, reposUrl, viewUrl, reposFullUrl,
-          downloadStatsUrl, devHistoryUrl)
+    #### TEMPORARY FIX -- REALLY NEED TO SUPPORT knitr's purl
+    tryCatch(pkgList <- loadPackageDetails(reposRoot, reposUrl, viewUrl, reposFullUrl,
+          downloadStatsUrl, devHistoryUrl), error=function(e) {
+            cat("Error: ", conditionMessage(e), "\n")
+        })
 }
 
 
