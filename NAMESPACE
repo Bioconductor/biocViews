@@ -11,7 +11,8 @@ importFrom(tools, write_PACKAGES)
 importFrom(utils, download.file, Stangle)
 
 importMethodsFrom(XML, saveXML)
-importFrom(XML, xmlNode, xmlOutputDOM, xmlTree)
+importFrom(XML, xmlNode, xmlOutputDOM, xmlTree, htmlParse,
+       getNodeSet, xmlValue)
 importFrom(RCurl, getURL)
 
 importFrom(RUnit, checkTrue)

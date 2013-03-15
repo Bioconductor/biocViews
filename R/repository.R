@@ -551,6 +551,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     htmlDocs <- getFileLinks(dbMat[, "Package"],
         reposRootPath, vignette.dir, "html", TRUE)
 
+
     #rfiles <- rfiles[grep("\\.R$", rfiles)]
     vtitles <- getVignetteTitles(dbMat[, "Package"], reposRootPath, vignette.dir)
     readmes <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "readmes", "README")
@@ -565,18 +566,24 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     dbMat <- cbind(dbMat, license)
     dbMat <- cbind(dbMat, rfiles)
     dbMat <- cbind(dbMat, htmlDocs)
+
+    index <- grep("\\.html$", dbMat[, "htmlDocs"],
+        invert=TRUE, ignore.case=TRUE)
+    dbMat[index, "htmlDocs"] <- NA
+
+    htmlTitles <- getHTMLTitles(dbMat[, "htmlDocs"], reposRootPath)
+    dbMat <- cbind(dbMat, htmlTitles)
+
     
     colnames(dbMat) <- c(fldNames, "vignettes", "vignetteTitles", "hasREADME",
-        "hasNEWS", "hasINSTALL", "hasLICENSE", "Rfiles", "htmlDocs")
+        "hasNEWS", "hasINSTALL", "hasLICENSE", "Rfiles", "htmlDocs",
+        "htmlTitles")
     dependsOnMe <- getReverseDepends(dbMat, "Depends")
     
     index <- grep("\\.R$", dbMat[, "Rfiles"], invert=TRUE)
     dbMat[index, "Rfiles"] <- NA
 
 
-    index <- grep("\\.html$", dbMat[, "htmlDocs"],
-        invert=TRUE, ignore.case=TRUE)
-    dbMat[index, "htmlDocs"] <- NA
 
 
     dbMat <- cbind(dbMat, dependsOnMe)
@@ -605,6 +612,58 @@ getReverseDepends <- function(db, fieldName) {
     }
     ret <- lapply(pkgNames, bar)
     unlist(ret)
+}
+
+
+getHTMLTitle <- function(file)
+{
+    ## First look for an old-fashioned VignetteIndexEntry,
+    ## because markdown/HTML vignettes will have one (in
+    ## an HTML comment) which contains the canonical title.
+    res <- grep("^%\\\\VignetteIndexEntry", readLines(file),
+        value=TRUE)
+    if (length(res))
+    {
+        title <- strsplit(res, "\\{|\\}")[[1]][2]
+    } else {
+        ## now look for an HTML title
+        doc <- htmlParse(file)
+        ns <- integer(0)
+        tryCatch(ns <- getNodeSet(doc, "//title"),
+            error=function(e) {})
+        if (length(ns))
+            title <- xmlValue(ns[[1]])
+        else ## just return the filename as a title
+            title <- basename(file)
+    }
+    title <- gsub('"', '""', title)
+    sprintf('"%s"', title)
+}
+
+getHTMLTitles <- function(files, reposRootPath)
+{
+    res <- c()
+
+    for (file in files)
+    {
+        title <- NULL
+        if (is.na(file))
+        {
+            res <- c(res, NA)
+            next
+        }
+        if (grepl(", ", file))
+        {
+            subfiles <- strsplit(file, ", ")[[1]]
+            fullpaths <- file.path(reposRootPath, subfiles)
+            out <- sapply(fullpaths, getHTMLTitle)
+            res <- c(res, paste(out, collapse=", "))
+        } else {
+            fullpath <- file.path(reposRootPath, file)
+            res <- c(res, getHTMLTitle(fullpath))
+        }
+    }
+    res
 }
 
 writeRFilesFromVignettes <- function(reposRoot, reposUrl="..",
