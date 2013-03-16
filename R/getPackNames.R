@@ -1,3 +1,12 @@
+## FIXME this is really dumb as does not
+## use the information in VIEWS (VignetteBuilder field)
+myStangle <- function(file)
+{
+    tryCatch(Stangle(file), error=function(e){
+        purl(file)
+      })
+}
+
 readPackageInfo <- function(file, fields = NULL, all = FALSE) {
     info <- read.dcf(file = file, fields = fields, all = all)
     if ("vignettes" %in% colnames(info)) {
@@ -9,7 +18,7 @@ readPackageInfo <- function(file, fields = NULL, all = FALSE) {
                               paste(lapply(sub("pdf$", "Rnw", vigs),
                                            function(v) {
                                            if (file.exists(v)) {
-                                               Stangle(v)
+                                               myStangle(v)
                                                rfile <- sub("Rnw$", "R", basename(v))
                                                file.copy(rfile, dirname(v),
                                                          overwrite = TRUE)
@@ -18,7 +27,7 @@ readPackageInfo <- function(file, fields = NULL, all = FALSE) {
                                            } else {
                                                v <- sub("Rnw$", "rnw", v)
                                                if (file.exists(v)) {
-                                                   Stangle(v)
+                                                   myStangle(v)
                                                    rfile <- sub("rnw$", "R", basename(v))
                                                    file.copy(rfile, dirname(v),
                                                              overwrite = TRUE)

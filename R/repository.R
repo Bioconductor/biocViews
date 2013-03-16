@@ -471,7 +471,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
       fields <- c("Title", "Description", "biocViews",
                   "Author", "Maintainer", "URL", "License",
                   "SystemRequirements", "organism", "manufacturer",
-                  "hasReadme")
+                  "hasReadme", "VignetteBuilder")
     if (missing(type))
       type <- "source"
     type <- match.arg(type)
@@ -671,11 +671,8 @@ writeRFilesFromVignettes <- function(reposRoot, reposUrl="..",
                                 viewUrl="../..", reposFullUrl=reposUrl,
                                 downloadStatsUrl="", devHistoryUrl="") {
 
-    #### TEMPORARY FIX -- REALLY NEED TO SUPPORT knitr's purl
-    tryCatch(pkgList <- loadPackageDetails(reposRoot, reposUrl, viewUrl, reposFullUrl,
-          downloadStatsUrl, devHistoryUrl), error=function(e) {
-            cat("Error: ", conditionMessage(e), "\n")
-        })
+    pkgList <- loadPackageDetails(reposRoot, reposUrl, viewUrl, reposFullUrl,
+          downloadStatsUrl, devHistoryUrl)
 }
 
 

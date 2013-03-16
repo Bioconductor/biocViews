@@ -10,6 +10,8 @@ importFrom(tools, write_PACKAGES)
 
 importFrom(utils, download.file, Stangle)
 
+importFrom(knitr, purl)
+
 importMethodsFrom(XML, saveXML)
 importFrom(XML, xmlNode, xmlOutputDOM, xmlTree, htmlParse,
        getNodeSet, xmlValue)
