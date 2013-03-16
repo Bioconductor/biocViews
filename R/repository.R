@@ -507,6 +507,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
             ext <- switch(ctype,
                           source=".tar.gz", win.binary=, win64.binary=".zip",
                           mac.binary=, mac.binary.leopard=".tgz",
+                          mac.binary.snowleopard=".tgz",
                           stop("unknown type"))
             paste(cPath, "/", pkgs, "_", vers, ext, sep="")
         }
