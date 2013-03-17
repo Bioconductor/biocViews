@@ -575,7 +575,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     htmlTitles <- getHTMLTitles(dbMat[, "htmlDocs"], reposRootPath)
     dbMat <- cbind(dbMat, htmlTitles)
 
-    
+
     colnames(dbMat) <- c(fldNames, "vignettes", "vignetteTitles", "hasREADME",
         "hasNEWS", "hasINSTALL", "hasLICENSE", "Rfiles", "htmlDocs",
         "htmlTitles")
@@ -583,9 +583,6 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     
     index <- grep("\\.R$", dbMat[, "Rfiles"], invert=TRUE)
     dbMat[index, "Rfiles"] <- NA
-
-
-
 
     dbMat <- cbind(dbMat, dependsOnMe)
     importsMe <- getReverseDepends(dbMat, "Imports")
@@ -673,8 +670,31 @@ writeRFilesFromVignettes <- function(reposRoot, reposUrl="..",
 
     pkgList <- loadPackageDetails(reposRoot, reposUrl, viewUrl, reposFullUrl,
           downloadStatsUrl, devHistoryUrl)
+    StangleHTMLVignettes(reposRoot)
 }
 
+
+.printf <- function(...) print(noquote(sprintf(...)))
+
+StangleHTMLVignettes <- function(reposRoot)
+{
+    viewsFile <- file.path(reposRoot, "VIEWS")
+    pkgMat <- readPackageInfo(viewsFile)
+    info <- read.dcf(file=viewsFile)
+    apply(info, 1, function(x){
+        if (!is.na(x["htmlDocs"]))
+        {
+            docs <- strsplit(x["htmlDocs"], ", ")[[1]]
+            for (doc in docs) {
+                vig <- sub("\\.html", ".Rmd", doc, ignore.case=TRUE)
+                out <- sub("\\.html", ".R", doc, ignore.case=TRUE)
+                if (file.exists(vig))
+                    purl(vig, out)
+            }
+        }
+        })
+
+}
 
 
 writeRepositoryHtml <- function(reposRoot, title, reposUrl="..",

@@ -3,7 +3,8 @@
 myStangle <- function(file)
 {
     tryCatch(Stangle(file), error=function(e){
-        purl(file)
+        if (file.exists(file) && grepl("\\.Rnw$", file, ignore.case=TRUE))
+          purl(file)
       })
 }
 
@@ -17,7 +18,7 @@ readPackageInfo <- function(file, fields = NULL, all = FALSE) {
                               function(vigs) {
                               paste(lapply(sub("pdf$", "Rnw", vigs),
                                            function(v) {
-                                           if (file.exists(v)) {
+                                           if (file.exists(v) && (!file.info(v)$isdir)) {
                                                myStangle(v)
                                                rfile <- sub("Rnw$", "R", basename(v))
                                                file.copy(rfile, dirname(v),
@@ -26,7 +27,7 @@ readPackageInfo <- function(file, fields = NULL, all = FALSE) {
                                                sub("Rnw$", "R", v)
                                            } else {
                                                v <- sub("Rnw$", "rnw", v)
-                                               if (file.exists(v)) {
+                                               if (file.exists(v) && (!file.info(v)$isdir)) {
                                                    myStangle(v)
                                                    rfile <- sub("rnw$", "R", basename(v))
                                                    file.copy(rfile, dirname(v),
