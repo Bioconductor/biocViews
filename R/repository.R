@@ -630,7 +630,11 @@ getHTMLTitle <- function(file)
         tryCatch(ns <- getNodeSet(doc, "//title"),
             error=function(e) {})
         if (length(ns))
-            title <- xmlValue(ns[[1]])
+        { 
+            title <-  gsub("^\\s+|\\s+$", "", xmlValue(ns[[1]])) 
+            if (!nchar(title))
+                title <- basename(file)
+        }
         else ## just return the filename as a title
             title <- basename(file)
     }
