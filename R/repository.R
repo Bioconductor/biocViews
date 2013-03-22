@@ -551,7 +551,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
 
     htmlDocs <- getFileLinks(dbMat[, "Package"],
         reposRootPath, vignette.dir, "html", TRUE)
-    htmlDocs <- htmlDocs[grep("\\/index\\.html$", htmlDocs, invert=TRUE)]
+    htmlDocs[grep("\\/index\\.html$", htmlDocs)] <- NA
 
 
     #rfiles <- rfiles[grep("\\.R$", rfiles)]
@@ -619,8 +619,8 @@ getHTMLTitle <- function(file)
     ## First look for an old-fashioned VignetteIndexEntry,
     ## because markdown/HTML vignettes will have one (in
     ## an HTML comment) which contains the canonical title.
-    res <- grep("^%\\\\VignetteIndexEntry", readLines(file),
-        value=TRUE)
+    res <- grep("^%\\\\VignetteIndexEntry", readLines(file,
+        warn=FALSE), value=TRUE)
     if (length(res))
     {
         title <- strsplit(res, "\\{|\\}")[[1]][2]
