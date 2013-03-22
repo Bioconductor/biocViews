@@ -551,6 +551,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
 
     htmlDocs <- getFileLinks(dbMat[, "Package"],
         reposRootPath, vignette.dir, "html", TRUE)
+    htmlDocs <- htmlDocs[grep("\\/index\\.html$", htmlDocs, invert=TRUE)]
 
 
     #rfiles <- rfiles[grep("\\.R$", rfiles)]
