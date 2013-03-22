@@ -1,21 +1,28 @@
 \name{extractVignettes}
 \alias{extractVignettes}
+\alias{extractHTMLDocuments}
 \title{Extract pdf vignettes from local package repository}
 \description{
-  This function extracts pdf files from the \code{inst/doc} subdirectory
+  These functions extract pdf or HTML 
+  files from the \code{inst/doc} subdirectory
   of R source packages archives (\code{.tar.gz}) found in a local
   package repository.
 
-  All pdf files found in \code{inst/doc} will be extracted.  Only source
-  package archives will be processed.  The extracted pdf files will be
+  All pdf files found in \code{inst/doc} will be extracted.
+  With \code{extractHTMLDocuments}, all HTML files except
+  \code{index.html} will be extracted.
+    Only source
+  package archives will be processed.  The extracted pdf 
+  or HTML files will be
   extracted under \code{destDir} and will be found in
-  \code{PKGNAME/inst/doc/*.pdf}.
+  \code{PKGNAME/inst/doc/}.
 
   Prior to extraction, all pdf files in \code{destDir/PKGNAME/inst/doc}
   will be removed.
 }
 \usage{
 extractVignettes(reposRoot, srcContrib, destDir)
+extractHTMLDocuments(reposRoot, srcContrib, destDir)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
