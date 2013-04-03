@@ -57,24 +57,28 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
     
     buildManualsFromTarball <- function(tarball, unpackDir=".") {
         ## helper function to unpack pdf & Rd files from the vig
-        manPat <- "--wildcards '*/man/*.[Rr]d'"
-        tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, manPat)
-        cleanUnpackDir(tarball, unpackDir)
-        cat("Extracting man pages from", tarball, "\n")
-        ret <- system(tarCmd)
-        if (ret != 0)
-            warning("tar had non-zero exit status for man pages extract of: ", tarball)
-        else {
-            pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
-            pkgDir <- file.path(unpackDir, pkg, "man")
-            RCmd <- file.path(Sys.getenv("R_HOME"), "bin", "R")
-            Rd2pdfCmd <-
-              paste(RCmd, " CMD Rd2pdf --no-preview --output=", pkgDir, "/",
-                    pkg, ".pdf --title=", pkg, " ", pkgDir, "/*.[Rr]d", sep = "")
-            cat("Building pdf reference manual for", pkg, "\n")
-            ret <- system(Rd2pdfCmd)
+        if (grepl("data/annotation$", reposRoot))
+        {
+            manPat <- "--wildcards '*/man/*.[Rr]d'"
+            tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, manPat)
+            cleanUnpackDir(tarball, unpackDir)
+            cat("Extracting man pages from", tarball, "\n")
+            ret <- system(tarCmd)
             if (ret != 0)
-                warning("R had non-zero exit status for building ref man for: ", pkg)
+                warning("tar had non-zero exit status for man pages extract of: ", tarball)
+            else {
+                pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
+                pkgDir <- file.path(unpackDir, pkg, "man")
+                RCmd <- file.path(Sys.getenv("R_HOME"), "bin", "R")
+                Rd2pdfCmd <-
+                  paste(RCmd, " CMD Rd2pdf --no-preview --output=", pkgDir, "/",
+                        pkg, ".pdf --title=", pkg, " ", pkgDir, "/*.[Rr]d", sep = "")
+                cat("Building pdf reference manual for", pkg, "\n")
+                ret <- system(Rd2pdfCmd)
+                if (ret != 0)
+                    warning("R had non-zero exit status for building ref man for: ", pkg)
+            }
+
         }
     }
     
