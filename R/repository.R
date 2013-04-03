@@ -43,11 +43,10 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
     if (missing(destDir))
         destDir <- file.path(reposRoot, "manuals")
 
-    cleanUnpackDir <- function(tarball, unpackDir) {
+    cleanUnpackDir <- function(tarball, unpackDir, rmRegex=".*\\.(pdf|Rd|rd)$") {
         ## Delete manuals from a previous extraction
         pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
         pkgDir <- file.path(unpackDir, pkg, "man")
-        rmRegex <- ".*\\.(pdf|Rd|rd)$"
         if (!file.exists(pkgDir))
             return(FALSE)
         oldFiles <- list.files(pkgDir, pattern=rmRegex, full.names=TRUE)
@@ -75,6 +74,7 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
                         pkg, ".pdf --title=", pkg, " ", pkgDir, "/*.[Rr]d", sep = "")
                 cat("Building pdf reference manual for", pkg, "\n")
                 ret <- system(Rd2pdfCmd)
+                cleanUnpackDir(tarball, unpackDir, rmRegex=".*\\.(Rd|rd)$")
                 if (ret != 0)
                     warning("R had non-zero exit status for building ref man for: ", pkg)
             }
