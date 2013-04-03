@@ -125,7 +125,12 @@ printNEWS <- function(dbs, destfile, overwrite=FALSE, width=68,
         for (i in seq_along(dbs)) {
             cat(sprintf("\n%s\n%s\n\n", names(dbs)[[i]],
                         paste(rep("-", nchar(names(dbs)[[i]])), collapse="")))
-            print(dbs[[i]])
+            tryCatch({
+                print(dbs[[i]])
+            }, error=function(err) {
+                warning("print() failed for ", sQuote(names(dbs)[[i]]),
+                        immediate.=TRUE, call.=FALSE)
+            })
         }
     })
     if ("md" == output) {
