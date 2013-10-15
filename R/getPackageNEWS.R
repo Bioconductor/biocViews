@@ -174,14 +174,18 @@ printNewPackageTitles <- function(titles, destfile, overwrite=FALSE)
         file=stdout(), sep="\n")
 }
 
-getPackageDescriptions <- function(pkgs, outfile)
+getPackageDescriptions <- function(pkgs, outfile, output=c("md", "text"))
 {
+    if output == "text"
+        exdent = 4
+    else
+        exdent = 0
     plower <- tolower(pkgs)
     names(plower) <- pkgs
     pkgs <- names(sort(plower))
     desc = lapply(pkgs, function(pkg) {
         d = read.dcf(file.path(pkg, "DESCRIPTION"))[,"Description"]
-        c(strwrap(sprintf("%s: %s", pkg, d), width=70, exdent=4), "\n")
+        c(strwrap(sprintf("%s: %s", pkg, d), width=70, exdent=exdent), "\n")
     })
 
 
