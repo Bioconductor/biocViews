@@ -176,7 +176,7 @@ printNewPackageTitles <- function(titles, destfile, overwrite=FALSE)
 
 getPackageDescriptions <- function(pkgs, outfile, output=c("md", "text"))
 {
-    if output == "text"
+    if (output == "text")
         exdent = 4
     else
         exdent = 0
