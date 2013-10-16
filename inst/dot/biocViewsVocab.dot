@@ -333,11 +333,4 @@ ExperimentData -> SpikeIns;
 ExperimentData -> StemCells;
 ExperimentData -> Yeast;
 
-/****************************************************************************
- *                            Workflows                                     *
- ****************************************************************************/
-BiocViews -> Workflows;
-
-
-
 }
