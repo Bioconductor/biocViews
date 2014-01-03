@@ -328,7 +328,7 @@ getDcfValues <- function(values) {
     values <- gsub("\n", " ", values, fixed=TRUE)
     l <- unlist(strsplit(values, ", ", fixed=TRUE))
     res <- unlist(lapply(l, function(x) {
-        p <- strsplit(x, " ", fixed=TRUE)
+        p <- strsplit(x, " |\\(", fixed=FALSE)
         unlist(p)[[1]]
     }))
     res
