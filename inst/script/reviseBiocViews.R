@@ -181,7 +181,8 @@ suggestbiocViews <- function(pkgterm, mer, biocViewdotfile, flag=TRUE,fls)
 ##--------main function
 
 
-newBiocViews <- function(manifest,rpacks,biocViewdotfile, makeChanges=FALSE)
+newBiocViews <- 
+    function(manifest,rpacks,biocViewdotfile, makeChanges=FALSE, resfilename)
 {
   #The manifest file contains all the packages list. 
   
@@ -243,14 +244,74 @@ newBiocViews <- function(manifest,rpacks,biocViewdotfile, makeChanges=FALSE)
   {
     ##how do we make the changes here?
   }else{
-    write.table(mer,"revisebiocViews.txt",sep="\t",quote=FALSE,row.names=FALSE)
+    write.table(mer, resfilename, sep="\t",quote=FALSE,row.names=FALSE)
   }  
 }
 
-rpacks <- file.path("C:","Users","sarora.FHCRC","Documents","Rpacks")
-manifest <- "bioc_2.14.manifest"
-biocViewdotfile <- file.path("C:","Users","sarora.FHCRC","Documents",
-                             "sandbox", "project biocviews",
-                             "19feb2014", "biocViewsVocab.dot")
-setwd(file.path("C:","Users","sarora.FHCRC","Documents"))
-newBiocViews(manifest, rpacks, biocViewdotfile, makeChanges=FALSE)
+makechanges<- function(filename)
+{
+    #filename <- "revisebiocViews.txt"
+    revisemat <- read.table(filename, sep="\t",header=TRUE,
+                            stringsAsFactors=FALSE)
+    # no of packages to be changes
+    pkglist <- nrow(revisemat)
+    
+    
+    # first get the path for each package in file
+    pkgpath <- file.path(rpacks,revisemat[,1],"DESCRIPTION")
+    
+    
+    for (x in 1:nrow(revisemat)){
+        cat(x,"\n")
+        # open the description file
+        data <- read.dcf(pkgpath[x])
+        
+        #bump the version number
+        data[,"Version"] <- revisemat[x,"newVer"]
+        
+        ## four cases possible
+        #1 - no biocViews eg:which(revisemat[,1]=="vtpnet") -476
+        #2 - BiocViews eg: which(revisemat[,1]=="PSICQUIC") -348
+        #3 - biocViews eg: which(revisemat[,1]=="a4") - 1
+        #4- bioViews eg: which(revisemat[,1]=="EBSeq") -139
+        
+        wrongidx <- which(colnames(data) %in% c("BiocViews","bioViews","biocViews"))
+        
+        ## contains BiocViews or bioViews ( remove it!)
+        if(length(wrongidx) != 0){
+            cat("I am in !")
+            data <- data[1, -wrongidx,drop=FALSE]
+        }
+        
+        ## add biocViews to pkg
+        data <- cbind(data,"biocViews"=revisemat[x,"newterm"])
+        
+        ##write to package
+        write.dcf(data,file=pkgpath[x])
+    }
+    
+}
+
+
+# usage
+# ## on rhino01
+# ## devel
+# 
+# rpacks <- file.path("~/biosrc/Rpacks")
+# manifest <- "bioc_2.14.manifest"
+# biocViewdotfile <- "biocViewsVocab.dot"
+# newBiocViews(manifest, rpacks, biocViewdotfile, 
+#               makeChanges=FALSE,"revisebiocViews-devel.txt")
+# 
+# makechanges("revisebiocViews-devel.txt")
+# 
+# ## on rhino01
+# ## release
+# 
+# rpacks <- file.path("~/Rpacks")
+# manifest <- "bioc_2.14.manifest"
+# biocViewdotfile <- "biocViewsVocab.dot"
+# newBiocViews(manifest, rpacks, biocViewdotfile, 
+#                 makeChanges=FALSE,"revisebiocViews-release.txt")
+# 
+# makechanges("revisebiocViews-release.txt")
