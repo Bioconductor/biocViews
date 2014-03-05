@@ -166,7 +166,7 @@ character of the base term for which all subterms should be
 returned. For a complete list use \Rfunarg{term="BiocViews"}.
 
 <<listTerms>>=
-getSubTerms(biocViewsVocab, term="AssayTechnologies")
+getSubTerms(biocViewsVocab, term="Technology")
 @ 
 
 \section{Generating HTML}
