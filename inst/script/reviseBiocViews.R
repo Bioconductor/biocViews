@@ -315,3 +315,19 @@ makechanges<- function(filename)
 #                 makeChanges=FALSE,"revisebiocViews-release.txt")
 # 
 # makechanges("revisebiocViews-release.txt")
+
+##Modify biocViews to remove duplicate biocViews
+duplicatedbiocViews <- function(rpacks, filename)
+{
+    revisemat <- read.table(filename, sep="\t",
+                            header=TRUE,
+                            stringsAsFactors=FALSE)
+    pkglist <- nrow(revisemat)
+    pkgpath <- file.path(rpacks,revisemat[,1],"DESCRIPTION")
+    result <- lapply(pkgpath, function(fl) {
+        u <- unique(unlist(strsplit(read.dcf(fl,"biocViews"),", ")))
+        o <- unlist(strsplit(read.dcf(fl,"biocViews"),", "))
+        identical(o,u)
+   })
+   pkgpath[which(result==FALSE)]
+}
