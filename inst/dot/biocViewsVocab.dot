@@ -38,6 +38,7 @@ Sequencing -> RIPSeq;
 Sequencing -> MethylSeq;
 Sequencing -> ExomeSeq;
 Sequencing -> miRNA;
+Sequenicng -> SangerSeq;
 Sequencing -> SmallRNA;
 Sequencing -> Microbiome;
 Sequencing -> WholeGenome;
@@ -96,7 +97,6 @@ BiologicalQuestion -> DifferentialPeakCalling;
 BiologicalQuestion -> DifferentialSplicing;
 BiologicalQuestion -> DriverMutation;
 BiologicalQuestion -> FunctionalPrediction;
-BiologicalQuestion -> FunctionalAnnotation
 BiologicalQuestion -> GeneFusionDetection;
 BiologicalQuestion -> GenePrediction; 
 BiologicalQuestion -> GeneRegulation;
