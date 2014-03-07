@@ -1,3 +1,4 @@
+## this script contains functions used in devel -2.14 version 
 ##-------------helper functions
 rm(list=ls())
 
@@ -331,3 +332,42 @@ duplicatedbiocViews <- function(rpacks, filename)
    })
    pkgpath[which(result==FALSE)]
 }
+
+##This function reads a character conatining old biocViews and returns
+## the correspoponding new biocView terms.
+old2newbiocViews <- 
+    function(file)
+{
+    terms <- read.dcf(file, c("biocViews","BiocViews"))
+    old <- strsplit(terms, "[[:space:]]*,[[:space:]]*")[[1]]
+    
+    map <- biocViewMap()
+    idx <- match(old, names(map))
+    newbiocView <- old 
+    newbiocView[!is.na(idx)] <- unname(map[newbiocView[!is.na(idx)]])
+    paste(newbiocView[complete.cases(newbiocView)],collapse=", ")
+}
+
+newbiocViewsadded <- 
+    function()
+{
+    biocViewdotfile <- system.file("dot","biocViewsVocab.dot", 
+                                   package="biocViews")
+    if(!file.exists(biocViewdotfile))
+        stop("No biocViews file found.")
+        
+    dot <- readDot(biocViewdotfile)
+    unique(unlist(strsplit(dot, " *-> *")))
+}        
+
+findbiocViews<- function(file)
+{    
+   dotterms <- newbiocViewsadded()
+    
+   words <- unique(unlist(strsplit(read.dcf(file,c("Description","Title","Package"))," ")))
+   words <- unique(unlist(strsplit(words,"\n")))
+   idx <- which(tolower(dotterms) %in% tolower(words))
+   dotterms[idx]
+}
+
+
