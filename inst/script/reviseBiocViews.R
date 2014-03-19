@@ -378,13 +378,15 @@ findbiocViews<- function(file)
     urls <- paste0("http://bioconductor.org/packages/", devel_version,
                    "/", repos, "/VIEWS")
     
+    words2 <- character()
     for (i in 1:length(urls)) {
         con <- url(urls[i]) 
         biocpkgs <-  read.dcf(con,"Package")
         idx <- which(biocpkgs %in% pkgs)
         if (length(idx)!=0) {
-            words2 <- read.dcf(con, "biocViews")[idx]
-            words2 <- unique(unlist(strsplit(words2, ", ")))
+            wrd <- read.dcf(con, "biocViews")[idx]
+            wrd <- unique(unlist(strsplit(words2, ", ")))
+            words2 <- c(words2,wrd)
         }
         close(con)
     }
