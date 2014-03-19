@@ -363,8 +363,44 @@ newbiocViewsadded <-
 findbiocViews<- function(file)
 {    
    dotterms <- newbiocViewsadded()
-    
-   words <- unique(unlist(strsplit(read.dcf(file,c("Description","Title","Package"))," ")))
+   # strategy 1- parse the words in the DESCRIPTION file to get biocViews
+   words1 <- unique(unlist(strsplit(read.dcf
+                 (file,c("Description","Title","Package"))," ")))
+      
+   #strategy 2- get biocViews of packages in depends field.
+   pkgs <- read.dcf(file,"Depends")
+   pkgs <- unlist(strsplit(gsub("[0-9.()>= ]", "", pkgs),",")) 
+  
+   devel_version <- "2.14" # set this in some intelligent way that knows what the current devel version is
+   repos <- c("bioc", "data/annotation", "data/experiment")
+   urls <- paste0("http://bioconductor.org/packages/", devel_version, 
+                  "/", repos, "/VIEWS")
+      
+   for (i in 1:length(urls)) {
+       con <- url(urls[i]) 
+       #on.exit(close(con)) 
+       biocpkgs <-  read.dcf(con,"Package")
+       idx <- which(biocpkgs %in% pkgs)
+       if(length(idx)!=0)
+       {
+           words2 <- read.dcf(con,"biocViews")[idx]
+           words2 <- unique(unlist(strsplit(words2,", ")))
+           
+       }
+       close(con)
+       unlink(con)
+    }
+ 
+   
+   #strategy 3- parse the vignette.
+   
+   #combine words from all sources and map
+   if(length(words2)!=0)
+   {
+       words <- c(words1, words2)
+   }else{
+       words <- words1
+   }
    words <- unique(unlist(strsplit(words,"\n")))
    idx <- which(tolower(dotterms) %in% tolower(words))
    dotterms[idx]
