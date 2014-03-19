@@ -372,8 +372,9 @@ findbiocViews<- function(file)
     pkgs <- read.dcf(file, "Depends")
     pkgs <- unlist(strsplit(gsub("[0-9.()>= ]", "", pkgs), ",")) 
     
-    devel_version <- "2.14" # set this in some intelligent way that
-                            # knows what the current devel version is
+    x <- readLines(url("http://bioconductor.org/js/versions.js"))
+    dv <- x[grep("develVersion", x)]
+    devel_version <- strsplit(dv, '"')[[1]][2]
     repos <- c("bioc", "data/annotation", "data/experiment")
     urls <- paste0("http://bioconductor.org/packages/", devel_version,
                    "/", repos, "/VIEWS")
@@ -385,12 +386,12 @@ findbiocViews<- function(file)
         idx <- which(biocpkgs %in% pkgs)
         if (length(idx)!=0) {
             wrd <- read.dcf(con, "biocViews")[idx]
-            wrd <- unique(unlist(strsplit(words2, ", ")))
+            wrd <- unique(unlist(strsplit(wrd, ", ")))
             words2 <- c(words2,wrd)
         }
         close(con)
     }
-    
+        
     ## strategy 3- parse the vignette.
     ## combine words from all sources and map
     if (length(words2)!=0) {
