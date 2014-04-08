@@ -468,7 +468,8 @@ write_REPOSITORY <- function(reposRootPath, contribPaths) {
 
 write_VIEWS <- function(reposRootPath, fields = NULL,
                         type = c("source", "win.binary", "win64.binary",
-                                 "mac.binary", "mac.binary.leopard"),
+                                 "mac.binary", "mac.binary.leopard",
+                                 "mac.binary.mavericks"),
                         verbose = FALSE, vignette.dir="vignettes") {
     ## Copied from tools::write_PACKAGES
     if (is.null(fields))
@@ -512,6 +513,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
                           source=".tar.gz", win.binary=, win64.binary=".zip",
                           mac.binary.leopard=".tgz",
                           mac.binary=".tgz",
+                          mac.binary.mavericks="tgz",
                           stop("unknown type"))
             paste(cPath, "/", pkgs, "_", vers, ext, sep="")
         }
