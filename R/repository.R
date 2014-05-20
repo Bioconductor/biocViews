@@ -143,6 +143,37 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
     extractTopLevelFiles(reposRoot, srcContrib, destDir, "INSTALL")
 }
 
+extractCitations <- function(reposRoot, srcContrib, destDir) {
+    tarballDir <- file.path(reposRoot, srcContrib)
+    tarballs <- list.files(file.path(reposRoot, srcContrib),
+        pattern="\\.tar\\.gz$", full.names=TRUE)
+    t <- file.path(tempdir(), "citations")
+    if (!file.exists(file.path(tempdir(), "citations")))
+        dir.create(t)
+    if (!file.exists(destDir))
+        dir.create(destDir) # recursive?
+    lapply(tarballs, function(x){
+        # browser()
+        pkgName <- strsplit(basename(x), "_")[[1]][1]
+        if (file.exists(file.path(t, pkgName)))
+            unlink(file.path(t, pkgName), recursive=TRUE)
+        suppressWarnings(try(untar(x, file.path(pkgName,
+            c("DESCRIPTION", "inst/CITATION")),
+            exdir=t, compressed="gzip"), silent=TRUE))
+        if (file.exists(file.path(t, pkgName, "inst", "CITATION")))
+        {
+            citation <- readCitationFile(file.path(t, pkgName,
+                "inst", "CITATION"))
+        } else {
+            citation <- suppressWarnings(citation(pkgName, t))
+        }
+        output <- capture.output(print(citation, style="html"))
+        if (!file.exists(file.path(destDir, pkgName)))
+            dir.create(file.path(destDir, pkgName))
+        cat(output, file=file.path(destDir, pkgName, "citation.html"),
+            sep="\n")
+    })
+}
 
 
 extractReadmes <- function(reposRoot, srcContrib, destDir) {
