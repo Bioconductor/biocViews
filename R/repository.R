@@ -162,8 +162,10 @@ extractCitations <- function(reposRoot, srcContrib, destDir) {
             exdir=t, compressed="gzip"), silent=TRUE))
         if (file.exists(file.path(t, pkgName, "inst", "CITATION")))
         {
-            citation <- readCitationFile(file.path(t, pkgName,
-                "inst", "CITATION"))
+            citation <- try(readCitationFile(file.path(t, pkgName,
+                "inst", "CITATION")))
+            if ("try-error" %in% class(citation))
+                return()
         } else {
             citation <- suppressWarnings(citation(pkgName, t))
         }
