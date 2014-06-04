@@ -47,9 +47,10 @@ Please note the following:
  A list is returned with 3 characters - current , new and remove. 
  \itemize{
     \item "current" contains the biocViews from the package's DESCRIPTION file.
-    \item "new" are the recommended biocViews - This is a suggested list -the 
-    user of this function is expected to go through this list and find which 
-    biocViews best describe his or her package.
+    \item "recommended" are the recommended biocViews - This is a suggested list
+    which the user can add in addition to "current" biocViews - the user is 
+    expected to go through this list and find which biocViews best describe 
+    their package.
     \item "remove" are those biocViews which are inconsistent with the 
     Bioconductor biocViews. (Hint - check for spelling, cases and plural) 
  }
@@ -57,5 +58,6 @@ Please note the following:
 \author{
 Sonali Arora. 
 }
+
 
 

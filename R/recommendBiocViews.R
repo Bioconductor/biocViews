@@ -132,6 +132,6 @@ recommendBiocViews <- function(pkgdir)
     remove <- setdiff(current, dotterms)
     
     list(current = paste(current, collapse=", "), 
-         new = paste(new_bioc, collapse=", "),
+         recommended = paste(new_bioc, collapse=", "),
          remove = paste(remove, collapse=", "))
 }
