@@ -348,60 +348,6 @@ old2newbiocViews <-
     paste(newbiocView[complete.cases(newbiocView)],collapse=", ")
 }
 
-newbiocViewsadded <- 
-    function()
-{
-    biocViewdotfile <- system.file("dot","biocViewsVocab.dot", 
-                                   package="biocViews")
-    if(!file.exists(biocViewdotfile))
-        stop("No biocViews file found.")
-        
-    dot <- readDot(biocViewdotfile)
-    unique(unlist(strsplit(dot, " *-> *")))
-}        
 
-findbiocViews<- function(file)
-{    
-    dotterms <- newbiocViewsadded()
-    ## strategy 1- parse the words in the DESCRIPTION file to get
-    ## biocViews
-    dcf <- read.dcf(file, c("Description", "Title", "Package"))
-    words1 <- unique(unlist(strsplit(dcf, " ")))
-    
-    ## strategy 2- get biocViews of packages in depends field.
-    pkgs <- read.dcf(file, "Depends")
-    pkgs <- unlist(strsplit(gsub("[0-9.()>= ]", "", pkgs), ",")) 
-    
-    x <- readLines(url("http://bioconductor.org/js/versions.js"))
-    dv <- x[grep("develVersion", x)]
-    devel_version <- strsplit(dv, '"')[[1]][2]
-    repos <- c("bioc", "data/annotation", "data/experiment")
-    urls <- paste0("http://bioconductor.org/packages/", devel_version,
-                   "/", repos, "/VIEWS")
-    
-    words2 <- character()
-    for (i in 1:length(urls)) {
-        con <- url(urls[i]) 
-        biocpkgs <-  read.dcf(con,"Package")
-        idx <- which(biocpkgs %in% pkgs)
-        if (length(idx)!=0) {
-            wrd <- read.dcf(con, "biocViews")[idx]
-            wrd <- unique(unlist(strsplit(wrd, ", ")))
-            words2 <- c(words2,wrd)
-        }
-        close(con)
-    }
-        
-    ## strategy 3- parse the vignette.
-    ## combine words from all sources and map
-    if (length(words2)!=0) {
-        words <- c(words1, words2)
-    } else {
-        words <- words1
-    }
-    words <- unique(unlist(strsplit(words,"\n")))
-    idx <- which(tolower(dotterms) %in% tolower(words))
-    dotterms[idx]
-}
 
 
