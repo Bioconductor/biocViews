@@ -1,46 +1,68 @@
-.readDot <- function(fl) 
+.parseDot <- function(dot)
 {
-    dot <- readLines(fl)
-    dot <- dot[seq(grep("BiocViews -> Software", dot),
-                   grep("BiocViews -> AnnotationData", dot) - 1)]
-    sub(" *; *$", "", dot[grepl("^[[:space:][:alpha:]]+->", dot)])
+    dot <- sub(" *; *$", "", dot[grepl("^[[:space:][:alpha:]]+->", dot)])
+    unique(unlist(strsplit(dot, " *-> *")))
 }
 
-recommendBiocViews <- function(pkgdir)
-{   
-    if(!file.exists(pkgdir))
-        stop("Package Directory not found.")
-    
+.findBranchReadDot <- function(current, branch)
+{
     #read biocViews from dot file. 
     biocViewdotfile <- system.file("dot","biocViewsVocab.dot", 
-                           package="biocViews")
+                                   package="biocViews")
     
     if(!file.exists(biocViewdotfile))
         stop("Package biocViews not found.")
     
-    if(!file.exists(file.path(pkgdir,"DESCRIPTION")))
-        stop("No DESCRIPTION file found.")
+    dot <- readLines(biocViewdotfile)
     
-    if(!file.exists(file.path(pkgdir,"man")))
-        stop("No man pages found.")
+    software <- dot[seq(grep("BiocViews -> Software", dot),
+                        grep("BiocViews -> AnnotationData", dot) - 1)]
+    expt <- dot[seq(grep("BiocViews -> AnnotationData", dot),
+                    grep("BiocViews -> ExperimentData", dot) - 1)]
+    annotation <- dot[seq(grep("BiocViews -> ExperimentData", dot), 
+                          length(dot),1)]
     
-    if(!file.exists(file.path(pkgdir,"vignettes")))
-        stop("No vignettes found.")
+    software <- .parseDot(software)
+    expt <- .parseDot(expt)
+    annotation <- .parseDot(annotation)
     
-    dot <- .readDot(biocViewdotfile)
-    dotterms <- unique(unlist(strsplit(dot, " *-> *")))
     
-    ### split "DecsisionTree" to "decision" , "tree" 
-    terms <- sapply(dotterms, function(x){
-        m <- gregexpr(pattern= "[[:upper:]]", text = x, ignore.case=FALSE)
-        s1 <- unlist(regmatches(x,m))
-        s2 <- unlist(strsplit(x, "[[:upper:]]"))
-        if(length(s2)!=length(s1))
-            s2 <- s2[-1]
-        word<-function(s1,s2) paste0(s1,s2)
-        mapply(word, s1,s2, USE.NAMES=FALSE) 
-    }, simplify = TRUE)
+    if(length(current)!=0){
+        idx<- list(software=match(current,software), 
+                   annotation=match(current,annotation),
+                   experiment=match(current, expt))
+        atrue <- sapply(idx, function(x) any(!is.na(x))) #which branch has hit 
+        find_branch <- names(which(atrue==TRUE))
+        if(length(find_branch)!=1)
+            stop("You have biocViews from multiple branches.")
+        
+        if(!missing(branch))
+        {
+            if( tolower(branch)!=tolower(find_branch)){
+                txt <- paste0("You have specified ",branch," branch but your 
+                           package contains biocViews from ",find_branch, 
+                           " branch.")
+                stop(paste(strwrap(txt,exdent=2), collapse="\n"))
+            }
+        }else{
+            branch <- find_branch
+        }
+    }
     
+    # return appropriate dot terms based on branch. 
+    if (tolower(branch)=="software")
+            returndot <- software
+    else if(tolower(branch)=="experiment")
+        returndot <- expt
+    else
+        returndot <- annotation
+    
+    
+    returndot
+}
+
+.wordsfromDESCRIPTION <- function(pkgdir)
+{
     ## strategy 1- parse the words in the DESCRIPTION file to get
     ## biocViews
     descr_file <- file.path(pkgdir,"DESCRIPTION")
@@ -69,6 +91,16 @@ recommendBiocViews <- function(pkgdir)
     }
     close(con)
     
+    if (length(words2)!=0) {
+        words <- c(words1, words2)
+    } else {
+        words <- c(words1)
+    }
+    words
+}
+
+.wordsfromMANVIN <- function(pkgdir)
+{
     ##strategy -3 man pages parsing.
     manfls <- list.files(file.path(pkgdir,"man"), full.names=TRUE, 
                          pattern="\\.Rd$")
@@ -87,13 +119,53 @@ recommendBiocViews <- function(pkgdir)
         temp <- unlist(strsplit(temp, "[[:space:]]", perl = TRUE)) 
         all_words <- unique(temp[temp != ""])
     }
+    all_words
+}
+
+recommendBiocViews <- function(pkgdir, ..., branch=NULL)
+{   
+    if(!file.exists(pkgdir))
+        stop("Package Directory not found.")
+    
+    if(!file.exists(file.path(pkgdir,"DESCRIPTION")))
+        stop("No DESCRIPTION file found.")
+    
+    ## existing biocView in test package?
+    current <- read.dcf(file.path(pkgdir,"DESCRIPTION"), c("biocViews",
+                                                           "BiocViews"))
+    current <- current[!is.na(current)]
+    
+    if(length(current)==0 & missing(branch)){
+        txt <- "No existing biocViews found in this package and cannot determine
+             the branch of package to recommend biocViews"
+        stop(paste(strwrap(txt,exdent=2), collapse="\n"))
+    }
+     
+    if(!file.exists(file.path(pkgdir,"man")))
+        stop("No man pages found.")
+    
+    if(!file.exists(file.path(pkgdir,"vignettes")))
+        stop("No vignettes found.")
+    
+    dotterms <- .findBranchReadDot(current, ...,branch)
+    
+    ### split "DecsisionTree" to "decision" , "tree" 
+    terms <- sapply(dotterms, function(x){
+        m <- gregexpr(pattern= "[[:upper:]]", text = x, ignore.case=FALSE)
+        s1 <- unlist(regmatches(x,m))
+        s2 <- unlist(strsplit(x, "[[:upper:]]"))
+        if(length(s2)!=length(s1))
+            s2 <- s2[-1]
+        word<-function(s1,s2) paste0(s1,s2)
+        mapply(word, s1,s2, USE.NAMES=FALSE) 
+    }, simplify = TRUE)
+    
+    words1 <- .wordsfromDESCRIPTION(pkgdir)
+    
+    all_words<- .wordsfromMANVIN(pkgdir)
     
     # combine words from all sources and map
-    if (length(words2)!=0) {
-        words <- c(words1, words2,all_words)
-    } else {
-        words <- c(words1,all_words)
-    }
+    words <- c(words1,all_words)
     words <- unique(unlist(strsplit(words,"\n")))
     
     ## match against biocViews. 
@@ -116,16 +188,13 @@ recommendBiocViews <- function(pkgdir)
     
     suggest_bioc <- setdiff(suggest_bioc,commonbiocViews)
     
-    ## existing biocView in test package?
-    current <- read.dcf(descr_file, c("biocViews","BiocViews"))
-    current <- current[!is.na(current)]
-    
+     
     ## setdiff between current and suggested biocViews. 
     if(length(current)!=0){
         current  <- strsplit(current, "[[:space:]]*,[[:space:]]*")[[1]]
         new_bioc <- setdiff(suggest_bioc, current)
     }else{
-        new_bioc <- NA_character_
+        new_bioc <- suggest_bioc
     }
     
     ## some pkgs have terms which do not belong to software branch. 
