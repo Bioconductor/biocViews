@@ -17,9 +17,9 @@
     
     software <- dot[seq(grep("BiocViews -> Software", dot),
                         grep("BiocViews -> AnnotationData", dot) - 1)]
-    expt <- dot[seq(grep("BiocViews -> AnnotationData", dot),
+    annotation <- dot[seq(grep("BiocViews -> AnnotationData", dot),
                     grep("BiocViews -> ExperimentData", dot) - 1)]
-    annotation <- dot[seq(grep("BiocViews -> ExperimentData", dot), 
+    expt <- dot[seq(grep("BiocViews -> ExperimentData", dot), 
                           length(dot),1)]
     
     software <- .parseDot(software)
@@ -36,7 +36,7 @@
         if(length(find_branch)!=1)
             stop("You have biocViews from multiple branches.")
         
-        if(!missing(branch))
+        if(!missing(branch) & length(branch)!=0)
         {
             if( tolower(branch)!=tolower(find_branch)){
                 txt <- paste0("You have specified ",branch," branch but your 
@@ -122,7 +122,7 @@
     all_words
 }
 
-recommendBiocViews <- function(pkgdir, ..., branch=NULL)
+recommendBiocViews <- function(pkgdir, branch=NULL)
 {   
     if(!file.exists(pkgdir))
         stop("Package Directory not found.")
@@ -134,6 +134,7 @@ recommendBiocViews <- function(pkgdir, ..., branch=NULL)
     current <- read.dcf(file.path(pkgdir,"DESCRIPTION"), c("biocViews",
                                                            "BiocViews"))
     current <- current[!is.na(current)]
+    current  <- unlist(strsplit(current, ", "))
     
     if(length(current)==0 & missing(branch)){
         txt <- "No existing biocViews found in this package and cannot determine
@@ -147,7 +148,7 @@ recommendBiocViews <- function(pkgdir, ..., branch=NULL)
     if(!file.exists(file.path(pkgdir,"vignettes")))
         stop("No vignettes found.")
     
-    dotterms <- .findBranchReadDot(current, ...,branch)
+    dotterms <- .findBranchReadDot(current, branch)
     
     ### split "DecsisionTree" to "decision" , "tree" 
     terms <- sapply(dotterms, function(x){
@@ -191,7 +192,6 @@ recommendBiocViews <- function(pkgdir, ..., branch=NULL)
      
     ## setdiff between current and suggested biocViews. 
     if(length(current)!=0){
-        current  <- strsplit(current, "[[:space:]]*,[[:space:]]*")[[1]]
         new_bioc <- setdiff(suggest_bioc, current)
     }else{
         new_bioc <- suggest_bioc

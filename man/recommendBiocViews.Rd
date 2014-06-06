@@ -9,17 +9,19 @@
     must begin with a lower-case 'b'.)biocViews are "keywords" which are used to 
     describe a given package. They are broadly divided into three categories, 
     representing the type of packages present in the Bioconductor Project -
-    Software, Annotation Data and Experiment Data
-    
-    Currently this function provided support only for software Packages. 
+    Software, Annotation Data and Experiment Data.
 }
 \usage{
-    recommendBiocViews(pkgdir)
+    recommendBiocViews(pkgdir, branch)
 }
 \arguments{
   \item{pkgdir}{
     The path of the package Directory. 
-}
+  }
+  \item{branch}{
+    The branch which your package will belong to. It can be either 'software',
+    'annotation' or 'experiment'.
+  }
 }
 \details{
     This function parses the package directory provided by the user to recommend
