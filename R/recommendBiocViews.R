@@ -26,29 +26,37 @@
     expt <- .parseDot(expt)
     annotation <- .parseDot(annotation)
     
-    
+    find_branch <- NULL
     if(length(current)!=0){
         idx<- list(software=match(current,software), 
                    annotation=match(current,annotation),
                    experiment=match(current, expt))
         atrue <- sapply(idx, function(x) any(!is.na(x))) #which branch has hit 
         find_branch <- names(which(atrue==TRUE))
-        if(length(find_branch)!=1)
+        if(length(find_branch)>1)
             stop("You have biocViews from multiple branches.")
-        
-        if(!missing(branch) & length(branch)!=0)
-        {
-            if( tolower(branch)!=tolower(find_branch)){
-                txt <- paste0("You have specified ",branch," branch but your 
-                           package contains biocViews from ",find_branch, 
-                           " branch.")
-                stop(paste(strwrap(txt,exdent=2), collapse="\n"))
-            }
-        }else{
-            branch <- find_branch
-        }
     }
     
+    if(length(find_branch)==0 & length(branch)==0){
+            txt <- paste0("Incorrect biocViews in file & no branch specified. 
+                          Cant recommend biocViews")
+            stop(paste(strwrap(txt,exdent=2), collapse="\n"))
+    }
+        
+    if(length(branch)==0 & length(find_branch)==1)
+    {
+        branch <- find_branch
+    }
+        
+    if( length(branch)==1 & length(find_branch)==1)
+    {
+        if( length(branch)!=0 & (tolower(branch)!=tolower(find_branch))){
+            txt <- paste0("You have specified ",branch," branch but your 
+                           package contains biocViews from ",find_branch, 
+                          " branch.")
+            stop(paste(strwrap(txt,exdent=2), collapse="\n"))
+        }
+    }
     # return appropriate dot terms based on branch. 
     if (tolower(branch)=="software")
             returndot <- software
