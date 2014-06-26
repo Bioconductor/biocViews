@@ -143,7 +143,9 @@ recommendBiocViews <- function(pkgdir, branch=NULL)
                                                            "BiocViews"))
     current <- current[!is.na(current)]
     current  <- unlist(strsplit(current, ", "))
-    
+    current  <- unlist(strsplit(current, "\n"))
+    current  <- unlist(strsplit(current, ","))
+   
     if(length(current)==0 & missing(branch)){
         txt <- "No existing biocViews found in this package and cannot determine
              the branch of package to recommend biocViews"
