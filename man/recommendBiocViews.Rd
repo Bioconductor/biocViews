@@ -19,8 +19,8 @@
     The path of the package Directory. 
   }
   \item{branch}{
-    The branch which your package will belong to. It can be either 'software',
-    'annotation' or 'experiment'.
+    The branch which your package will belong to. It can be either 'Software',
+    'AnnotationData' or 'ExperimentData'.
   }
 }
 \details{
@@ -41,12 +41,12 @@ Please note the following:
 \itemize{
     \item Do not make up your own biocViews.
     \item Double check the spelling and case of the biocViews added.
-    \item Please add biocViews only from the appropriate branch. eg: software 
-    packages should have only software biocViews. 
+    \item Please add biocViews only from the appropriate branch. eg: Software 
+    packages should have only Software biocViews. 
 }
 }
 \value{
- A list is returned with 3 characters - current , new and remove. 
+ A list is returned with 3 characters - current , recommended and remove. 
  \itemize{
     \item "current" contains the biocViews from the package's DESCRIPTION file.
     \item "recommended" are the recommended biocViews - This is a suggested list

@@ -1,3 +1,12 @@
+.cleanupDependency <- function(input)
+{
+    if (is.null(input)) return(character(0))
+    output <- gsub("\\s", "", input)
+    output <- gsub("\\([^)]*\\)", "", output)
+    res <- strsplit(output, ",")[[1]]
+    unique(res[which(res != "R")])
+}
+
 .parseDot <- function(dot)
 {
     dot <- sub(" *; *$", "", dot[grepl("^[[:space:][:alpha:]]+->", dot)])
@@ -15,42 +24,42 @@
     
     dot <- readLines(biocViewdotfile)
     
-    software <- dot[seq(grep("BiocViews -> Software", dot),
+    Software <- dot[seq(grep("BiocViews -> Software", dot),
                         grep("BiocViews -> AnnotationData", dot) - 1)]
-    annotation <- dot[seq(grep("BiocViews -> AnnotationData", dot),
+    AnnotationData <- dot[seq(grep("BiocViews -> AnnotationData", dot),
                     grep("BiocViews -> ExperimentData", dot) - 1)]
-    expt <- dot[seq(grep("BiocViews -> ExperimentData", dot), 
+    ExperimentData <- dot[seq(grep("BiocViews -> ExperimentData", dot), 
                           length(dot),1)]
     
-    software <- .parseDot(software)
-    expt <- .parseDot(expt)
-    annotation <- .parseDot(annotation)
+    Software <- .parseDot(Software)
+    ExperimentData <- .parseDot(ExperimentData)
+    AnnotationData <- .parseDot(AnnotationData)
     
     find_branch <- NULL
-    if(length(current)!=0){
-        idx<- list(software=match(current,software), 
-                   annotation=match(current,annotation),
-                   experiment=match(current, expt))
+    if(length(current) != 0){
+        idx<- list(Software = match(current, Software), 
+                   AnnotationData = match(current, AnnotationData),
+                   ExperimentData = match(current, ExperimentData))
         atrue <- sapply(idx, function(x) any(!is.na(x))) #which branch has hit 
         find_branch <- names(which(atrue==TRUE))
         if(length(find_branch)>1)
             stop("You have biocViews from multiple branches.")
     }
     
-    if(length(find_branch)==0 & length(branch)==0){
+    if(length(find_branch)==0 & length(branch)==3){
             txt <- paste0("Incorrect biocViews in file & no branch specified. 
                           Cant recommend biocViews")
             stop(paste(strwrap(txt,exdent=2), collapse="\n"))
     }
         
-    if(length(branch)==0 & length(find_branch)==1)
+    if(length(branch)==3 & length(find_branch)==1)
     {
         branch <- find_branch
     }
         
     if( length(branch)==1 & length(find_branch)==1)
     {
-        if( length(branch)!=0 & (tolower(branch)!=tolower(find_branch))){
+        if( length(branch)!=3 & (tolower(branch)!=tolower(find_branch))){
             txt <- paste0("You have specified ",branch," branch but your 
                            package contains biocViews from ",find_branch, 
                           " branch.")
@@ -59,11 +68,11 @@
     }
     # return appropriate dot terms based on branch. 
     if (tolower(branch)=="software")
-            returndot <- software
-    else if(tolower(branch)=="experiment")
-        returndot <- expt
+            returndot <- Software
+    else if(tolower(branch)=="experimentdata")
+        returndot <- ExperimentData
     else
-        returndot <- annotation
+        returndot <- AnnotationData
     
     
     returndot
@@ -130,7 +139,8 @@
     all_words
 }
 
-recommendBiocViews <- function(pkgdir, branch=NULL)
+recommendBiocViews <- 
+    function(pkgdir, branch= c("Software", "AnnotationData", "ExperimentData"))
 {   
     if(!file.exists(pkgdir))
         stop("Package Directory not found.")
@@ -141,10 +151,11 @@ recommendBiocViews <- function(pkgdir, branch=NULL)
     ## existing biocView in test package?
     current <- read.dcf(file.path(pkgdir,"DESCRIPTION"), c("biocViews",
                                                            "BiocViews"))
-    current <- current[!is.na(current)]
-    current  <- unlist(strsplit(current, ", "))
-    current  <- unlist(strsplit(current, "\n"))
-    current  <- unlist(strsplit(current, ","))
+#     current <- current[!is.na(current)]
+#     current  <- unlist(strsplit(current, ", "))
+#     current  <- unlist(strsplit(current, "\n"))
+#     current  <- unlist(strsplit(current, ","))
+    current <- .cleanupDependency(current)   
    
     if(length(current)==0 & missing(branch)){
         txt <- "No existing biocViews found in this package and cannot determine
