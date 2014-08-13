@@ -509,7 +509,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
       fields <- c("Title", "Description", "biocViews",
                   "Author", "Maintainer", "URL", "License",
                   "SystemRequirements", "organism", "manufacturer",
-                  "hasReadme", "VignetteBuilder")
+                  "hasReadme", "VignetteBuilder", "Video")
     if (missing(type))
       type <- "source"
     type <- match.arg(type)
