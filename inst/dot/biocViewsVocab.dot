@@ -161,7 +161,7 @@ StatisticalMethod -> HiddenMarkovModel;
 StatisticalMethod -> MultidimensionalScaling;
 StatisticalMethod -> NeuralNetwork;
 StatisticalMethod -> PatternLogic;
-StatisticalMethod -> PrinicpalComponent;
+StatisticalMethod -> PrincipalComponent;
 StatisticalMethod -> Regression;
 StatisticalMethod -> StructuralEquationModels;
 StatisticalMethod -> SupportVectorMachine;
