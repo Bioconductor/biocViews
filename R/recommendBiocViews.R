@@ -13,7 +13,7 @@
     unique(unlist(strsplit(dot, " *-> *")))
 }
 
-.findBranchReadDot <- function(current, branch)
+getCurrentbiocViews <- function()
 {
     #read biocViews from dot file. 
     biocViewdotfile <- system.file("dot","biocViewsVocab.dot", 
@@ -27,13 +27,25 @@
     Software <- dot[seq(grep("BiocViews -> Software", dot),
                         grep("BiocViews -> AnnotationData", dot) - 1)]
     AnnotationData <- dot[seq(grep("BiocViews -> AnnotationData", dot),
-                    grep("BiocViews -> ExperimentData", dot) - 1)]
+                              grep("BiocViews -> ExperimentData", dot) - 1)]
     ExperimentData <- dot[seq(grep("BiocViews -> ExperimentData", dot), 
-                          length(dot),1)]
+                              length(dot),1)]
     
     Software <- .parseDot(Software)
     ExperimentData <- .parseDot(ExperimentData)
     AnnotationData <- .parseDot(AnnotationData)
+    list(Software= Software ,ExperimentData= ExperimentData, AnnotationData= 
+             AnnotationData)
+}
+
+
+.findBranchReadDot <- function(current, branch)
+{
+    ans <- getCurrentbiocViews()
+    
+    Software <- ans$Software
+    ExperimentData <- ans$ExperimentData
+    AnnotationData <- ans$AnnotationDat
     
     find_branch <- NULL
     if(length(current) != 0){

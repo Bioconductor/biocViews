@@ -34,7 +34,7 @@ exportMethods("coerce", "show", "htmlDoc", "htmlValue", "htmlFilename")
 
 export("writeBiocViews", "getBiocViews", "write_VIEWS", "write_REPOSITORY",
        "genReposControlFiles", "extractVignettes", "extractManuals",
-       "extractCitations",
+       "extractCitations", "getCurrentbiocViews",
        "extractNEWS", "extractHTMLDocuments", "extractTopLevelFiles",
        "writeRepositoryHtml", "writePackageDetailHtml", "getSubTerms",
        "getBiocSubViews", "validate_bioc_views", "writeTopLevelView",
