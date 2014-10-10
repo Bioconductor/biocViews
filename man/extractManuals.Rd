@@ -1,5 +1,6 @@
 \name{extractManuals}
 \alias{extractManuals}
+\alias{extractCitations}
 \title{Extract Rd man pages and build pdf reference manuals from local package
   repository}
 \description{
