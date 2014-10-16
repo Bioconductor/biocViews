@@ -5,25 +5,15 @@ Title: Categorized views of R package repositories
 Author: VJ Carey <stvjc@channing.harvard.edu>, BJ Harshfield <rebjh@channing.harvard.edu>, S Falcon <sfalcon@fhcrc.org> 
 Maintainer: Bioconductor Package Maintainer <maintainer@bioconductor.org>
 Depends: R (>= 2.4.0)
-Imports: Biobase, graph (>= 1.9.26), methods, RBGL (>= 1.13.5), tools, utils,
-  XML, RCurl, RUnit, knitr
+Imports: Biobase, graph (>= 1.9.26), methods, RBGL (>= 1.13.5), tools,
+        utils, XML, RCurl, RUnit, knitr
 Suggests: Biobase, BiocGenerics, RUnit
 Description: structures for vocabularies and narratives of views
 License: Artistic-2.0
 URL: http://www.bioconductor.org/packages/release/BiocViews.html
-Collate: AllClasses.R
-         AllGenerics.R
-         as-methods.R
-         htmlDoc-methods.R
-         htmlFilename-methods.R
-         htmlValue-methods.R
-         show-methods.R
-         getPackNames.R
-         packageDetails.R
-         pump.R
-         repository.R
-         showvoc.R
-         getPackageNEWS.R
-         validation_tests.R
-         recommendBiocViews.R
+Collate: AllClasses.R AllGenerics.R as-methods.R htmlDoc-methods.R
+        htmlFilename-methods.R htmlValue-methods.R show-methods.R
+        getPackNames.R packageDetails.R pump.R repository.R showvoc.R
+        getPackageNEWS.R validation_tests.R recommendBiocViews.R
 biocViews: Infrastructure
+Packaged: 2014-10-16 22:03:48 UTC; dtenenba
