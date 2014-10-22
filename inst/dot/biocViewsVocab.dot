@@ -374,7 +374,7 @@ PackageType -> PolyPhen;
 PackageType -> probe;
 PackageType -> SIFT;
 PackageType -> SNPlocs;
-PackageType -> Txdb;
+PackageType -> TxDb;
 PackageType -> MeSHDb;
 
 
