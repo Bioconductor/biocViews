@@ -218,7 +218,8 @@ recommendBiocViews <-
                          "AssayDomain","BiologicalQuestion","Infrastructure",
                          "ResearchField","StatisticalMethod","Technology",
                          "Annotation","Visualization","DataRepresentation",
-                         "miRNA","SNP","qPCR","SAGE","Genetics" )
+                         "miRNA","SNP","qPCR","SAGE","Genetics",
+                         "GenomeAnnotation" )
     
     suggest_bioc <- setdiff(suggest_bioc,commonbiocViews)
     
