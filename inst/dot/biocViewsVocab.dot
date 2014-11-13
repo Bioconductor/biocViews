@@ -86,6 +86,7 @@ ResearchField -> FunctionalGenomics;
 ResearchField -> SystemsBiology;
 ResearchField -> ComputationalChemistry;
 ResearchField -> Agroinformatics;
+ResearchField -> Transcriptomics;
     
 /* Software -> BiologicalQuestion */
 Software -> BiologicalQuestion;
