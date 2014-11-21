@@ -128,14 +128,19 @@ getCurrentbiocViews <- function()
     words
 }
 
-.wordsfromMANVIN <- function(pkgdir)
+.wordsfromMANVIN <- function(pkgdir, man, vig)
 {
+    manfls <- character(0)
+    vinfls <- character(0)
+    
     ##strategy -3 man pages parsing.
-    manfls <- list.files(file.path(pkgdir,"man"), full.names=TRUE, 
+    if(man)
+        manfls <- list.files(file.path(pkgdir,"man"), full.names=TRUE, 
                          pattern="\\.Rd$")
     
     ##stragegy -4 vignette pages parsing.
-    vinfls <- list.files(file.path(pkgdir,"vignettes"), full.names=TRUE, 
+    if(vig)
+        vinfls <- list.files(file.path(pkgdir,"vignettes"), full.names=TRUE, 
                          pattern="\\.Rnw$")
     
     allfls <- c(manfls,vinfls)
@@ -163,10 +168,6 @@ recommendBiocViews <-
     ## existing biocView in test package?
     current <- read.dcf(file.path(pkgdir,"DESCRIPTION"), c("biocViews",
                                                            "BiocViews"))
-#     current <- current[!is.na(current)]
-#     current  <- unlist(strsplit(current, ", "))
-#     current  <- unlist(strsplit(current, "\n"))
-#     current  <- unlist(strsplit(current, ","))
     current <- .cleanupDependency(current)   
    
     if(length(current)==0 & missing(branch)){
@@ -174,12 +175,28 @@ recommendBiocViews <-
              the branch of package to recommend biocViews"
         stop(paste(strwrap(txt,exdent=2), collapse="\n"))
     }
-     
-    if(!file.exists(file.path(pkgdir,"man")))
-        stop("No man pages found.")
     
-    if(!file.exists(file.path(pkgdir,"vignettes")))
-        stop("No vignettes found.")
+    words1 <- .wordsfromDESCRIPTION(pkgdir)
+    
+    m <- file.exists(file.path(pkgdir,"man"))
+    v <- file.exists(file.path(pkgdir,"vignettes"))
+    
+    man <- character(0)
+    vig <- character(0)
+    
+    if(all(m,v)){
+        message("No man pages or vignette found.") 
+    } else{
+        if(!m){
+            message("No man pages found.") 
+            all_words<- .wordsfromMANVIN(pkgdir, man=FALSE, vig=TRUE)
+        }
+        if(!v){
+            message("No vignettes found.")
+            all_words<- .wordsfromMANVIN(pkgdir, man=TRUE, vig=FALSE)
+        }
+        words1 <- c(words1,all_words)
+    }
     
     dotterms <- .findBranchReadDot(current, branch)
     
@@ -193,22 +210,31 @@ recommendBiocViews <-
         word<-function(s1,s2) paste0(s1,s2)
         mapply(word, s1,s2, USE.NAMES=FALSE) 
     }, simplify = TRUE)
-    
-    words1 <- .wordsfromDESCRIPTION(pkgdir)
-    
-    all_words<- .wordsfromMANVIN(pkgdir)
+
+    if(branch=="ExperimentData")
+    {
+        terms$CpGIslandData <- c("cpg", "island")
+        terms$GEO <- "GEO"
+        
+        terms$DNASeqData <- c("DNA","Seq")
+        terms$RNASeqData <- c("RNA","Seq")
+        terms$ChIPSeqData <- c("ChIP","Seq")        
+        terms$RIPSeqData <- c("RIP","Seq")
+        
+        terms$qPCRData <- "pcr"
+        terms$SAGEData <-"sage"
+    }
     
     # combine words from all sources and map
-    words <- c(words1,all_words)
-    words <- unique(unlist(strsplit(words,"\n")))
+    words1 <- unique(unlist(strsplit(words1,"\n")))
     
     ## match against biocViews. 
-    idx <- which(tolower(dotterms) %in% tolower(words))
+    idx <- which(tolower(dotterms) %in% tolower(words1))
     temp <- dotterms[idx]
     
     ## only if both "decision" and "tree" are found add biocView "DecisionTree" 
     split_word <- mapply(FUN= function(x,y){
-        i <- which(tolower(x) %in% tolower(words))
+        i <- which(tolower(x) %in% tolower(words1))
         ifelse(length(i)==length(x), y, NA)
     }, terms, names(terms), USE.NAMES=FALSE)
     
@@ -219,7 +245,10 @@ recommendBiocViews <-
                          "ResearchField","StatisticalMethod","Technology",
                          "Annotation","Visualization","DataRepresentation",
                          "miRNA","SNP","qPCR","SAGE","Genetics",
-                         "GenomeAnnotation" )
+                         "GenomeAnnotation",
+                         "ExperimentData","SpecimenSource","OrganismData",
+                         "DiseaseModel","TechnologyData","AssayDomainData",
+                         "RepositoryData")
     
     suggest_bioc <- setdiff(suggest_bioc,commonbiocViews)
     
