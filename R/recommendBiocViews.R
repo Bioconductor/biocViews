@@ -55,13 +55,13 @@ getCurrentbiocViews <- function()
         atrue <- sapply(idx, function(x) any(!is.na(x))) #which branch has hit 
         find_branch <- names(which(atrue==TRUE))
         if(length(find_branch)>1)
-            stop("You have biocViews from multiple branches.")
+            message("You have biocViews from multiple branches.")
     }
     
     if(length(find_branch)==0 & length(branch)==3){
             txt <- paste0("Incorrect biocViews in file & no branch specified. 
                           Cant recommend biocViews")
-            stop(paste(strwrap(txt,exdent=2), collapse="\n"))
+            message(paste(strwrap(txt,exdent=2), collapse="\n"))
     }
         
     if(length(branch)==3 & length(find_branch)==1)
@@ -75,7 +75,7 @@ getCurrentbiocViews <- function()
             txt <- paste0("You have specified ",branch," branch but your 
                            package contains biocViews from ",find_branch, 
                           " branch.")
-            stop(paste(strwrap(txt,exdent=2), collapse="\n"))
+            message(paste(strwrap(txt,exdent=2), collapse="\n"))
         }
     }
     # return appropriate dot terms based on branch. 
@@ -185,7 +185,7 @@ recommendBiocViews <-
     vig <- character(0)
     
     if(all(m,v)){
-        message("No man pages or vignette found.") 
+        all_words<- .wordsfromMANVIN(pkgdir, man=TRUE, vig=TRUE)
     } else{
         if(!m){
             message("No man pages found.") 
@@ -195,9 +195,8 @@ recommendBiocViews <-
             message("No vignettes found.")
             all_words<- .wordsfromMANVIN(pkgdir, man=TRUE, vig=FALSE)
         }
-        words1 <- c(words1,all_words)
     }
-    
+    words1 <- c(words1,all_words)
     dotterms <- .findBranchReadDot(current, branch)
     
     ### split "DecsisionTree" to "decision" , "tree" 
@@ -227,6 +226,7 @@ recommendBiocViews <-
     
     # combine words from all sources and map
     words1 <- unique(unlist(strsplit(words1,"\n")))
+    words1 <- unique(unlist(strsplit(words1,"-")))
     
     ## match against biocViews. 
     idx <- which(tolower(dotterms) %in% tolower(words1))
@@ -261,7 +261,8 @@ recommendBiocViews <-
     }
     
     ## some pkgs have terms which do not belong to software branch. 
-    remove <- setdiff(current, dotterms)
+    remove <- c(intersect(current, commonbiocViews), setdiff(current, dotterms))
+    
     
     list(current = paste(current, collapse=", "), 
          recommended = paste(new_bioc, collapse=", "),
