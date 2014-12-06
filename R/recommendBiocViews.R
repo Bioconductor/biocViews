@@ -95,7 +95,7 @@ getCurrentbiocViews <- function()
     ## strategy 1- parse the words in the DESCRIPTION file to get
     ## biocViews
     descr_file <- file.path(pkgdir,"DESCRIPTION")
-    dcf <- read.dcf(descr_file, c("Description", "Title", "Package"))
+    dcf <- read.dcf(descr_file, c("Description", "Title", "Package","biocViews"))
     words1 <- unique(unlist(strsplit(dcf, " ")))
     
     ## strategy 2- get biocViews of packages in depends field.
@@ -197,6 +197,7 @@ recommendBiocViews <-
         }
     }
     words1 <- c(words1,all_words)
+    words1 <- unlist(sapply(words1,.cleanupDependency, USE.NAMES = FALSE) )
     dotterms <- .findBranchReadDot(current, branch)
     
     ### split "DecsisionTree" to "decision" , "tree" 
@@ -207,27 +208,39 @@ recommendBiocViews <-
         if(length(s2)!=length(s1))
             s2 <- s2[-1]
         word<-function(s1,s2) paste0(s1,s2)
-        mapply(word, s1,s2, USE.NAMES=FALSE) 
+        ans <- mapply(word, s1,s2, USE.NAMES=FALSE)
+        if(length(ans)==0)
+            ans <- x
+        ans
     }, simplify = TRUE)
+    
+    terms <- lapply(terms, function(z){
+        z<- setdiff(z,"Data")
+        unlist(strsplit(z,"_")) 
+    })
 
     if(branch=="ExperimentData")
     {
         terms$CpGIslandData <- c("cpg", "island")
         terms$GEO <- "GEO"
-        
+        terms$HapMap <- "HapMap"
+        terms$SNPData <- "SNP"
         terms$DNASeqData <- c("DNA","Seq")
         terms$RNASeqData <- c("RNA","Seq")
         terms$ChIPSeqData <- c("ChIP","Seq")        
         terms$RIPSeqData <- c("RIP","Seq")
-        
+        terms$COPDData <-"COPD"
         terms$qPCRData <- "pcr"
-        terms$SAGEData <-"sage"
+        terms$SAGEData <-"sage"                
     }
     
     # combine words from all sources and map
     words1 <- unique(unlist(strsplit(words1,"\n")))
     words1 <- unique(unlist(strsplit(words1,"-")))
+    words1 <- unique(unlist(strsplit(words1,"_")))
+    words1 <- gsub("[.]","",words1)
     
+     
     ## match against biocViews. 
     idx <- which(tolower(dotterms) %in% tolower(words1))
     temp <- dotterms[idx]
@@ -238,6 +251,7 @@ recommendBiocViews <-
         ifelse(length(i)==length(x), y, NA)
     }, terms, names(terms), USE.NAMES=FALSE)
     
+       
     suggest_bioc <- unique(c(split_word[complete.cases(split_word)], temp))
     
     commonbiocViews <- c("Infrastructure","Software",
@@ -246,7 +260,7 @@ recommendBiocViews <-
                          "Annotation","Visualization","DataRepresentation",
                          "miRNA","SNP","qPCR","SAGE","Genetics",
                          "GenomeAnnotation",
-                         "ExperimentData","SpecimenSource","OrganismData",
+                         "SpecimenSource","OrganismData",
                          "DiseaseModel","TechnologyData","AssayDomainData",
                          "RepositoryData")
     
