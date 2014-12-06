@@ -129,4 +129,16 @@ write.table(changemat, "changemat_dec5.txt",sep="\t",
             quote=FALSE, row.names=FALSE)
 
 
+##get email id of maintainer to email
+
+emailist <- lapply(pkgnames, function(p){
+    message(p)
+    pkgdir <- file.path(dirname, p,"DESCRIPTION")
+    data <- read.dcf(pkgdir)
+    data[,"Maintainer"]
+})
+em <- unique(unlist(emailist))
+em <- gsub("\n","",em)
+em2 <- paste(em, collapse=", ")
+
 
