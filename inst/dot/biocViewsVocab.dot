@@ -392,6 +392,8 @@ SpecimenSource -> Proteome;
 SpecimenSource -> Genome; 
 SpecimenSource -> StemCell;
 SpecimenSource -> CellCulture; 
+SpecimenSource -> Germline;
+SpecimenSource -> Somatic; 
 
 ExperimentData -> OrganismData;
 OrganismData -> Anopheles_gambiae_Data;
@@ -469,7 +471,6 @@ SequencingData -> miRNAData;
 SequencingData -> SangerSeqData;
 SequencingData -> SmallRNAData;
 SequencingData -> MicrobiomeData;
-SequencingData -> WholeGenomeData;
 TechnologyData -> MicroarrayData;
 MicroarrayData -> MultiChannelData;
 MicroarrayData -> OneChannelData;
