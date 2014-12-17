@@ -478,7 +478,7 @@ MicroarrayData -> TwoChannelData;
 MicroarrayData -> MethylationArrayData;
 MicroarrayData -> GenotypingArrayData;
 MicroarrayData -> MicroRNAArrayData;
-MicroarrayData -> mRNAMicroarrayData;
+MicroarrayData -> mRNAArrayData;
 MicroarrayData -> ChipOnChipData;
 MicroarrayData -> ReversePhaseProteinArrayData;
 MicroarrayData -> TissueMicroarrayData;
@@ -488,6 +488,7 @@ ExperimentData -> AssayDomainData;
 AssayDomainData -> CopyNumberVariationData;
 AssayDomainData -> CpGIslandData;
 AssayDomainData -> SNPData; 
+AssayDomainData -> ExpressionData; 
 
 ExperimentData -> RepositoryData; 
 RepositoryData -> HapMap;
