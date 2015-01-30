@@ -378,6 +378,7 @@ PackageType -> SNPlocs;
 PackageType -> XtraSNPlocs;
 PackageType -> TxDb;
 PackageType -> MeSHDb;
+PackageType -> FRMA;
 
 
 
