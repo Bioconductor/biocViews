@@ -136,6 +136,7 @@ BiologicalQuestion -> VariantDetection;
 Software -> WorkflowStep;
 WorkflowStep -> ExperimentalDesign;
 WorkflowStep -> Alignment;
+Alignment -> MultipleSequenceAlignment;
 WorkflowStep -> Annotation;
 WorkflowStep -> BatchEffect;
 WorkflowStep -> MultipleComparison;
