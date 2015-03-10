@@ -460,6 +460,7 @@ DiseaseModel -> COPDData;
 
 ExperimentData -> TechnologyData;
 TechnologyData -> FlowCytometryData;
+TechnologyData -> HighThroughputImagingData;
 TechnologyData -> MassSpectrometryData;
 MassSpectrometryData -> ImagingMassSpectrometryData;
 TechnologyData -> qPCRData;
