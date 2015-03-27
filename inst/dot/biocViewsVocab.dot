@@ -243,7 +243,7 @@ ChipManufacturer -> QiagenChip;
 ChipManufacturer -> RNG_MRCChip;
 ChipManufacturer -> RocheChip;
 ChipManufacturer -> UniversityHealthNetwork;
-ChipManufacturer -> CodeLinkChip; 
+ChipManufacturer -> CodelinkChip; 
 
 /* AnnotationData -> CustomCDF */
 AnnotationData -> CustomCDF;
