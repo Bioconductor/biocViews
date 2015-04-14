@@ -46,6 +46,7 @@ Sequencing -> DenovoGenome;
 Sequencing -> TargetedResequencing;
 Sequencing -> DenovoTranscriptome;
 Sequencing -> MicrobialStrain;
+Sequencing -> HiC;
 Technology -> Microarray;
 Microarray -> MultiChannel;
 Microarray -> OneChannel;
