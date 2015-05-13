@@ -102,12 +102,7 @@ getCurrentbiocViews <- function()
     pkgs <- read.dcf(descr_file, "Depends")
     pkgs <- unlist(strsplit(gsub("[0-9.()>= ]", "", pkgs), ",")) 
     
-    x <- readLines(url("http://bioconductor.org/js/versions.js"))
-    dv <- x[grep("develVersion", x)]
-    devel_version <- strsplit(dv, '"')[[1]][2]
-    repos <- c("bioc", "data/annotation", "data/experiment")
-    urls <- paste0("http://bioconductor.org/packages/", devel_version,
-                   "/bioc/VIEWS")
+    urls <- .getBioCDevelUrl(devel=TRUE, branch="software")
     
     words2 <- character()
     con <- url(urls) 
@@ -281,4 +276,64 @@ recommendBiocViews <-
     list(current = paste(current, collapse=", "), 
          recommended = paste(new_bioc, collapse=", "),
          remove = paste(remove, collapse=", "))
+}
+
+
+.getBioCDevelUrl <- 
+    function(devel=TRUE, branch) 
+{
+    con <- url("http://bioconductor.org/js/versions.js")
+    x <- readLines(con)
+    pattern <- ifelse(devel, "develVersion", "releaseVersion")
+    dv <- x[grep(pattern, x)]
+    devel_version <- strsplit(dv, '"')[[1]][2]
+    repos <- switch(tolower(branch), 
+           software="/bioc/", 
+           experimentdata="/data/annotation/",
+           annotationdata="/data/experiment/")
+    close(con)
+    paste0("http://bioconductor.org/packages/", devel_version, repos,
+                   "VIEWS")
+}
+
+recommendPackages <-
+    function(biocViews, use.release=TRUE, intersect.views=TRUE) 
+{
+    if(length(biocViews)==0)  # return avaialbel biocViews
+        stop("Input some biocViews to get recommended packages.")
+        
+    toMatch <- paste(biocViews, collapse="|")
+    
+    ## check if the input biocViews are  defined by us. 
+    existingbiocViews <- getCurrentbiocViews()
+    match <- sapply(existingbiocViews, function(x){
+        length(unique(grep(toMatch, x, ignore.case=TRUE)))
+    }) 
+      
+    if(all(match==0L))
+        stop("See: http://bioconductor.org/packages for valid biocViews")
+    
+    ## which branch do these biocViews belong to ?
+    branch <- names(match)[match != 0L]
+    if (length(branch) != 1L)
+        stop("Input biocViews belong to branches ", 
+             paste(sQuote(branch), collapse=", "),
+             "; choose from 1 branch only")
+        
+    ## recommed packages based on branch 
+    url <- .getBioCDevelUrl(devel=!use.release, branch)
+
+    con <- url(url)
+    tbl <- read.dcf(con, fields=c("Package", "biocViews"))
+    close(con)
+    
+                
+    idx <- logical() 
+    op <- if (intersect.views) `&` else `|`
+    for (pat in biocViews) {
+        idx0 <- grepl(pat, tbl[,"biocViews"], ignore.case=TRUE)
+        idx <- if (length(idx)) op(idx, idx0) else idx0
+    }
+    
+    tbl[idx,"Package"]
 }

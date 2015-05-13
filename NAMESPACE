@@ -13,8 +13,10 @@ importFrom(utils, download.file, Stangle)
 importFrom(knitr, purl)
 
 importMethodsFrom(XML, saveXML)
+
 importFrom(XML, xmlNode, xmlOutputDOM, xmlTree, htmlParse,
        getNodeSet, xmlValue)
+
 importFrom(RCurl, getURL)
 
 importFrom(RUnit, checkTrue)
@@ -39,4 +41,5 @@ export("writeBiocViews", "getBiocViews", "write_VIEWS", "write_REPOSITORY",
        "writeRepositoryHtml", "writePackageDetailHtml", "getSubTerms",
        "getBiocSubViews", "validate_bioc_views", "writeTopLevelView",
        "writeHtmlDoc", "write_SYMBOLS", "writeRFilesFromVignettes",
-       "getPackageNEWS", "printNEWS","recommendBiocViews")
+       "getPackageNEWS", "printNEWS","recommendBiocViews",
+       "recommendPackages")
