@@ -1,0 +1,7 @@
+CHANGES IN VERSION 1.37.2
+-------------------------
+
+NEW FEATURES
+
+    o Add new function recommendPackages for finding packages tagged with
+      a set of biocViews. 
