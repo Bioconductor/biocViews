@@ -327,13 +327,24 @@ recommendPackages <-
     tbl <- read.dcf(con, fields=c("Package", "biocViews"))
     close(con)
     
-                
-    idx <- logical() 
-    op <- if (intersect.views) `&` else `|`
-    for (pat in biocViews) {
-        idx0 <- grepl(pat, tbl[,"biocViews"], ignore.case=TRUE)
-        idx <- if (length(idx)) op(idx, idx0) else idx0
+    idx0 <- sapply(tbl[,"biocViews"], function(table, x) {
+        y <- gsub("\n", " ", table)
+        y <- unlist(strsplit(y, ","))
+        y <- gsub("^\\s+|\\s+$", "", y) # remove trailing/leading white spaces
+        tolower(x) %in% tolower(y)
+    } , biocViews) 
+    
+    if(length(biocViews)==1L){
+        ## a list is returned. No operation needs to be done 
+        return(tbl[idx0, "Package"])
+    } 
+        
+    colnames(idx0) <- tbl[,"Package"]
+    if (intersect.views) 
+        pkg <- colnames(idx0)[colSums(idx0)==length(biocViews)]
+    else{
+        pkg <- colnames(idx0)[colSums(idx0)!=0]
     }
     
-    tbl[idx,"Package"]
+    pkg            
 }

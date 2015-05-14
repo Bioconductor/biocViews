@@ -30,4 +30,8 @@ test_recommendPackages <- function()
     test2 <- recommendPackages(c("PrincipalComponent", "DimensionReduction"), 
                                intersect.views=FALSE)
     checkEquals(length(unique(c(pca,dr))), length(test2))
+
+    ans <- recommendPackages(c("Principal"))
+    checkEquals(length(ans), 0L) 
 }
+
