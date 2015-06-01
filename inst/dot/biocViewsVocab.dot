@@ -394,6 +394,8 @@ PackageType -> FRMA;
  ****************************************************************************/
 BiocViews -> ExperimentData;
 
+ExperimentData -> ReproducibleResearch;
+
 ExperimentData -> SpecimenSource; 
 SpecimenSource -> Tissue;  
 SpecimenSource -> Proteome;
