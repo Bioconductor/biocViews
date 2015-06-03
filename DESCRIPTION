@@ -19,4 +19,3 @@ Collate: AllClasses.R AllGenerics.R as-methods.R htmlDoc-methods.R
         getPackNames.R packageDetails.R pump.R repository.R showvoc.R
         getPackageNEWS.R validation_tests.R recommendBiocViews.R
 biocViews: Infrastructure
-Packaged: 2014-10-16 22:03:48 UTC; dtenenba
