@@ -296,6 +296,7 @@ recommendBiocViews <-
                    "VIEWS")
 }
 
+
 recommendPackages <-
     function(biocViews, use.release=TRUE, intersect.views=TRUE) 
 {
@@ -327,6 +328,11 @@ recommendPackages <-
     tbl <- read.dcf(con, fields=c("Package", "biocViews"))
     close(con)
     
+    ## get child biocViews of input biocView
+    ## eg: if biocView is 'Alignment' then we should get packages tagged 
+    ## with 'MultipleSequenceAlignment' also! 
+    biocViews <- c(biocViews, .getChildEdgeFromDot(biocViews))
+    
     idx0 <- sapply(tbl[,"biocViews"], function(table, x) {
         y <- gsub("\n", " ", table)
         y <- unlist(strsplit(y, ","))
@@ -338,13 +344,37 @@ recommendPackages <-
         ## a list is returned. No operation needs to be done 
         return(tbl[idx0, "Package"])
     } 
-        
+    
+    ## if intersect.views = TRUE then 'and' operation is carried out.
+    ## eg: Packages tagged with both biocView 'a' and 'b' will be resturned.
+    
     colnames(idx0) <- tbl[,"Package"]
     if (intersect.views) 
-        pkg <- colnames(idx0)[colSums(idx0)==length(biocViews)]
+        pkg <- colnames(idx0)[colSums(idx0)==length(biocViews)] # and operation 
     else{
-        pkg <- colnames(idx0)[colSums(idx0)!=0]
+        pkg <- colnames(idx0)[colSums(idx0)!=0]   # or operation
     }
     
     pkg            
 }
+
+.getChildEdgeFromDot <- function(biocView) {
+    ans <- .getChildren(biocView)
+    ans <- unlist(ans)
+    names(ans) <- NULL
+    ans[!(ans %in% "1")]
+}
+
+
+.getChildren <- function(biocView) {
+    data(biocViewsVocab)
+    ans <- unlist(edges(biocViewsVocab, biocView))
+    if(length(ans)==0)
+        return("1")
+    else
+        return(c(ans, .getChildren(ans)))
+}
+
+
+
+
