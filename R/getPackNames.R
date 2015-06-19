@@ -2,13 +2,16 @@
 ## use the information in VIEWS (VignetteBuilder field)
 myStangle <- function(file)
 {
-    tryCatch(Stangle(file), error=function(e){
-        if (file.exists(file) && grepl("\\.Rnw$", file, ignore.case=TRUE))
+    oldwd <- setwd(dirname(file))
+    on.exit(setwd(oldwd))
+    bfile <- basename(file)
+    tryCatch(Stangle(bfile), error=function(e){
+        if (file.exists(bfile) && grepl("\\.Rnw$", bfile, ignore.case=TRUE))
         {
-          rfile <- sub("\\.Rnw$", ".R", file)
+          rfile <- sub("\\.Rnw$", ".R", bfile)
           if (file.exists(rfile))
             unlink(rfile)
-          purl(file)
+          purl(bfile)
         }
       })
 }
