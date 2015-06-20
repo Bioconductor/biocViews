@@ -8,7 +8,7 @@ myStangle <- function(file)
     tryCatch(Stangle(bfile), error=function(e){
         if (file.exists(bfile) && grepl("\\.Rnw$", bfile, ignore.case=TRUE))
         {
-          rfile <- sub("\\.Rnw$", ".R", bfile)
+          rfile <- sub("\\.Rnw$", ".R", bfile, ignore.case=TRUE)
           if (file.exists(rfile))
             unlink(rfile)
           purl(bfile)
