@@ -680,6 +680,7 @@ getHTMLTitle <- function(file)
             title <- basename(file)
     }
     title <- gsub('"', '""', title)
+    title <- gsub(",", ",,", title)
     sprintf('"%s"', title)
 }
 
