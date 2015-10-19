@@ -125,6 +125,7 @@ viewRowToPackageDetail <- function(row) {
     pkg@vignettes <- cleanVigs(pkg@vignettes)
     pkg@vignetteScripts <- cleanVigs(pkg@vignetteScripts)
     pkg@vignetteTitles <- cleanVigs(pkg@vignetteTitles)
+    pkg@htmlTitles <- cleanVigs(pkg@htmlTitles)
     
     return(pkg)
 }
