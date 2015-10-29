@@ -11,7 +11,9 @@ myStangle <- function(file)
           rfile <- sub("\\.Rnw$", ".R", bfile, ignore.case=TRUE)
           if (file.exists(rfile))
             unlink(rfile)
-          purl(bfile)
+          tryCatch(purl(bfile),error=function(e){
+            print(sprintf("Error purling %s!", bfile))
+          })
         }
       })
 }
