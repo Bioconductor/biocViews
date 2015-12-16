@@ -228,6 +228,7 @@ Organism -> Schizosaccharomyces_pombe;
 Organism -> Staphylococcus_aureus;
 Organism -> Sus_scrofa;
 Organism -> Taeniopygia_guttata;
+Organism -> Toxoplasma_gondii;
 Organism -> Triticum_aestivum;
 Organism -> Vitis_vinifera;
 Organism -> Xenopus_laevis;
