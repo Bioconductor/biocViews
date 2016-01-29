@@ -170,6 +170,8 @@ extractCitations <- function(reposRoot, srcContrib, destDir) {
             citation <- suppressWarnings(citation(pkgName, t))
         }
         output <- capture.output(print(citation, style="html"))
+        # filter out \Sexprs:
+        output <- output[grep("^\\\\Sexpr", output, invert=TRUE)]
         if (!file.exists(file.path(destDir, pkgName)))
             dir.create(file.path(destDir, pkgName))
         cat(output, file=file.path(destDir, pkgName, "citation.html"),
