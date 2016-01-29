@@ -148,7 +148,7 @@ extractCitations <- function(reposRoot, srcContrib, destDir) {
     tarballs <- list.files(file.path(reposRoot, srcContrib),
         pattern="\\.tar\\.gz$", full.names=TRUE)
     t <- file.path(tempdir(), "citations")
-    if (!file.exists(file.path(tempdir(), "citations")))
+    if (!file.exists(t))
         dir.create(t)
     if (!file.exists(destDir))
         dir.create(destDir) # recursive?
