@@ -2,7 +2,7 @@ genReposControlFiles <- function(reposRoot, contribPaths)
 {
     ## Generate all control files for BioC hosted R
     ## package repositorys
-    
+
     write_REPOSITORY(reposRoot, contribPaths)
     ## Write PACKAGES files for all contrib paths
     packagesPaths <- file.path(reposRoot, contribPaths)
@@ -53,7 +53,7 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
         if (length(oldFiles) > 0)
             try(file.remove(oldFiles), silent=TRUE)
     }
-    
+
     buildManualsFromTarball <- function(tarball, unpackDir=".") {
         ## helper function to unpack pdf & Rd files from the vig
         if (grepl("data/annotation$", reposRoot))
@@ -81,7 +81,7 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
 
         }
     }
-    
+
     tarballs <- list.files(file.path(reposRoot, srcContrib),
             pattern="\\.tar\\.gz$", full.names=TRUE)
     if (!file.exists(destDir))
@@ -118,7 +118,7 @@ extractTopLevelFiles <- function(reposRoot, srcContrib, destDir, fileName) {
         if (length(oldFiles) > 0)
           try(file.remove(oldFiles), silent=TRUE)
     }
-    
+
     extractFileFromTarball <- function(tarball, unpackDir=".") {
         pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
         pat <- file.path(pkg, fileName)
@@ -127,7 +127,7 @@ extractTopLevelFiles <- function(reposRoot, srcContrib, destDir, fileName) {
         cat(paste("Attempting to extract", fileName, "from", tarball, "\n"))
         system(tarCmd, ignore.stdout=TRUE, ignore.stderr=TRUE)
     }
-    
+
     tarballs <- list.files(file.path(reposRoot, srcContrib),
                            pattern="\\.tar\\.gz$", full.names=TRUE)
     if (!file.exists(destDir))
@@ -136,7 +136,7 @@ extractTopLevelFiles <- function(reposRoot, srcContrib, destDir, fileName) {
       stop("destDir must specify a directory")
     lapply(tarballs, extractFileFromTarball, unpackDir=destDir)
     invisible(NULL)
-    
+
 }
 
 extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
@@ -212,19 +212,19 @@ extractNEWS <- function(reposRoot, srcContrib, destDir) {
         if (length(oldFiles) > 0)
           try(file.remove(oldFiles), silent=TRUE)
     }
-    
+
     extractNewsFromTarball <- function(tarball, unpackDir=".") {
         pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
         newsPat <- "*NEWS*"
         wildcards <- ifelse(Sys.info()["sysname"] == "Darwin", "",
-          "--wildcards") 
+          "--wildcards")
         tarCmd <- paste("tar", wildcards, "-C", unpackDir, "-xzf",
           tarball, newsPat)
         cleanUnpackDir(tarball, unpackDir)
         cat("Attempting to extract NEWS from", tarball, "\n")
         system(tarCmd, ignore.stdout=TRUE, ignore.stderr=TRUE)
     }
-    
+
     convertNEWSToText <- function(tarball, srcDir, destDir)
     {
         segs <- strsplit(tarball, "_", fixed=TRUE)
@@ -239,7 +239,7 @@ extractNEWS <- function(reposRoot, srcContrib, destDir) {
         destFile <- file.path(destDir, "NEWS")
         getNEWSFromFile(srcDir, destFile, output="text")
     }
-    
+
     tarballs <- list.files(file.path(reposRoot, srcContrib),
                            pattern="\\.tar\\.gz$", full.names=TRUE)
     if (!file.exists(destDir))
@@ -249,7 +249,7 @@ extractNEWS <- function(reposRoot, srcContrib, destDir) {
     unpackDir <- tempdir()
     lapply(tarballs, extractNewsFromTarball, unpackDir=unpackDir)
     lapply(tarballs, convertNEWSToText, srcDir=unpackDir, destDir=destDir)
-    
+
     invisible(NULL)
 }
 
@@ -280,7 +280,7 @@ extractVignettes <- function(reposRoot, srcContrib, destDir) {
         if (length(oldFiles) > 0)
           try(file.remove(oldFiles), silent=TRUE)
     }
-    
+
     extractVignettesFromTarball <- function(tarball, unpackDir=".") {
         ## helper function to unpack pdf & Rnw files from the vig
         vigPat <- "--wildcards '*/doc/*.[pRr][dn][fw]'"
@@ -321,7 +321,7 @@ extractHTMLDocuments <- function(reposRoot, srcContrib, destDir) {
     if (missing(destDir))
       destDir <- file.path(reposRoot, "vignettes")
 
-    
+
     extractHTMLDocumentsFromTarball <- function(tarball, unpackDir=".") {
         ## helper function to unpack HTML documents and deps from tarball
 
@@ -332,7 +332,7 @@ extractHTMLDocuments <- function(reposRoot, srcContrib, destDir) {
         if (length(grep("inst/doc/.*\\.html$", fileList, ignore.case=TRUE)))
         {
             cat("Found HTML document in", tarball, "\n")
-            ## This extracts everything, including 
+            ## This extracts everything, including
             ## Rnw and Rmd files...too liberal? Then use vignettes/ dir
             pat <-  "--wildcards '*/inst/doc/*'"
             tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, pat)
@@ -400,7 +400,7 @@ getFileLinks <- function(pkgList, reposRootPath, vignette.dir, ext,
           vigs <- NA_character_
         vigs
     }))
-    
+
 }
 
 getVignetteLinks <- function(pkgList, reposRootPath, vignette.dir) {
@@ -580,7 +580,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
         col <- paste(ctype, "ver", sep=".")
         dbMat[dbMatIdx, col] <- buildPkgPath(cDat[cDatGood, "Package"],
                                              cDat[cDatGood, "Version"])
-        
+
         if (length((grep("^win",ctype,value=TRUE)) > 0)  && ("Archs" %in% colnames(cDat))) {
           which1 <- which(dbMat[,"Package"] %in% cDat[,"Package"])
           which2 <- which(cDat[,"Package"] %in% dbMat[,"Package"])
@@ -623,7 +623,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
         "hasNEWS", "hasINSTALL", "hasLICENSE", "Rfiles", "htmlDocs",
         "htmlTitles")
     dependsOnMe <- getReverseDepends(dbMat, "Depends")
-    
+
     index <- grep("\\.R$", dbMat[, "Rfiles"], invert=TRUE)
     dbMat[index, "Rfiles"] <- NA
 
@@ -632,7 +632,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     dbMat <- cbind(dbMat, importsMe)
     suggestsMe <- getReverseDepends(dbMat, "Suggests")
     dbMat <- cbind(dbMat, suggestsMe)
-    
+
     .write_repository_db(dbMat, reposRootPath, "VIEWS")
 }
 
@@ -673,8 +673,8 @@ getHTMLTitle <- function(file)
         tryCatch(ns <- getNodeSet(doc, "//title"),
             error=function(e) {})
         if (length(ns))
-        { 
-            title <-  gsub("^\\s+|\\s+$", "", xmlValue(ns[[1]])) 
+        {
+            title <-  gsub("^\\s+|\\s+$", "", xmlValue(ns[[1]]))
             if (!nchar(title))
                 title <- basename(file)
         }
@@ -737,7 +737,9 @@ StangleHTMLVignettes <- function(reposRoot)
                 vig <- sub("\\.html", ".Rmd", doc, ignore.case=TRUE)
                 out <- sub("\\.html", ".R", doc, ignore.case=TRUE)
                 if (file.exists(vig))
-                    purl(vig, out)
+                    tryCatch(purl(vig, out), error=function(e){
+                        print(e)
+                        })
             }
         }
         })
