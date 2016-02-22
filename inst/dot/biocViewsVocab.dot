@@ -4,7 +4,7 @@
    1. Use dot2gxl from graphviz to transform into GXL format.
           dot2gxl biocViewsVocab.dot > biocViewsVocab.gxl
    2. use graph::fromGXL to obtain a graphNEL object
-          
+
 */
 
 digraph G {
@@ -32,7 +32,7 @@ AssayDomain -> Transcription;
 Software -> Technology;
 Technology -> Sequencing;
 Sequencing -> DNASeq;
-Sequencing -> RiboSeq; 
+Sequencing -> RiboSeq;
 Sequencing -> RNASeq;
 Sequencing -> ChIPSeq;
 Sequencing -> RIPSeq;
@@ -75,7 +75,7 @@ ResearchField -> Metabolomics;
 ResearchField -> Metagenomics;
 ResearchField -> Proteomics;
 ResearchField -> Lipidomics;
-ResearchFiled -> Epigenetics;
+ResearchField -> Epigenetics;
 ResearchField -> Pharmacogenomics;
 ResearchField -> Pharmacogenetics;
 ResearchField -> Cheminformatics;
@@ -83,13 +83,13 @@ ResearchField -> StructuralGenomics;
 ResearchField -> Biophysics;
 ResearchField -> MathematicalBiology;
 ResearchField -> BiomedicalInformatics;
-ResearchField -> ComparativeGenomics; 
+ResearchField -> ComparativeGenomics;
 ResearchField -> FunctionalGenomics;
 ResearchField -> SystemsBiology;
 ResearchField -> ComputationalChemistry;
 ResearchField -> Agroinformatics;
 ResearchField -> Transcriptomics;
-    
+
 /* Software -> BiologicalQuestion */
 Software -> BiologicalQuestion;
 BiologicalQuestion -> AlternativeSplicing;
@@ -103,11 +103,11 @@ BiologicalQuestion -> DifferentialSplicing;
 BiologicalQuestion -> DriverMutation;
 BiologicalQuestion -> FunctionalPrediction;
 BiologicalQuestion -> GeneFusionDetection;
-BiologicalQuestion -> GenePrediction; 
+BiologicalQuestion -> GenePrediction;
 BiologicalQuestion -> GeneRegulation;
 BiologicalQuestion -> GeneSetEnrichment;
 BiologicalQuestion -> GeneSignaling;
-BiologicalQuestion -> GeneTarget; 
+BiologicalQuestion -> GeneTarget;
 BiologicalQuestion -> GenomeAssembly;
 BiologicalQuestion -> GenomeWideAssociation;
 BiologicalQuestion -> GenomicVariation;
@@ -122,8 +122,8 @@ BiologicalQuestion -> MotifAnnotation;
 BiologicalQuestion -> MotifDiscovery;
 BiologicalQuestion -> NetworkEnrichment;
 BiologicalQuestion -> NetworkInference;
-BiologicalQuestion -> NucleosomePositioning;  
-BiologicalQuestion -> PeakDetection; 
+BiologicalQuestion -> NucleosomePositioning;
+BiologicalQuestion -> PeakDetection;
 BiologicalQuestion -> QuantitativeTrailLocus;
 BiologicalQuestion -> Scaffolding;
 BiologicalQuestion -> SequenceMatching;
@@ -146,11 +146,11 @@ WorkflowStep -> Normalization;
 WorkflowStep -> Pathways;
 Pathways -> GO;
 Pathways -> KEGG;
-Pathways -> Reactome; 
+Pathways -> Reactome;
 Pathways -> BioCarta;
 Pathways -> NCINatureCurated;
 WorkflowStep -> Preprocessing;
-WorkflowStep -> QualityControl; 
+WorkflowStep -> QualityControl;
 WorkflowStep -> ReportWriting;
 WorkflowStep -> Visualization;
 Visualization -> Network;
@@ -175,8 +175,8 @@ StatisticalMethod -> StructuralEquationModels;
 StatisticalMethod -> SupportVectorMachine;
 StatisticalMethod -> Survival;
 StatisticalMethod -> TimeCourse;
-    
-/* Software -> Infrastructure */ 
+
+/* Software -> Infrastructure */
 Software -> Infrastructure;
 Infrastructure -> ThirdPartyClient
 Infrastructure -> DataImport;
@@ -247,7 +247,7 @@ ChipManufacturer -> QiagenChip;
 ChipManufacturer -> RNG_MRCChip;
 ChipManufacturer -> RocheChip;
 ChipManufacturer -> UniversityHealthNetwork;
-ChipManufacturer -> CodelinkChip; 
+ChipManufacturer -> CodelinkChip;
 
 /* AnnotationData -> CustomCDF */
 AnnotationData -> CustomCDF;
@@ -399,14 +399,14 @@ BiocViews -> ExperimentData;
 
 ExperimentData -> ReproducibleResearch;
 
-ExperimentData -> SpecimenSource; 
-SpecimenSource -> Tissue;  
+ExperimentData -> SpecimenSource;
+SpecimenSource -> Tissue;
 SpecimenSource -> Proteome;
-SpecimenSource -> Genome; 
+SpecimenSource -> Genome;
 SpecimenSource -> StemCell;
-SpecimenSource -> CellCulture; 
+SpecimenSource -> CellCulture;
 SpecimenSource -> Germline;
-SpecimenSource -> Somatic; 
+SpecimenSource -> Somatic;
 
 ExperimentData -> OrganismData;
 OrganismData -> Anopheles_gambiae_Data;
@@ -452,7 +452,7 @@ OrganismData -> Xenopus_tropicalis_Data;
 OrganismData -> Zea_mays_Data;
 
 
-ExperimentData -> DiseaseModel; 
+ExperimentData -> DiseaseModel;
 DiseaseModel -> CancerData;
 CancerData -> BreastCancerData;
 CancerData -> ColonCancerData;
@@ -501,19 +501,15 @@ MicroarrayData -> ProprietaryPlatformsData;
 ExperimentData -> AssayDomainData;
 AssayDomainData -> CopyNumberVariationData;
 AssayDomainData -> CpGIslandData;
-AssayDomainData -> SNPData; 
-AssayDomainData -> ExpressionData; 
+AssayDomainData -> SNPData;
+AssayDomainData -> ExpressionData;
 
-ExperimentData -> RepositoryData; 
+ExperimentData -> RepositoryData;
 RepositoryData -> HapMap;
 RepositoryData -> GEO;
 RepositoryData -> ArrayExpress;
 RepositoryData -> NCI;
-RepositoryData -> PathwayInteractionDatabase; 
-RepositoryData -> Project1000genomes; 
-RepositoryData -> ENCODE; 
+RepositoryData -> PathwayInteractionDatabase;
+RepositoryData -> Project1000genomes;
+RepositoryData -> ENCODE;
 }
-
-
-
-
