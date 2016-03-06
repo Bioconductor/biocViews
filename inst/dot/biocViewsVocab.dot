@@ -267,8 +267,6 @@ AnnotationData -> FunctionalAnnotation;
 /* AnnotationData -> SequenceAnnotation */
 AnnotationData -> SequenceAnnotation;
 SequenceAnnotation -> GenomicSequence;
-SequenceAnnotation -> miRNA;
-SequenceAnnotation -> MotifAnnotation;
 
 /* AnnotationData -> ChipName */
 AnnotationData -> ChipName;
