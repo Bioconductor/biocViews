@@ -403,72 +403,58 @@ getFileLinks <- function(pkgList, reposRootPath, vignette.dir, ext,
 
 }
 
-getVignetteLinks <- function(pkgList, reposRootPath, vignette.dir) {
-    if (length(pkgList) == 0L)
-        return(character(0))
-    unlist(lapply(pkgList, function(pkg) {
-        vigSubDir <- "inst/doc"
-        vigDir <- file.path(reposRootPath, vignette.dir, pkg, vigSubDir)
-        if (file.exists(vigDir)) {
-            vigs <- list.files(vigDir, pattern=".*\\.pdf$")
-            vigs <- paste(vignette.dir, pkg, vigSubDir, vigs, sep="/",
-                          collapse=", ")
-        } else
-          vigs <- NA_character_
-        vigs
-    }))
-}
-
-
-getVignetteTitlesFromListOfPdfs <- function(vigs) {
-    rnws <- gsub(".pdf", ".Rnw", vigs, fixed=TRUE)
-    vignetteTitles <- character()
-    for (vignette in rnws) {
-        titles <- character()
-        rnwnames = unlist(strsplit(vignette, ", ", fixed=TRUE))
-        for (rnwname in rnwnames) {
-            #if(is.null(rnwname)) rnwname <- rnwnames ## why?
-            if (file.exists(rnwname)) {
-                lines <- readLines(rnwname, warn=FALSE)
-                title  <- suppressWarnings(grep("^%\\VignetteIndexEntry\\{", lines, value=TRUE))
-                segs = unlist(strsplit(title, "\\{|\\}"))
-                segs <- segs[!grepl("\\\\", segs, fixed=TRUE)]
-                segs <- segs[!grepl("^ $", segs, fixed=FALSE)]
-                title <- segs[length(segs)]
+getDocumentTitles <- function(docs, ext="pdf", src=c("Rnw", "Rmd"), reposRootPath, fun) {
+    if (length(docs) == 0L)
+        return(character())
+    filelist <- strsplit(docs, ", ", fixed = TRUE)
+    unlist(lapply(filelist, function(files) {
+        files <- file.path(reposRootPath, files)
+        res <- unlist(lapply(files, function(file) {
+            title <- NA_character_
+            src <- paste0(sub(sprintf("\\.%s$", ext), ".", file, ignore.case=TRUE), src)
+            idx <- which(file.exists(src))[1L]
+            ## extract title from source file
+            if (!is.na(idx)) {
+                title <- fun(file, src[idx])
+                title <- trimws(title)
                 title <- gsub(",", ",,", title, fixed=TRUE)
-                titles <- c(titles, title)
-            } else {
-                pdfName = sub(".Rnw", ".pdf", rnwname, fixed=TRUE)
-                segs = unlist(strsplit(pdfName, "/", fixed=TRUE))
-                titles <- c(titles, segs[length(segs)])
             }
-        }
-        tmp <- paste(titles, collapse=", ")
-        vignetteTitles <- c(vignetteTitles, tmp)
-    }
-    vignetteTitles
-}
-
-
-getVignetteTitles <- function(pkgList, reposRootPath, vignette.dir) {
-    if (length(pkgList) == 0L)
-        return(character(0))
-    unlist(lapply(pkgList, function(pkg) {
-        vigSubDir <- "inst/doc"
-        vigDir <- file.path(reposRootPath, vignette.dir, pkg, vigSubDir)
-        if (file.exists(vigDir)) {
-            vigs <- list.files(vigDir, pattern=".*\\.pdf$")
-            vigs <- paste(vignette.dir, pkg, vigSubDir, vigs, sep="/",
-                          collapse=", ")
-            vigTitles <- getVignetteTitlesFromListOfPdfs(vigs)
-        } else {
-          vigTitles <- NA_character_
-        }
-        vigTitles
+            ## use filename if no source file found, title extraction failed,
+            ## or the extracted title is empty
+            if (is.na(title) || nchar(title)==0L)
+                basename(file)
+            else
+                title
+        }))
+        paste(res, collapse=", ")
     }))
 }
 
+getVignetteIndexEntry <- function(file) {
+    lines <- readLines(file, warn=FALSE)
+    ## use the same regular expression as in tools:::.get_vignette_metadata
+    regex <- "[[:space:]]*%+[[:space:]]*\\\\VignetteIndexEntry\\{([^}]*(\\{[^}]*\\})*[^}]*)\\}.*"
+    ## match to first occurance
+    res <- grep(regex, lines, value = TRUE)[1L]
+    gsub(regex, "\\1", res)
+}
 
+getPdfTitle <- function(doc, src) {
+    getVignetteIndexEntry(src)
+}
+
+getHtmlTitle <- function(doc, src) {
+    ## First look for an old-fashioned VignetteIndexEntry in the source file
+    title <- getVignetteIndexEntry(src)
+    if (is.na(title)) {
+        ## now look for an HTML title
+        doc <- htmlParse(doc)
+        res <- xpathApply(doc, "//title", xmlValue)
+        if (length(res))
+            title <- res[[1L]]
+    }
+    title
+}
 
 write_REPOSITORY <- function(reposRootPath, contribPaths) {
     contrib <- as.list(contribPaths)
@@ -589,15 +575,14 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     }
     ## Add vignette path info
     vigs <- getFileLinks(dbMat[, "Package"], reposRootPath, vignette.dir, "pdf")
+    vtitles <- getDocumentTitles(vigs, reposRootPath=reposRootPath, fun=getPdfTitle)
+    
     rfiles <- getFileLinks(dbMat[, "Package"], reposRootPath, vignette.dir, "R")
 
-    htmlDocs <- getFileLinks(dbMat[, "Package"],
-        reposRootPath, vignette.dir, "html", TRUE)
+    htmlDocs <- getFileLinks(dbMat[, "Package"], reposRootPath, vignette.dir, "html", TRUE)
     htmlDocs[grep("\\/index\\.html$", htmlDocs)] <- NA
+    htmlTitles <- getDocumentTitles(htmlDocs, ext="html", src=c("Rmd", "Rhtml"), reposRootPath, getHtmlTitle)
 
-
-    #rfiles <- rfiles[grep("\\.R$", rfiles)]
-    vtitles <- getVignetteTitles(dbMat[, "Package"], reposRootPath, vignette.dir)
     readmes <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "readmes", "README")
     news <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "news", "NEWS")
     install <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "install", "INSTALL")
@@ -610,14 +595,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     dbMat <- cbind(dbMat, license)
     dbMat <- cbind(dbMat, rfiles)
     dbMat <- cbind(dbMat, htmlDocs)
-
-    index <- grep("\\.html$", dbMat[, "htmlDocs"],
-        invert=TRUE, ignore.case=TRUE)
-    dbMat[index, "htmlDocs"] <- NA
-
-    htmlTitles <- getHTMLTitles(dbMat[, "htmlDocs"], reposRootPath)
     dbMat <- cbind(dbMat, htmlTitles)
-
 
     colnames(dbMat) <- c(fldNames, "vignettes", "vignetteTitles", "hasREADME",
         "hasNEWS", "hasINSTALL", "hasLICENSE", "Rfiles", "htmlDocs",
@@ -653,63 +631,6 @@ getReverseDepends <- function(db, fieldName) {
     }
     ret <- lapply(pkgNames, bar)
     unlist(ret)
-}
-
-
-getHTMLTitle <- function(file)
-{
-    ## First look for an old-fashioned VignetteIndexEntry,
-    ## because markdown/HTML vignettes will have one (in
-    ## an HTML comment) which contains the canonical title.
-    res <- grep("^%\\\\VignetteIndexEntry", readLines(file,
-        warn=FALSE), value=TRUE)
-    if (length(res))
-    {
-        title <- strsplit(res, "\\{|\\}")[[1]][2]
-    } else {
-        ## now look for an HTML title
-        doc <- htmlParse(file)
-        ns <- integer(0)
-        tryCatch(ns <- getNodeSet(doc, "//title"),
-            error=function(e) {})
-        if (length(ns))
-        {
-            title <-  gsub("^\\s+|\\s+$", "", xmlValue(ns[[1]]))
-            if (!nchar(title))
-                title <- basename(file)
-        }
-        else ## just return the filename as a title
-            title <- basename(file)
-    }
-    title <- gsub('"', '""', title)
-    title <- gsub(",", ",,", title)
-    sprintf('"%s"', title)
-}
-
-getHTMLTitles <- function(files, reposRootPath)
-{
-    res <- c()
-
-    for (file in files)
-    {
-        title <- NULL
-        if (is.na(file))
-        {
-            res <- c(res, NA)
-            next
-        }
-        if (grepl(", ", file))
-        {
-            subfiles <- strsplit(file, ", ")[[1]]
-            fullpaths <- file.path(reposRootPath, subfiles)
-            out <- sapply(fullpaths, getHTMLTitle)
-            res <- c(res, paste(out, collapse=", "))
-        } else {
-            fullpath <- file.path(reposRootPath, file)
-            res <- c(res, getHTMLTitle(fullpath))
-        }
-    }
-    res
 }
 
 writeRFilesFromVignettes <- function(reposRoot, reposUrl="..",

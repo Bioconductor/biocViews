@@ -14,8 +14,7 @@ importFrom(knitr, purl)
 
 importMethodsFrom(XML, saveXML)
 
-importFrom(XML, xmlNode, xmlOutputDOM, xmlTree, htmlParse,
-       getNodeSet, xmlValue)
+importFrom(XML, xmlNode, xmlOutputDOM, xmlTree, htmlParse, xpathApply, xmlValue)
 
 importFrom(RCurl, getURL)
 
