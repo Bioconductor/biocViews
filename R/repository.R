@@ -153,7 +153,6 @@ extractCitations <- function(reposRoot, srcContrib, destDir) {
     if (!file.exists(destDir))
         dir.create(destDir) # recursive?
     lapply(tarballs, function(x){
-        # browser()
         pkgName <- strsplit(basename(x), "_")[[1]][1]
         if (file.exists(file.path(t, pkgName)))
             unlink(file.path(t, pkgName), recursive=TRUE)
@@ -273,7 +272,7 @@ extractVignettes <- function(reposRoot, srcContrib, destDir) {
         ## Delete vignettes from a previous extraction
         pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
         pkgDir <- file.path(unpackDir, pkg, "inst", "doc")
-        rmRegex <- ".*\\.(pdf|Rnw|rnw)$"
+        rmRegex <- ".*\\.(pdf|Rnw|rnw|Rmd|rmd)$"
         if (!file.exists(pkgDir))
           return(FALSE)
         oldFiles <- list.files(pkgDir, pattern=rmRegex, full.names=TRUE)
@@ -283,7 +282,7 @@ extractVignettes <- function(reposRoot, srcContrib, destDir) {
 
     extractVignettesFromTarball <- function(tarball, unpackDir=".") {
         ## helper function to unpack pdf & Rnw files from the vig
-        vigPat <- "--wildcards '*/doc/*.[pRr][dn][fw]'"
+        vigPat <- "--wildcards '*/doc/*.[pRr][dmn][dfw]'"
         tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, vigPat)
         cleanUnpackDir(tarball, unpackDir)
         cat("Extracting vignettes from", tarball, "\n")
@@ -384,23 +383,23 @@ getFileExistsAttr <- function(pkgList, reposRootPath, dir, filename) {
 
 
 getFileLinks <- function(pkgList, reposRootPath, vignette.dir, ext,
-    ignore.case=FALSE) {
+                         ignore.case=FALSE) {
     if (length(pkgList) == 0L)
         return(character(0))
     unlist(lapply(pkgList, function(pkg) {
         vigSubDir <- "inst/doc"
         vigDir <- file.path(reposRootPath, vignette.dir, pkg, vigSubDir)
+        vigs <- NA_character_
         if (file.exists(vigDir)) {
             pattern <- paste(".*\\.", ext, "$", sep="")
-            vigs <- list.files(vigDir, pattern=pattern,
-                ignore.case=ignore.case)
-            vigs <- paste(vignette.dir, pkg, vigSubDir, vigs, sep="/",
-                          collapse=", ")
-        } else
-          vigs <- NA_character_
+            files <- list.files(vigDir, pattern=pattern,
+                                ignore.case=ignore.case)
+            if (length(files))
+                vigs <- paste(vignette.dir, pkg, vigSubDir, files, sep="/",
+                              collapse=", ")
+        }
         vigs
     }))
-
 }
 
 getDocumentTitles <- function(docs, ext="pdf", src=c("Rnw", "Rmd"), reposRootPath, fun) {
@@ -408,25 +407,30 @@ getDocumentTitles <- function(docs, ext="pdf", src=c("Rnw", "Rmd"), reposRootPat
         return(character())
     filelist <- strsplit(docs, ", ", fixed = TRUE)
     unlist(lapply(filelist, function(files) {
-        files <- file.path(reposRootPath, files)
-        res <- unlist(lapply(files, function(file) {
-            title <- NA_character_
-            src <- paste0(sub(sprintf("\\.%s$", ext), ".", file, ignore.case=TRUE), src)
-            idx <- which(file.exists(src))[1L]
-            ## extract title from source file
-            if (!is.na(idx)) {
-                title <- fun(file, src[idx])
-                title <- trimws(title)
-                title <- gsub(",", ",,", title, fixed=TRUE)
-            }
-            ## use filename if no source file found, title extraction failed,
-            ## or the extracted title is empty
-            if (is.na(title) || nchar(title)==0L)
-                basename(file)
-            else
-                title
-        }))
-        paste(res, collapse=", ")
+        if (is.na(files)) {
+            NA_character_
+        }
+        else {
+            files <- file.path(reposRootPath, files)
+            titles <- unlist(lapply(files, function(file) {
+                title <- NA_character_
+                src <- paste0(sub(sprintf("\\.%s$", ext), ".", file, ignore.case=TRUE), src)
+                idx <- which(file.exists(src))[1L]
+                ## extract title from source file
+                if (!is.na(idx)) {
+                    title <- fun(file, src[idx])
+                    title <- trimws(title)
+                    title <- gsub(",", ",,", title, fixed=TRUE)
+                }
+                ## use filename if no source file found, title extraction failed,
+                ## or the extracted title is empty
+                if (is.na(title) || nchar(title)==0L)
+                    basename(file)
+                else
+                    title
+            }))
+            paste(titles, collapse=", ")
+        }
     }))
 }
 
