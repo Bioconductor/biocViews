@@ -26,7 +26,9 @@ genReposControlFiles <- function(reposRoot, contribPaths)
     write_SYMBOLS(reposRoot, verbose=TRUE)
 }
 
-pkgName <- function(tarball) strsplit(basename(tarball), "_", fixed=TRUE)[[1L]][1L]
+pkgName <- function(tarball) {
+    strsplit(basename(tarball), "_", fixed=TRUE)[[1L]][1L]
+}
 
 unpack <- function(tarball, unpackDir, wildcards, ...) {
     cmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, "--wildcards", wildcards)
@@ -37,11 +39,9 @@ cleanUnpackDir <- function(tarball, unpackDir, subDir="", pattern=NULL) {
     ## Delete files from a previous extraction
     pkg <- pkgName(tarball)
     pkgDir <- file.path(unpackDir, pkg, subDir)
-    if (!file.exists(pkgDir))
-        return(FALSE)
-    oldFiles <- list.files(pkgDir, pattern=pattern, full.names=TRUE)
-    if (length(oldFiles) > 0L)
-        try(file.remove(oldFiles), silent=TRUE)
+    files <- list.files(pkgDir, pattern=pattern, full.names=TRUE,
+                        recursive=is.null(pattern), include.dirs=is.null(pattern))
+    unlink(files)
 }
 
 extractManuals <- function(reposRoot, srcContrib, destDir) {
@@ -226,7 +226,7 @@ extractNEWS <- function(reposRoot, srcContrib, destDir) {
 
 
 extractVignettes <- function(reposRoot, srcContrib, destDir) {
-    ## Extract pdf vignettes from source package tarballs
+    ## Extract vignettes from source package tarballs
     ##
     ## reposRoot - Top level path for CRAN-style repos
     ## srcContrib - Location of source packages
@@ -238,25 +238,24 @@ extractVignettes <- function(reposRoot, srcContrib, destDir) {
     ##
 
     if (missing(destDir))
-      destDir <- file.path(reposRoot, "vignettes")
+        destDir <- file.path(reposRoot, "vignettes")
 
     extractVignettesFromTarball <- function(tarball, unpackDir=".") {
-        ## helper function to unpack pdf & Rnw files from the vig
-        cleanUnpackDir(tarball, unpackDir, subDir=file.path("inst", "doc"),
-                       pattern=".*\\.(pdf|Rnw|rnw|Rmd|rmd)$")
+        cleanUnpackDir(tarball, unpackDir, subDir=file.path("inst", "doc"))
         cat("Extracting vignettes from", tarball, "\n")
-        ret <- unpack(tarball, unpackDir, "'*/doc/*.[pRr][dmn][dfw]'")
+        ret <- unpack(tarball, unpackDir, "'*/inst/doc/*'")
         if (ret != 0)
-          warning("tar had non-zero exit status for vig extract of: ", tarball)
+            warning("tar had non-zero exit status for vig extract of: ", tarball)
     }
 
     tarballs <- list.files(file.path(reposRoot, srcContrib),
                            pattern="\\.tar\\.gz$", full.names=TRUE)
     if (!file.exists(destDir))
-      dir.create(destDir, recursive=TRUE)
+        dir.create(destDir, recursive=TRUE)
     if (!file.info(destDir)$isdir)
-      stop("destDir must specify a directory")
-    lapply(tarballs, extractVignettesFromTarball, unpackDir=destDir)
+        stop("destDir must specify a directory")
+
+    invisible(lapply(tarballs, extractVignettesFromTarball, unpackDir=destDir))
 }
 
 
@@ -562,9 +561,6 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
         "hasNEWS", "hasINSTALL", "hasLICENSE", "Rfiles", "htmlDocs",
         "htmlTitles")
     dependsOnMe <- getReverseDepends(dbMat, "Depends")
-
-    index <- grep("\\.R$", dbMat[, "Rfiles"], invert=TRUE)
-    dbMat[index, "Rfiles"] <- NA
 
     dbMat <- cbind(dbMat, dependsOnMe)
     importsMe <- getReverseDepends(dbMat, "Imports")
