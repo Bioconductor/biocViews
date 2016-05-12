@@ -26,6 +26,23 @@ genReposControlFiles <- function(reposRoot, contribPaths)
     write_SYMBOLS(reposRoot, verbose=TRUE)
 }
 
+pkgName <- function(tarball) strsplit(basename(tarball), "_", fixed=TRUE)[[1L]][1L]
+
+unpack <- function(tarball, unpackDir, wildcards, ...) {
+    cmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, "--wildcards", wildcards)
+    system(cmd, ...)
+}
+
+cleanUnpackDir <- function(tarball, unpackDir, subDir="", pattern=NULL) {
+    ## Delete files from a previous extraction
+    pkg <- pkgName(tarball)
+    pkgDir <- file.path(unpackDir, pkg, subDir)
+    if (!file.exists(pkgDir))
+        return(FALSE)
+    oldFiles <- list.files(pkgDir, pattern=pattern, full.names=TRUE)
+    if (length(oldFiles) > 0L)
+        try(file.remove(oldFiles), silent=TRUE)
+}
 
 extractManuals <- function(reposRoot, srcContrib, destDir) {
     ## Extract Rd man pages from source package tarballs and
@@ -43,30 +60,18 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
     if (missing(destDir))
         destDir <- file.path(reposRoot, "manuals")
 
-    cleanUnpackDir <- function(tarball, unpackDir, rmRegex=".*\\.(pdf|Rd|rd)$") {
-        ## Delete manuals from a previous extraction
-        pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
-        pkgDir <- file.path(unpackDir, pkg, "man")
-        if (!file.exists(pkgDir))
-            return(FALSE)
-        oldFiles <- list.files(pkgDir, pattern=rmRegex, full.names=TRUE)
-        if (length(oldFiles) > 0)
-            try(file.remove(oldFiles), silent=TRUE)
-    }
-
     buildManualsFromTarball <- function(tarball, unpackDir=".") {
         ## helper function to unpack pdf & Rd files from the vig
         if (grepl("data/annotation$", reposRoot))
         {
-            manPat <- "--wildcards '*/man/*.[Rr]d'"
-            tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, manPat)
-            cleanUnpackDir(tarball, unpackDir)
+            cleanUnpackDir(tarball, unpackDir, "man", ".*\\.(pdf|Rd|rd)$")
             cat("Extracting man pages from", tarball, "\n")
-            ret <- system(tarCmd)
+            ret <- unpack(tarball, unpackDir, "'*/man/*.[Rr]d'")
+            
             if (ret != 0)
                 warning("tar had non-zero exit status for man pages extract of: ", tarball)
             else {
-                pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
+                pkg <- pkgName(tarball)
                 pkgDir <- file.path(unpackDir, pkg, "man")
                 RCmd <- file.path(Sys.getenv("R_HOME"), "bin", "R")
                 Rd2pdfCmd <-
@@ -74,7 +79,7 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
                         pkg, ".pdf --title=", pkg, " ", pkgDir, "/*.[Rr]d", sep = "")
                 cat("Building pdf reference manual for", pkg, "\n")
                 ret <- system(Rd2pdfCmd)
-                cleanUnpackDir(tarball, unpackDir, rmRegex=".*\\.(Rd|rd)$")
+                cleanUnpackDir(tarball, unpackDir, "man", ".*\\.(Rd|rd)$")
                 if (ret != 0)
                     warning("R had non-zero exit status for building ref man for: ", pkg)
             }
@@ -108,24 +113,12 @@ getRefmanLinks <- function(pkgList, reposRootPath, refman.dir) {
 
 extractTopLevelFiles <- function(reposRoot, srcContrib, destDir, fileName) {
 
-    cleanUnpackDir <- function(tarball, unpackDir) {
-        ## Delete files from a previous extraction
-        pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
-        pkgDir <- file.path(unpackDir, pkg)
-        if (!file.exists(pkgDir))
-          return(FALSE)
-        oldFiles <- list.files(pkgDir, pattern=fileName, full.names=TRUE)
-        if (length(oldFiles) > 0)
-          try(file.remove(oldFiles), silent=TRUE)
-    }
-
     extractFileFromTarball <- function(tarball, unpackDir=".") {
-        pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
-        pat <- file.path(pkg, fileName)
-        tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, pat)
-        cleanUnpackDir(tarball, unpackDir)
+        pkg <- pkgName(tarball)
+        cleanUnpackDir(tarball, unpackDir, pattern=fileName)
         cat(paste("Attempting to extract", fileName, "from", tarball, "\n"))
-        system(tarCmd, ignore.stdout=TRUE, ignore.stderr=TRUE)
+        unpack(tarball, unpackDir, file.path(pkg, fileName),
+               ignore.stdout=TRUE, ignore.stderr=TRUE)
     }
 
     tarballs <- list.files(file.path(reposRoot, srcContrib),
@@ -152,28 +145,28 @@ extractCitations <- function(reposRoot, srcContrib, destDir) {
         dir.create(t)
     if (!file.exists(destDir))
         dir.create(destDir) # recursive?
-    lapply(tarballs, function(x){
-        pkgName <- strsplit(basename(x), "_")[[1]][1]
-        if (file.exists(file.path(t, pkgName)))
-            unlink(file.path(t, pkgName), recursive=TRUE)
-        suppressWarnings(try(untar(x, file.path(pkgName,
+    lapply(tarballs, function(tarball) {
+        pkg <- pkgName(tarball)
+        if (file.exists(file.path(t, pkg)))
+            unlink(file.path(t, pkg), recursive=TRUE)
+        suppressWarnings(try(untar(tarball, file.path(pkg,
             c("DESCRIPTION", "inst/CITATION")),
             exdir=t, compressed="gzip"), silent=TRUE))
-        if (file.exists(file.path(t, pkgName, "inst", "CITATION")))
+        if (file.exists(file.path(t, pkg, "inst", "CITATION")))
         {
-            citation <- try(readCitationFile(file.path(t, pkgName,
+            citation <- try(readCitationFile(file.path(t, pkg,
                 "inst", "CITATION")))
             if ("try-error" %in% class(citation))
                 return()
         } else {
-            citation <- suppressWarnings(citation(pkgName, t))
+            citation <- suppressWarnings(citation(pkg, t))
         }
         output <- capture.output(print(citation, style="html"))
         # filter out \Sexprs:
         output <- output[grep("^\\\\Sexpr", output, invert=TRUE)]
-        if (!file.exists(file.path(destDir, pkgName)))
-            dir.create(file.path(destDir, pkgName))
-        cat(output, file=file.path(destDir, pkgName, "citation.html"),
+        if (!file.exists(file.path(destDir, pkg)))
+            dir.create(file.path(destDir, pkg))
+        cat(output, file=file.path(destDir, pkg, "citation.html"),
             sep="\n")
     })
 }
@@ -200,39 +193,18 @@ extractNEWS <- function(reposRoot, srcContrib, destDir) {
     if (missing(destDir))
       destDir <- file.path(reposRoot, "news")
 
-
-    cleanUnpackDir <- function(tarball, unpackDir) {
-        ## Delete NEWS from a previous extraction
-        pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
-        pkgDir <- file.path(unpackDir, pkg)
-        if (!file.exists(pkgDir))
-          return(FALSE)
-        oldFiles <- list.files(pkgDir, pattern="NEWS", full.names=TRUE)
-        if (length(oldFiles) > 0)
-          try(file.remove(oldFiles), silent=TRUE)
-    }
-
     extractNewsFromTarball <- function(tarball, unpackDir=".") {
-        pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
-        newsPat <- "*NEWS*"
-        wildcards <- ifelse(Sys.info()["sysname"] == "Darwin", "",
-          "--wildcards")
-        tarCmd <- paste("tar", wildcards, "-C", unpackDir, "-xzf",
-          tarball, newsPat)
-        cleanUnpackDir(tarball, unpackDir)
+        pkg <- pkgName(tarball)
+        cleanUnpackDir(tarball, unpackDir, pattern="NEWS")
         cat("Attempting to extract NEWS from", tarball, "\n")
-        system(tarCmd, ignore.stdout=TRUE, ignore.stderr=TRUE)
+        unpack(tarball, unpackDir, "'*NEWS*'",
+               ignore.stdout=TRUE, ignore.stderr=TRUE)
     }
 
-    convertNEWSToText <- function(tarball, srcDir, destDir)
-    {
-        segs <- strsplit(tarball, "_", fixed=TRUE)
-        pkgName <- segs[[1]][1]
-        segs <- strsplit(pkgName, .Platform$file.sep, fixed=TRUE)
-        pkgName <- segs[[1]][length(segs[[1]])]
-        file.path()
-        srcDir <- file.path(srcDir, pkgName)
-        destDir <- file.path(destDir, pkgName)
+    convertNEWSToText <- function(tarball, srcDir, destDir) {
+        pkg <- pkgName(tarball)
+        srcDir <- file.path(srcDir, pkg)
+        destDir <- file.path(destDir, pkg)
         if (!file.exists(destDir))
             dir.create(destDir, recursive=TRUE)
         destFile <- file.path(destDir, "NEWS")
@@ -268,25 +240,12 @@ extractVignettes <- function(reposRoot, srcContrib, destDir) {
     if (missing(destDir))
       destDir <- file.path(reposRoot, "vignettes")
 
-    cleanUnpackDir <- function(tarball, unpackDir) {
-        ## Delete vignettes from a previous extraction
-        pkg <- strsplit(basename(tarball), "_", fixed=TRUE)[[1]][1]
-        pkgDir <- file.path(unpackDir, pkg, "inst", "doc")
-        rmRegex <- ".*\\.(pdf|Rnw|rnw|Rmd|rmd)$"
-        if (!file.exists(pkgDir))
-          return(FALSE)
-        oldFiles <- list.files(pkgDir, pattern=rmRegex, full.names=TRUE)
-        if (length(oldFiles) > 0)
-          try(file.remove(oldFiles), silent=TRUE)
-    }
-
     extractVignettesFromTarball <- function(tarball, unpackDir=".") {
         ## helper function to unpack pdf & Rnw files from the vig
-        vigPat <- "--wildcards '*/doc/*.[pRr][dmn][dfw]'"
-        tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, vigPat)
-        cleanUnpackDir(tarball, unpackDir)
+        cleanUnpackDir(tarball, unpackDir, subDir=file.path("inst", "doc"),
+                       pattern=".*\\.(pdf|Rnw|rnw|Rmd|rmd)$")
         cat("Extracting vignettes from", tarball, "\n")
-        ret <- system(tarCmd)
+        ret <- unpack(tarball, unpackDir, "'*/doc/*.[pRr][dmn][dfw]'")
         if (ret != 0)
           warning("tar had non-zero exit status for vig extract of: ", tarball)
     }
@@ -333,10 +292,8 @@ extractHTMLDocuments <- function(reposRoot, srcContrib, destDir) {
             cat("Found HTML document in", tarball, "\n")
             ## This extracts everything, including
             ## Rnw and Rmd files...too liberal? Then use vignettes/ dir
-            pat <-  "--wildcards '*/inst/doc/*'"
-            tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, pat)
             cat("Extracting HTML documents from", tarball, "\n")
-            ret <- system(tarCmd)
+            ret <- unpack(tarball, unpackDir, "'*/inst/doc/*'")
             if (ret != 0)
               warning("tar had non-zero exit status for HTML extract of: ", tarball)
         }
@@ -741,9 +698,7 @@ write_SYMBOLS <- function(dir, verbose=FALSE, source.dirs=FALSE) {
 
     extractNAMESPACEFromTarball <- function(tarball, unpackDir=tdir) {
         ## helper function to unpack NAMESPACE file from the tarball
-        pat <- "--wildcards '*/NAMESPACE'"
-        tarCmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, pat)
-        ret <- system(tarCmd)
+        ret <- unpack(tarball, unpackDir, "'*/NAMESPACE'")
         if (ret != 0)
           warning("tar had non-zero exit status for NAMESPACE extract of: ",
                   tarball)
