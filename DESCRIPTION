@@ -1,5 +1,5 @@
 Package: biocViews
-Version: 1.41.5
+Version: 1.41.6
 Title: Categorized views of R package repositories
 Author: VJ Carey <stvjc@channing.harvard.edu>,
         BJ Harshfield <rebjh@channing.harvard.edu>,
@@ -8,8 +8,8 @@ Author: VJ Carey <stvjc@channing.harvard.edu>,
 Maintainer: Bioconductor Package Maintainer <maintainer@bioconductor.org>
 Depends: R (>= 2.4.0)
 Imports: Biobase, graph (>= 1.9.26), methods, RBGL (>= 1.13.5), tools,
-        utils, XML, RCurl, knitr, RUnit
-Suggests: BiocGenerics
+        utils, XML, RCurl, RUnit
+Suggests: BiocGenerics, knitr
 Description: structures for vocabularies and narratives of views
 License: Artistic-2.0
 URL: http://www.bioconductor.org/packages/release/BiocViews.html

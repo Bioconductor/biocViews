@@ -610,12 +610,15 @@ StangleHTMLVignettes <- function(reposRoot)
     apply(info, 1, function(x){
         if (!is.na(x["htmlDocs"]))
         {
+            if (!requireNamespace("knitr")) {
+                stop("'knitr' package required to tangle HTML vignettes")
+            }
             docs <- strsplit(x["htmlDocs"], ", ")[[1]]
             for (doc in docs) {
                 vig <- sub("\\.html", ".Rmd", doc, ignore.case=TRUE)
                 out <- sub("\\.html", ".R", doc, ignore.case=TRUE)
                 if (file.exists(vig))
-                    tryCatch(purl(vig, out), error=function(e){
+                    tryCatch(knitr::purl(vig, out), error=function(e){
                         print(e)
                         })
             }

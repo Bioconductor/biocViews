@@ -11,7 +11,10 @@ myStangle <- function(file)
           rfile <- sub("\\.Rnw$", ".R", bfile, ignore.case=TRUE)
           if (file.exists(rfile))
             unlink(rfile)
-          tryCatch(purl(bfile),error=function(e){
+          if (!requireNamespace("knitr")) {
+              stop("'knitr' package required to tangle knitr vignettes")
+          }
+          tryCatch(knitr::purl(bfile),error=function(e){
             print(sprintf("Error purling %s!", bfile))
           })
         }
