@@ -289,8 +289,8 @@ recommendBiocViews <-
     devel_version <- strsplit(dv, '"')[[1]][2]
     repos <- switch(tolower(branch), 
            software="/bioc/", 
-           experimentdata="/data/annotation/",
-           annotationdata="/data/experiment/")
+           experimentdata="/data/experiment/",
+           annotationdata="/data/annotation/")
     close(con)
     paste0("http://bioconductor.org/packages/", devel_version, repos,
                    "VIEWS")
