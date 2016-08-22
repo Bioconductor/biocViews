@@ -48,6 +48,7 @@ Sequencing -> TargetedResequencing;
 Sequencing -> DenovoTranscriptome;
 Sequencing -> MicrobialStrain;
 Sequencing -> HiC;
+Sequencing -> PooledScreens;
 Technology -> Microarray;
 Microarray -> MultiChannel;
 Microarray -> OneChannel;
@@ -66,6 +67,7 @@ MassSpectrometry -> ImagingMassSpectrometry;
 Technology -> qPCR;
 Technology -> MicrotitrePlateAssay;
 Technology -> SAGE;
+Technology -> CRISPR;
 
 /* Software -> ResearchFields */
 Software -> ResearchField;
