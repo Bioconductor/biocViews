@@ -136,41 +136,66 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
     extractTopLevelFiles(reposRoot, srcContrib, destDir, "INSTALL")
 }
 
-extractCitations <- function(reposRoot, srcContrib, destDir) {
-    tarballDir <- file.path(reposRoot, srcContrib)
-    tarballs <- list.files(file.path(reposRoot, srcContrib),
-        pattern="\\.tar\\.gz$", full.names=TRUE)
-    t <- file.path(tempdir(), "citations")
-    if (!file.exists(t))
-        dir.create(t)
-    if (!file.exists(destDir))
-        dir.create(destDir) # recursive?
-    lapply(tarballs, function(tarball) {
+.extract1Citation <- function(tarball, destdir) {
+    tmpdir <- tempdir()
+    withCallingHandlers(tryCatch({
+        result <- untar(tarball, list=TRUE)
+        status <- attr(result, "status")
+        if (!is.null(status) && status != 0)
+            stop("untar(list=TRUE) returned status ", status)
+        
         pkg <- pkgName(tarball)
-        if (file.exists(file.path(t, pkg)))
-            unlink(file.path(t, pkg), recursive=TRUE)
-        suppressWarnings(try(untar(tarball, file.path(pkg,
-            c("DESCRIPTION", "inst/CITATION")),
-            exdir=t, compressed="gzip"), silent=TRUE))
-        if (file.exists(file.path(t, pkg, "inst", "CITATION")))
-        {
-            citation <- try(readCitationFile(file.path(t, pkg,
-                "inst", "CITATION")))
-            if ("try-error" %in% class(citation))
-                return()
+        status <- unlink(file.path(tmpdir, pkg), recursive=TRUE)
+        if (status != 0L)
+            stop("unlink() returned status ", status)
+        path <- intersect(
+            file.path(pkg, c("DESCRIPTION", "inst/CITATION")),
+            result)
+
+        status <- untar(tarball, path, exdir=tmpdir, compressed="gzip")
+        if (status != 0L)
+            stop("untar() returned status ", status)
+        description <- packageDescription(pkg, tmpdir)
+
+        if (file.path(pkg, "inst/CITATION") %in% path) {
+            fpath <- file.path(tmpdir, path[2])
+            citation <- readCitationFile(fpath , description)
         } else {
-            citation <- suppressWarnings(citation(pkg, t))
+            citation <- suppressWarnings(citation(pkg, tmpdir))
         }
+        
         output <- capture.output(print(citation, style="html"))
-        # filter out \Sexprs:
+        ## filter out \Sexprs:
         output <- output[grep("^\\\\Sexpr", output, invert=TRUE)]
-        if (!file.exists(file.path(destDir, pkg)))
-            dir.create(file.path(destDir, pkg))
-        cat(output, file=file.path(destDir, pkg, "citation.html"),
+        if (!file.exists(file.path(destdir, pkg)))
+            dir.create(file.path(destdir, pkg))
+        cat(output, file=file.path(destdir, pkg, "citation.html"),
             sep="\n")
+        
+        TRUE
+    }, error=function(e) {
+        message("ERROR: extractCitations",
+                "\n  tarball: ", tarball,
+                "\n  error: ", conditionMessage(e))
+        FALSE
+    }), warning=function(w) {
+        message("WARNING: extractCitations",
+                "\n  tarball: ", tarball,
+                "\n  warning: ", conditionMessage(w))
+        invokeRestart("muffleWarning")
     })
 }
 
+extractCitations <- function(reposRoot, srcContrib, destDir) {
+    tarballs <- list.files(
+        file.path(reposRoot, srcContrib),
+        pattern="\\.tar\\.gz$", full.names=TRUE)
+
+    if (!file.exists(destDir))
+        dir.create(destDir, recursive=TRUE)
+
+    invisible(vapply(tarballs, .extract1Citation , logical(1), destDir))
+}
 
 extractReadmes <- function(reposRoot, srcContrib, destDir) {
     ## Extract README files from source package tarballs
