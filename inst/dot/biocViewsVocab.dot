@@ -68,6 +68,7 @@ Technology -> qPCR;
 Technology -> MicrotitrePlateAssay;
 Technology -> SAGE;
 Technology -> CRISPR;
+Technology -> SingleCell;
 
 /* Software -> ResearchFields */
 Software -> ResearchField;
