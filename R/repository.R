@@ -62,29 +62,29 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
 
     buildManualsFromTarball <- function(tarball, unpackDir=".") {
         ## helper function to unpack pdf & Rd files from the vig
-        if (grepl("data/annotation$", reposRoot))
-        {
-            cleanUnpackDir(tarball, unpackDir, "man", ".*\\.(pdf|Rd|rd)$")
-            cat("Extracting man pages from", tarball, "\n")
-            ret <- unpack(tarball, unpackDir, "'*/man/*.[Rr]d'")
-            
-            if (ret != 0)
-                warning("tar had non-zero exit status for man pages extract of: ", tarball)
-            else {
-                pkg <- pkgName(tarball)
-                pkgDir <- file.path(unpackDir, pkg, "man")
-                RCmd <- file.path(Sys.getenv("R_HOME"), "bin", "R")
-                Rd2pdfCmd <-
-                  paste(RCmd, " CMD Rd2pdf --no-preview --output=", pkgDir, "/",
-                        pkg, ".pdf --title=", pkg, " ", pkgDir, "/*.[Rr]d", sep = "")
-                cat("Building pdf reference manual for", pkg, "\n")
-                ret <- system(Rd2pdfCmd)
-                cleanUnpackDir(tarball, unpackDir, "man", ".*\\.(Rd|rd)$")
-                if (ret != 0)
-                    warning("R had non-zero exit status for building ref man for: ", pkg)
+        status <- TRUE
+        cleanUnpackDir(tarball, unpackDir, "man", ".*\\.(pdf|Rd|rd)$")
+        ret <- unpack(tarball, unpackDir, "'*/man/*.[Rr]d'")
+        if (ret != 0) {
+            warning("non-zero exit status ", ret, " extracting man pages: ",
+                    tarball)
+            status <- FALSE
+        } else {
+            pkg <- pkgName(tarball)
+            pkgDir <- file.path(unpackDir, pkg, "man")
+            RCmd <- file.path(Sys.getenv("R_HOME"), "bin", "R")
+            Rd2pdfCmd <- paste0(
+                RCmd, " CMD Rd2pdf --no-preview ",
+                "--output=", pkgDir, "/", pkg, ".pdf ",
+                "--title=", pkg, " ", pkgDir, "/*.[Rr]d")
+            ret <- system(Rd2pdfCmd)
+            cleanUnpackDir(tarball, unpackDir, "man", ".*\\.(Rd|rd)$")
+            if (ret != 0) {
+                warning("non-zero exit status ", ret, " building ref man: ", pkg)
+                status <- FALSE
             }
-
         }
+        status
     }
 
     tarballs <- list.files(file.path(reposRoot, srcContrib),
@@ -93,7 +93,20 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
         dir.create(destDir, recursive=TRUE)
     if (!file.info(destDir)$isdir)
         stop("destDir must specify a directory")
-    lapply(tarballs, buildManualsFromTarball, unpackDir=destDir)
+    if (endsWith(reposRoot, "data/annotation")) {
+        n <- vapply(tarballs, function(tarball, ...) {
+            tryCatch({
+                buildManualsFromTarball(tarball, ...)
+            }, error = function(e) {
+                warning("error extracting manual for: ", tarball,
+                        "\n  ", conditionMessage(e))
+                FALSE
+            })
+        }, logical(1), unpackDir=destDir)
+    } else {
+        n <- 0
+    }
+    paste(sum(n), "/", length(tarballs), "tarball manuals processsed")
 }
 
 
