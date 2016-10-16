@@ -10,8 +10,8 @@
 ## prevRepos, and membership in currRepos as references. Package
 ## source tree rooted at srcDir, possibiblly as tarred files
 getPackageNEWS <-
-    function(prevRepos="http://www.bioconductor.org/packages/2.10/bioc",
-             currRepos="http://www.bioconductor.org/packages/2.11/bioc",
+    function(prevRepos="https://bioconductor.org/packages/release/bioc",
+             currRepos="https://bioconductor.org/packages/devel/bioc",
              srcDir)
 {
     prev <- available.packages(contrib.url(prevRepos, "source"))
@@ -115,7 +115,7 @@ printNEWS <- function(dbs, destfile, overwrite=FALSE, width=68,
 {
     output <- match.arg(output)
     dbs <- lapply(dbs, function(db) {
-        db[["Text"]] <- lapply(db[["Text"]], function(elt) {
+        db[["Text"]] <- sapply(db[["Text"]], function(elt) {
             paste(strwrap(elt, width=options()[["width"]] - 10),
                   collapse="\n")
         })
@@ -123,9 +123,10 @@ printNEWS <- function(dbs, destfile, overwrite=FALSE, width=68,
     })
     txt <- capture.output({
         for (i in seq_along(dbs)) {
-            cat(sprintf("\n%s\n%s\n\n", names(dbs)[[i]],
-                        paste(rep("-", nchar(names(dbs)[[i]])), collapse="")))
             tryCatch({
+                cat(sprintf(
+                    "\n%s\n%s\n\n", names(dbs)[[i]],
+                    paste(rep("-", nchar(names(dbs)[[i]])), collapse="")))
                 print(dbs[[i]])
             }, error=function(err) {
                 warning("print() failed for ", sQuote(names(dbs)[[i]]),
