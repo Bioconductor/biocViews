@@ -125,7 +125,8 @@ printNEWS <- function(dbs, destfile, overwrite=FALSE, width=68,
         for (i in seq_along(dbs)) {
             tryCatch({
                 cat(sprintf(
-                    "\n%s\n%s\n\n", names(dbs)[[i]],
+                    "\n[%s](https://bioconductor.org/packages/%s)\n%s\n\n",
+                    names(dbs)[[i]], names(dbs)[[i]],
                     paste(rep("-", nchar(names(dbs)[[i]])), collapse="")))
                 print(dbs[[i]])
             }, error=function(err) {
@@ -177,19 +178,21 @@ printNewPackageTitles <- function(titles, destfile, overwrite=FALSE)
 
 getPackageDescriptions <- function(pkgs, outfile, output=c("md", "text"))
 {
+    output <- match.arg(output)
     if (output == "text")
         exdent = 4
     else
-        exdent = 0
+        exdent = 2
     plower <- tolower(pkgs)
     names(plower) <- pkgs
     pkgs <- names(sort(plower))
     desc = lapply(pkgs, function(pkg) {
         d = read.dcf(file.path(pkg, "DESCRIPTION"))[,"Description"]
-        c(strwrap(sprintf("%s: %s", pkg, d), width=70, exdent=exdent), "\n")
+        paste(strwrap(sprintf("- [%s](https://bioconductor.org/packages/%s) %s",
+                              pkg, pkg, d), width=70, exdent=exdent),
+              collapse="\n")
     })
 
-
-    cat(noquote(unlist(desc)), sep="\n", file=outfile)
+    cat(noquote(unlist(desc)), sep="\n\n", file=outfile)
     invisible(NULL)
 }
