@@ -31,7 +31,7 @@ getPackageNEWS <-
         if (0L == length(news))
             return(NULL)
         tryCatch({
-            db <- 
+            db <-
                 if (grepl("Rd$", news))
                     tools:::.build_news_db_from_package_NEWS_Rd(news)
                 else
@@ -52,9 +52,9 @@ getPackageNEWS <-
 
 ## based on tools:::.build_news_db()
 getNEWSFromFile <- function (dir, destfile, format = NULL, reader = NULL,
-    output=c("md", "text")) 
+    output=c("md", "text"))
 {
-    mdIfy <- function(txt) 
+    mdIfy <- function(txt)
     {
         lines <- strsplit(txt, "\n")
         segs <- lines[[1]]
@@ -62,10 +62,10 @@ getNEWSFromFile <- function (dir, destfile, format = NULL, reader = NULL,
         segs <- sub("^\t", "  ", segs)
         return(paste(segs, collapse="\n"))
     }
-    
+
     newsRdFile <- file.path(dir, "NEWS.Rd") ## should never be found
-    newsRdFile2 <- file.path(dir, "inst", "NEWS.Rd") 
-    
+    newsRdFile2 <- file.path(dir, "inst", "NEWS.Rd")
+
     if (!file_test("-f", newsRdFile) && !file_test("-f", newsRdFile2)) {
         nfile <- file.path(dir, "NEWS")
         nfile2 <- file.path(dir, "inst", "NEWS")
@@ -75,9 +75,9 @@ getNEWSFromFile <- function (dir, destfile, format = NULL, reader = NULL,
 
         nfile <- ifelse(file_test("-f", nfile), nfile, nfile2)
 
-        if (!is.null(format)) 
+        if (!is.null(format))
             .NotYetUsed("format", FALSE)
-        if (!is.null(reader)) 
+        if (!is.null(reader))
             .NotYetUsed("reader", FALSE)
 
         file <- file(destfile, "w+")
@@ -90,7 +90,7 @@ getNEWSFromFile <- function (dir, destfile, format = NULL, reader = NULL,
     }
 
     newsRdFile <- ifelse(file_test("-f", newsRdFile), newsRdFile, newsRdFile2)
-    
+
     file <- file(destfile, "w+")
     on.exit(close(file))
     db <- tools:::.build_news_db_from_package_NEWS_Rd(newsRdFile)
