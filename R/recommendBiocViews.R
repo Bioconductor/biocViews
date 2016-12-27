@@ -365,16 +365,11 @@ recommendPackages <-
     ans[!(ans %in% "1")]
 }
 
-
 .getChildren <- function(biocView) {
-    data(biocViewsVocab)
+    data(biocViewsVocab, package="biocViews")
     ans <- unlist(edges(biocViewsVocab, biocView))
     if(length(ans)==0)
         return("1")
     else
         return(c(ans, .getChildren(ans)))
 }
-
-
-
-
