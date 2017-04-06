@@ -12,8 +12,12 @@
 }
 \usage{
 write_VIEWS(reposRootPath, fields = NULL,
-            type = c("source", "win.binary", "win64.binary",
-                     "mac.binary", "mac.binary.leopard","mac.binary.mavericks"),
+            type = c("source",
+                     "win.binary", "win64.binary",
+                     "mac.binary",
+                     "mac.binary.leopard",
+                     "mac.binary.mavericks",
+                     "mac.binary.el-capitan"),
             verbose = FALSE, vignette.dir = "vignettes")
 }
 \arguments{
