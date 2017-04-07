@@ -462,6 +462,23 @@ write_REPOSITORY <- function(reposRootPath, contribPaths) {
     write.dcf(contrib, fn)
 }
 
+read_REPOSITORY <- function(reposRootPath)
+{
+    reposInfo <- read.dcf(file.path(reposRootPath, "REPOSITORY"))
+    reposInfo[, "provides"] <- gsub("[ \t\r\n\v\f]", "",
+                                    reposInfo[, "provides"])
+    provided <- strsplit(reposInfo[, "provides"], ",")[[1L]]
+    m <- match(gsub("-", ".", provided), colnames(reposInfo))
+    if (anyNA(m))
+        stop("malformed REPOSITORY file: 'provides' field is inconsistent ",
+             "with other fields)")
+    if (anyDuplicated(m))
+        stop("malformed REPOSITORY file: several values in 'provides' field ",
+             "are mapped to the same entry in the file")
+    colnames(reposInfo)[m] <- provided
+    reposInfo
+}
+
 .write_repository_db <- function(db, dir, fname) {
     if ("Bundle" %in% colnames(db)) {
         noPack <- is.na(db[, "Package"])
@@ -505,9 +522,8 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     type <- match.arg(type)
 
     ## Read REPOSITORY file for contrib path info
-    reposInfo <- read.dcf(file.path(reposRootPath, "REPOSITORY"))
-    provided <-
-      strsplit(gsub("[ \t\r\n\v\f]", "", reposInfo[, "provides"]), ",")[[1]]
+    reposInfo <- read_REPOSITORY(reposRootPath)
+    provided <- strsplit(reposInfo[, "provides"], ",")[[1L]]
 
     ## Use code from tools to build a matrix of package info
     ## by parsing the .tar.gz files
