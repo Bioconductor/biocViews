@@ -68,10 +68,8 @@ this directory as reposRoot.  Place your packages as follows:
   \item[src/contrib] Contains all source packages (*.tar.gz).
   \item[bin/windows/contrib/x.y] Contains all win.binary packages
     (*.zip).  Where x.y is the major.minor version number of R.
-  \item[bin/windows64/contrib/x.y] Contains all win64.binary packages
-    (*.zip).  Where x.y is the major.minor version number of R.
-  \item[bin/macosx/leopard/contrib/x.y] Contains the
-    mac.binary.leopard (Leopard) (*.tgz) packages.
+  \item[bin/macosx/el-capitan/contrib/x.y] Contains the
+    mac.binary.el-capitan (El Capitan) (*.tgz) packages.
 \end{description}
 
 You will need the following parameters:
@@ -79,9 +77,8 @@ You will need the following parameters:
 reposRoot <- "path/to/reposRoot"
 ## The names are essential
 contribPaths <- c(source="src/contrib",
-                  win.binary="bin/windows/contrib/2.6",
-                  win64.binary="bin/windows64/contrib/2.6",
-                  mac.binary.leopard="bin/macosx/leopard/contrib/2.6")
+                  win.binary="bin/windows/contrib/3.4",
+                  `mac.binary.el-capitan`="bin/macosx/el-capitan/contrib/3.4")
 @ 
 
 \section{Extracting vignettes}

@@ -13,9 +13,8 @@
 \usage{
 write_VIEWS(reposRootPath, fields = NULL,
             type = c("source",
-                     "win.binary", "win64.binary",
+                     "win.binary",
                      "mac.binary",
-                     "mac.binary.leopard",
                      "mac.binary.mavericks",
                      "mac.binary.el-capitan"),
             verbose = FALSE, vignette.dir = "vignettes")
@@ -26,8 +25,9 @@ write_VIEWS(reposRootPath, fields = NULL,
   \item{fields}{Any additional fields to include.  You shouldn't need
     this, but if you have added fields to the DESCRIPTION files of the
     packages in the repository, you may want it.}
-  \item{type}{One of \code{source}, \code{win.binary}, \code{win64.binary},
-    \code{mac.binary}, or \code{mac.binary.leopard} indicating which set of
+  \item{type}{One of \code{source}, \code{win.binary},
+    \code{mac.binary}, \code{mac.binary.mavericks},
+    or \code{mac.binary.el-capitan} indicating which set of
     packages should be used to build up the "shared" information.  Since a
     repository can contain different versions of the same package (source
     vs binary) the shared information may not be reliable.}

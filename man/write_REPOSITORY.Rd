@@ -5,14 +5,14 @@
   This function writes a \code{REPOSITORY} file at the top-level of a
   CRAN-style repository.  This file is DCF formatted and describes the
   location of packages available in the repository.  Here is an example
-  for a repository containing only source and Windows binary packages:
+  for a repository containing source packages, and Windows and Mac binary
+  packages:
 
   \preformatted{
     source: src/contrib
-    win.binary: bin/windows/contrib/2.6
-    win64.binary: bin/windows64/contrib/2.6
-    mac.binary.leopard: bin/mac/leopard/contrib/2.6
-    provides: source, win.binary, win64.binary, mac.binary.leopard
+    win.binary: bin/windows/contrib/3.4
+    mac.binary.el-capitan: bin/mac/el-capitan/contrib/3.4
+    provides: source, win.binary, mac.binary.el-capitan
   }
 }
 \usage{
@@ -22,8 +22,8 @@ write_REPOSITORY(reposRootPath, contribPaths)
   \item{reposRootPath}{character vector containing the path to the
   CRAN-style repository root directory.}
   \item{contribPaths}{A named character vector.  Valid names are
-    \code{source}, \code{win.binary}, \code{win64.binary},
-    \code{mac.binary}, and \code{mac.binary.leopard}.
+    \code{source}, \code{win.binary}, \code{mac.binary},
+    \code{mac.binary.mavericks}, and \code{mac.binary.el-capitan}.
     Values indicate the paths to the package archives relative to
     the \code{reposRoot}.}
 }

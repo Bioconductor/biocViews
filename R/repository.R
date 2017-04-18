@@ -504,9 +504,8 @@ read_REPOSITORY <- function(reposRootPath)
 
 write_VIEWS <- function(reposRootPath, fields = NULL,
                         type = c("source",
-                                 "win.binary", "win64.binary",
+                                 "win.binary",
                                  "mac.binary",
-                                 "mac.binary.leopard",
                                  "mac.binary.mavericks",
                                  "mac.binary.el-capitan"),
                         verbose = FALSE, vignette.dir="vignettes") {
@@ -550,9 +549,8 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
         buildPkgPath <- function(pkgs, vers) {
             ext <- switch(ctype,
                           'source'=".tar.gz",
-                          'win.binary'=, 'win64.binary'=".zip",
+                          'win.binary'=".zip",
                           'mac.binary'=,
-                          'mac.binary.leopard'=,
                           'mac.binary.mavericks'=,
                           'mac.binary.el-capitan'=".tgz",
                           stop("unknown type"))

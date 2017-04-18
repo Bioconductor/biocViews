@@ -157,24 +157,20 @@ setMethod("htmlValue", signature(object="pdDownloadInfo"),
           function(object) {
               flds <- c(source="source.ver",
                         win.binary="win.binary.ver",
-                        win64.binary="win64.binary.ver",
-                        mac.binary.leopard="mac.binary.leopard.ver")
+                        mac.binary.mavericks="mac.binary.mavericks.ver",
+                        `mac.binary.el-capitan`="mac.binary.el-capitan.ver")
               
               fileTypes <- list(source="Package source",
                                 win.binary="Windows 32-bit binary",
-                                win64.binary="Windows 64-bit binary",
-                                mac.binary.leopard="MacOS X 10.5 (Leopard) binary")
+                                mac.binary.mavericks="MacOS X 10.9 (Mavericks) binary",
+                                `mac.binary.el-capitan`="MacOS X 10.11 (El Capitan) binary")
               makeLinkHelper <- function(type) {
                 
                 
                   isAvailable = TRUE
                   archs <- slot(object, "Archs")
                   if (length(archs) > 0 && nchar(archs) > 0) {
-                    if (type == "win64.binary") {
-                      if (length(grep("x64", archs, value=TRUE)) == 0) {
-                        isAvailable = FALSE
-                      } 
-                    } else if (type == "win.binary") {
+                    if (type == "win.binary") {
                       if (length(grep("i386", archs, value=TRUE)) == 0) {
                         isAvailable = FALSE
                       } 
