@@ -7,7 +7,8 @@ validate_bioc_views <- function(pkg)
     checkTrue(!is.null(bvStr), paste("No biocViews defined for package", pkg))
     bvStr <- gsub(" ", "", bvStr)
     views <- strsplit(bvStr, ",")[[1]]
-    data("biocViewsVocab")
+    biocViewsVocab <- NULL
+    data("biocViewsVocab", envir=environment())
     nodes <- nodes(biocViewsVocab)
     for (view in views)
     {

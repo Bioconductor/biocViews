@@ -37,7 +37,7 @@ getPackageNEWS <-
                 else
                     tools:::.news_reader_default(news)
             if (!is.null(db))
-                utils::news(Version>ver, db=db)
+                utils::news(Version > ver, db=db)
             else NULL
         }, error=function(...) NULL)
     }

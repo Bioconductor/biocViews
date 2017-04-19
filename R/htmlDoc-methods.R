@@ -56,7 +56,7 @@ setMethod("htmlDoc", signature(object="RepositoryDetail"),
 setMethod("htmlDoc", signature(object="BiocView"),
           function(object, ...) {
               title <- paste("Bioconductor Task View", object@name)
-              sylesheet="repository-detail.css"
+              stylesheet="repository-detail.css"
               callNextMethod(object=object, title=title,
                              stylesheet=stylesheet)
           })

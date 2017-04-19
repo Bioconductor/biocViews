@@ -53,8 +53,8 @@ setup1 <- function()
     file.copy(system.file("DESCRIPTION", package="biocViews"),
         file.path(t, "maketarballs", "biocViews"))
     file.copy(system.file("unitTests",
-        "CITATION", package="biocViews"),
-        file.path(t, "maketarballs", "biocViews", "inst"))
+        "CITATION-tmpl", package="biocViews"),
+        file.path(t, "maketarballs", "biocViews", "inst", "CITATION"))
     vers <- as.character(packageVersion("biocViews"))
     oldwd <- getwd()
     on.exit(setwd(oldwd))

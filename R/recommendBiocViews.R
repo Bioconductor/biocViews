@@ -366,7 +366,8 @@ recommendPackages <-
 }
 
 .getChildren <- function(biocView) {
-    data(biocViewsVocab, package="biocViews")
+    biocViewsVocab <- NULL
+    data(biocViewsVocab, package="biocViews", envir=environment())
     ans <- unlist(edges(biocViewsVocab, biocView))
     if(length(ans)==0)
         return("1")

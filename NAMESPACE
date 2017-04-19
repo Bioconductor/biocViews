@@ -8,7 +8,11 @@ importFrom(RBGL, sp.between)
 
 importFrom(tools, write_PACKAGES)
 
-importFrom(utils, download.file, Stangle)
+importFrom(stats, complete.cases, setNames)
+
+importFrom(utils, download.file, Stangle, available.packages,
+           capture.output, contrib.url, data, file_test, head,
+           packageDescription, readCitationFile, untar)
 
 importMethodsFrom(XML, saveXML)
 
