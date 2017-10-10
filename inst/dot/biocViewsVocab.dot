@@ -31,7 +31,9 @@ AssayDomain -> Transcription;
 /* Software -> Technology */
 Software -> Technology;
 Technology -> Sequencing;
+Sequencing -> ATACSeq;
 Sequencing -> DNASeq;
+Sequencing -> DNaseSeq;
 Sequencing -> RiboSeq;
 Sequencing -> RNASeq;
 Sequencing -> ChIPSeq;
