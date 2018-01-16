@@ -2,7 +2,7 @@
 
 /* How To Process this file:
    1. Use dot2gxl from graphviz to transform into GXL format.
-          dot2gxl biocViewsVocab.dot > biocViewsVocab.gxl
+	  dot2gxl biocViewsVocab.dot > biocViewsVocab.gxl
    2. use graph::fromGXL to obtain a graphNEL object
 
 */
@@ -491,6 +491,7 @@ SequencingData -> miRNAData;
 SequencingData -> SangerSeqData;
 SequencingData -> SmallRNAData;
 SequencingData -> MicrobiomeData;
+SequencingData -> SingleCellData;
 TechnologyData -> MicroarrayData;
 MicroarrayData -> MultiChannelData;
 MicroarrayData -> OneChannelData;
