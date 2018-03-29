@@ -374,3 +374,23 @@ recommendPackages <-
     else
         return(c(ans, .getChildren(ans)))
 }
+
+# Best guess if cannot be determined defaults to software
+guessPackageType <- function(biocViews){
+
+    if(length(biocViews)==0){
+        return("Software")
+    } else{
+
+        toMatch <- paste(biocViews, collapse="|")
+        ## check if the input biocViews are  defined by us.
+        existingbiocViews <- getCurrentbiocViews()
+        match <- sapply(existingbiocViews, function(x){
+            length(unique(grep(toMatch, x, ignore.case=TRUE)))
+        })
+        if(all(match==0L)) return("Software")
+
+        branch <- names(match)[which(match == max(match))]
+        return(as.character(branch[1]))
+    }
+}
