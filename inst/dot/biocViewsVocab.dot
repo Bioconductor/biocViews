@@ -519,4 +519,10 @@ RepositoryData -> NCI;
 RepositoryData -> PathwayInteractionDatabase;
 RepositoryData -> Project1000genomes;
 RepositoryData -> ENCODE;
+
+/****************************************************************************
+ *                            ExperimentData                                *
+ ****************************************************************************/
+BiocViews -> Workflow;
+
 }
