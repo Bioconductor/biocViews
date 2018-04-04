@@ -382,11 +382,11 @@ guessPackageType <- function(biocViews){
         return("Software")
     } else{
 
-        toMatch <- paste(biocViews, collapse="|")
+        toMatch <- paste0("^",paste(biocViews, collapse="$|^"), "$")
         ## check if the input biocViews are  defined by us.
         existingbiocViews <- getCurrentbiocViews()
         match <- sapply(existingbiocViews, function(x){
-            length(unique(grep(toMatch, x, ignore.case=TRUE)))
+            length(unique(grep(toMatch, x)))
         })
         if(all(match==0L)) return("Software")
 
