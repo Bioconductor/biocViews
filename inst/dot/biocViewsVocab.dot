@@ -525,4 +525,13 @@ RepositoryData -> ENCODE;
  ****************************************************************************/
 BiocViews -> Workflow;
 
+Workflow -> BasicWorkflow;
+Workflow -> AnnotationWorkflow;
+Workflow -> GeneExpressionWorkflow;
+Workflow -> SingleCellWorkflow;
+Workflow -> GenomicVariantsWorkflow;
+Workflow -> EpigeneticsWorkflow;
+Workflow -> ProteomicsWorkflow;
+Workflow -> ResourceQueryingWorkflow;
+
 }
