@@ -26,16 +26,22 @@ getCurrentbiocViews <- function()
     
     Software <- dot[seq(grep("BiocViews -> Software", dot),
                         grep("BiocViews -> AnnotationData", dot) - 1)]
+
     AnnotationData <- dot[seq(grep("BiocViews -> AnnotationData", dot),
                               grep("BiocViews -> ExperimentData", dot) - 1)]
+
     ExperimentData <- dot[seq(grep("BiocViews -> ExperimentData", dot), 
+                              grep("BiocViews -> Workflow", dot) - 1)]
+
+    Workflow <- dot[seq(grep("BiocViews -> Workflow", dot), 
                               length(dot),1)]
-    
+
     Software <- .parseDot(Software)
     ExperimentData <- .parseDot(ExperimentData)
     AnnotationData <- .parseDot(AnnotationData)
+    Workflow <- .parseDot(Workflow)
     list(Software= Software ,ExperimentData= ExperimentData, AnnotationData= 
-             AnnotationData)
+             AnnotationData, Workflow= Workflow)
 }
 
 
@@ -45,13 +51,15 @@ getCurrentbiocViews <- function()
     
     Software <- ans$Software
     ExperimentData <- ans$ExperimentData
-    AnnotationData <- ans$AnnotationDat
+    AnnotationData <- ans$AnnotationData
+    Workflow <- ans$Workflow
     
     find_branch <- NULL
     if(length(current) != 0){
         idx<- list(Software = match(current, Software), 
                    AnnotationData = match(current, AnnotationData),
-                   ExperimentData = match(current, ExperimentData))
+                   ExperimentData = match(current, ExperimentData),
+                   Workflow = match(current, Workflow))
         atrue <- sapply(idx, function(x) any(!is.na(x))) #which branch has hit 
         find_branch <- names(which(atrue==TRUE))
         if(length(find_branch)>1)
@@ -83,8 +91,10 @@ getCurrentbiocViews <- function()
             returndot <- Software
     else if(tolower(branch)=="experimentdata")
         returndot <- ExperimentData
-    else
+    else if(tolower(branch)=="annotationdata")
         returndot <- AnnotationData
+    else
+        returndot <- Workflow
     
     
     returndot
