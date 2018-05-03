@@ -6,28 +6,29 @@
 }
 \description{
 
-  These functions visit two repository PACKAGE files, identifying
+  These functions visit two Bioconductor releases, identifying
   packages that are present in the \sQuote{current} repository and have
   NEWS since the base version of the same package in the
-  \sQuote{previous} repository. All NEWS is reported for packages only
+  \sQuote{previous} release. All NEWS is reported for packages only
   in the current repository.
 }
 \usage{
-getPackageNEWS(prevRepos="https://bioconductor.org/packages/release/bioc", 
-               currRepos="https://bioconductor.org/packages/devel/bioc", 
-               srcDir)
+getPackageNEWS(prevRepos="3.6", 
+               currRepos="3.7", 
+               repo=c("bioc", "data/experiment", "workflows"))
 printNEWS(dbs, destfile, overwrite = FALSE, width = 68,
           output=c("md", "text"), ...)
 }
 
 \arguments{
 
-  \item{prevRepos}{\code{character(1)} repository from which NEWS starts.}
+  \item{prevRepos}{\code{character(1)} Bioconductor version from which NEWS starts.}
 
-  \item{currRepos}{\code{character(1)} repository of current packages.}
+  \item{currRepos}{\code{character(1)} Bioconductor version for current packages.}
 
-  \item{srcDir}{\code{character(1)} directory containing the source all
-    current pacakges}
+  \item{repo}{\code{character(1)} Which repository to get NEWS
+  for. bioc is software packages, data/experiment is for data experiment
+  packages and workflows for workflow packages}
 
   \item{dbs}{A list of \code{news_db} elements, as returned by
     \code{getPackageNEWS}.}
@@ -51,7 +52,7 @@ printNEWS(dbs, destfile, overwrite = FALSE, width = 68,
   for each package for which relevant NEWS is available.
 }
 \author{
-  Martin Morgan \url{mtmorgan@fhcrc.org}
+  Martin Morgan \url{mtmorgan@fhcrc.org} and Lori Shepherd
 }
 
 \keyword{manip}% __ONLY ONE__ keyword per line
