@@ -156,7 +156,7 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
         status <- attr(result, "status")
         if (!is.null(status) && status != 0)
             stop("untar(list=TRUE) returned status ", status)
-        
+
         pkg <- pkgName(tarball)
         status <- unlink(file.path(tmpdir, pkg), recursive=TRUE)
         if (status != 0L)
@@ -176,7 +176,7 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
         } else {
             citation <- suppressWarnings(citation(pkg, tmpdir))
         }
-        
+
         output <- capture.output(print(citation, style="html"))
         ## filter out \Sexprs:
         output <- output[grep("^\\\\Sexpr", output, invert=TRUE)]
@@ -184,7 +184,7 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
             dir.create(file.path(destdir, pkg))
         cat(output, file=file.path(destdir, pkg, "citation.html"),
             sep="\n")
-        
+
         TRUE
     }, error=function(e) {
         message("ERROR: extractCitations",
@@ -593,30 +593,41 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     ## Add vignette path info
     vigs <- getFileLinks(dbMat[, "Package"], reposRootPath, vignette.dir, "pdf")
     vtitles <- getDocumentTitles(vigs, reposRootPath=reposRootPath, fun=getPdfTitle)
-    
+
     rfiles <- getFileLinks(dbMat[, "Package"], reposRootPath, vignette.dir, "R")
 
     htmlDocs <- getFileLinks(dbMat[, "Package"], reposRootPath, vignette.dir, "html", TRUE)
     htmlDocs[grep("\\/index\\.html$", htmlDocs)] <- NA
     htmlTitles <- getDocumentTitles(htmlDocs, ext="html", src=c("Rmd", "Rhtml"), reposRootPath, getHtmlTitle)
 
+    allVigs <- paste(vigs, htmlDocs, sep=", ")
+    allTitles <- paste(vtitles, htmlTitles, sep=", ")
+
+    formatVec <- function(vec){
+        vec <- gsub(pattern="NA, NA", replacement=NA, vec)
+        vec <- gsub(pattern="NA, ", replacement="", vec)
+        vec <- gsub(pattern=", NA", replacement="", vec)
+        vec
+    }
+    allVigs <- formatVec(allVigs)
+    allTitles <- formatVec(allTitles)
+    names(allVigs) <- names(vigs)
+    names(allTitles) <- names(vtitles)
+
     readmes <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "readmes", "README")
     news <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "news", "NEWS")
     install <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "install", "INSTALL")
     license <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "licenses", "LICENSE")
-    dbMat <- cbind(dbMat, vigs)
-    dbMat <- cbind(dbMat, vtitles)
+    dbMat <- cbind(dbMat, allVigs)
+    dbMat <- cbind(dbMat, allTitles)
     dbMat <- cbind(dbMat, readmes)
     dbMat <- cbind(dbMat, news)
     dbMat <- cbind(dbMat, install)
     dbMat <- cbind(dbMat, license)
     dbMat <- cbind(dbMat, rfiles)
-    dbMat <- cbind(dbMat, htmlDocs)
-    dbMat <- cbind(dbMat, htmlTitles)
 
     colnames(dbMat) <- c(fldNames, "vignettes", "vignetteTitles", "hasREADME",
-        "hasNEWS", "hasINSTALL", "hasLICENSE", "Rfiles", "htmlDocs",
-        "htmlTitles")
+        "hasNEWS", "hasINSTALL", "hasLICENSE", "Rfiles")
     dependsOnMe <- getReverseDepends(dbMat, "Depends")
 
     dbMat <- cbind(dbMat, dependsOnMe)
@@ -665,12 +676,13 @@ StangleHTMLVignettes <- function(reposRoot)
     pkgMat <- readPackageInfo(viewsFile)
     info <- read.dcf(file=viewsFile)
     apply(info, 1, function(x){
-        if (!is.na(x["htmlDocs"]))
+        if (!is.na(x["vignettes"]))
         {
             if (!requireNamespace("knitr")) {
                 stop("'knitr' package required to tangle HTML vignettes")
             }
-            docs <- strsplit(x["htmlDocs"], ", ")[[1]]
+            docs <- strsplit(x["vignettes"], ",\n")[[1]]
+            docs <- docs[endsWith(docs, "html")]
             for (doc in docs) {
                 vig <- sub("\\.html", ".Rmd", doc, ignore.case=TRUE)
                 out <- sub("\\.html", ".R", doc, ignore.case=TRUE)
