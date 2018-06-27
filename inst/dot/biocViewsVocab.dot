@@ -533,5 +533,6 @@ Workflow -> GenomicVariantsWorkflow;
 Workflow -> EpigeneticsWorkflow;
 Workflow -> ProteomicsWorkflow;
 Workflow -> ResourceQueryingWorkflow;
+Workflow -> DifferentialSplicingWorkflow;
 
 }
