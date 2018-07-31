@@ -348,10 +348,12 @@ setMethod("htmlValue", signature(object="PackageDetail"),
                                     "start R and enter:"),
                          attrs=c(class="install"))
               dom$addTag("pre",
-                         paste("    ",
-                               "install.packages(\"BiocManager\")",
-                               "\n    BiocManager::install(\"", object@Package, "\")",
-                               sep=""))
+                         paste("  if (!require(\"BiocManager\"))",
+                               "\n      install.packages(\"BiocManager\")",
+                               "\n  BiocManager::install(\"",
+                               object@Package,
+                               "\")", sep="")
+                         )
               dom$closeTag() # div
 
               ## Documentation
