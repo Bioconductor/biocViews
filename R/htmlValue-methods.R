@@ -75,7 +75,7 @@ setMethod("htmlValue", signature(object="rdPackageTable"),
 setMethod("htmlValue", signature(object="RepositoryDetail"),
           function(object) {
               dom <- xmlOutputDOM("div", attrs=c(class="RepositoryDetail"))
-              
+
               dom$addTag("h1", cleanText(object@Title))
               ## Package table
               pkgTable <- as(object, "rdPackageTable")
@@ -159,25 +159,25 @@ setMethod("htmlValue", signature(object="pdDownloadInfo"),
                         win.binary="win.binary.ver",
                         mac.binary.mavericks="mac.binary.mavericks.ver",
                         `mac.binary.el-capitan`="mac.binary.el-capitan.ver")
-              
+
               fileTypes <- list(source="Package source",
                                 win.binary="Windows 32-bit binary",
                                 mac.binary.mavericks="MacOS X 10.9 (Mavericks) binary",
                                 `mac.binary.el-capitan`="MacOS X 10.11 (El Capitan) binary")
               makeLinkHelper <- function(type) {
-                
-                
+
+
                   isAvailable = TRUE
                   archs <- slot(object, "Archs")
                   if (length(archs) > 0 && nchar(archs) > 0) {
                     if (type == "win.binary") {
                       if (length(grep("i386", archs, value=TRUE)) == 0) {
                         isAvailable = FALSE
-                      } 
+                      }
                     }
                   }
-                  
-                
+
+
                   pkgPath <- slot(object, flds[type])
                   if (isAvailable && !is.na(pkgPath) && length(pkgPath) > 0 && pkgPath != "") {
                       ref <- paste(object@reposRoot, pkgPath, sep="/")
@@ -190,7 +190,7 @@ setMethod("htmlValue", signature(object="pdDownloadInfo"),
               fileLinks <- lapply(names(fileTypes), makeLinkHelper)
               names(fileLinks) <- fileTypes
               downloadStatsUrl <- slot(object, "downloadStatsUrl")
-              if ((length(downloadStatsUrl) == 1) && 
+              if ((length(downloadStatsUrl) == 1) &&
                   (nchar(downloadStatsUrl) > 0)) {
                   fileLinks <- c(fileLinks,
                                  list("Package Downloads Report" =
@@ -298,7 +298,7 @@ setMethod("htmlValue", signature(object="pdDetailsInfo"),
 
               ## add development history
               devHistoryUrl <- object@devHistoryUrl
-              if ((length(devHistoryUrl) == 1) && 
+              if ((length(devHistoryUrl) == 1) &&
                   (nchar(devHistoryUrl) > 0)) {
                   tableDat[["devHistoryUrl"]] <-
                     xmlNode("a", "Bioconductor Changelog",
@@ -349,9 +349,8 @@ setMethod("htmlValue", signature(object="PackageDetail"),
                          attrs=c(class="install"))
               dom$addTag("pre",
                          paste("    ",
-                               "source(\"",
-                               "http://bioconductor.org/biocLite.R\")",
-                               "\n    biocLite(\"", object@Package, "\")",
+                               "install.packages(\"BiocManager\")",
+                               "\n    BiocManager::install(\"", object@Package, "\")",
                                sep=""))
               dom$closeTag() # div
 
@@ -410,7 +409,7 @@ setMethod("htmlValue", signature(object="BiocView"),
 
               ## Heading
               dom$addTag("h1", paste("Bioconductor Task View:", object@name))
-              
+
               ## Parent Views
               if (length(object@parentViews) > 0) {
                   parentViews <- as(object, "bvParentViews")
@@ -433,4 +432,4 @@ setMethod("htmlValue", signature(object="BiocView"),
 
               dom$value()
           })
-              
+
