@@ -636,6 +636,8 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     dbMat <- cbind(dbMat, importsMe)
     suggestsMe <- getReverseDepends(dbMat, "Suggests")
     dbMat <- cbind(dbMat, suggestsMe)
+    linksToMe <- getReverseDepends(dbMat, "LinkingTo")
+    dbMat <- cbind(dbMat, linksToMe)
 
     .write_repository_db(dbMat, reposRootPath, "VIEWS")
 }
