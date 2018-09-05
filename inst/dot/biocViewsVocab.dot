@@ -51,6 +51,7 @@ Sequencing -> DenovoTranscriptome;
 Sequencing -> MicrobialStrain;
 Sequencing -> HiC;
 Sequencing -> PooledScreens;
+Sequencing -> MNaseSeq;
 Technology -> Microarray;
 Microarray -> MultiChannel;
 Microarray -> OneChannel;
