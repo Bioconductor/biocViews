@@ -398,7 +398,7 @@ PackageType -> XtraSNPlocs;
 PackageType -> TxDb;
 PackageType -> MeSHDb;
 PackageType -> FRMA;
-
+PackageType -> AnnotationHub;
 
 
 /****************************************************************************
@@ -522,6 +522,9 @@ RepositoryData -> NCI;
 RepositoryData -> PathwayInteractionDatabase;
 RepositoryData -> Project1000genomes;
 RepositoryData -> ENCODE;
+
+ExperimentData -> PackageTypeData;
+PackageTypeData -> ExperimentHub;
 
 /****************************************************************************
  *                            ExperimentData                                *
