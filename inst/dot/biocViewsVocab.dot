@@ -399,7 +399,7 @@ PackageType -> TxDb;
 PackageType -> MeSHDb;
 PackageType -> FRMA;
 PackageType -> AnnotationHub;
-
+PackageType -> EuPathDB;
 
 /****************************************************************************
  *                            ExperimentData                                *
