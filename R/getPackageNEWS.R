@@ -180,18 +180,18 @@ getPackageTitles <- function(prevBranch="RELEASE_3_6",
    GIT_ARCHIVE <-
        "git archive --remote=ssh://git@git.bioconductor.org/admin/manifest %s %s | tar -xO"
    prevRepo <- system(sprintf(GIT_ARCHIVE, prevBranch, manifest), intern=TRUE)
-   prevRepo <- prevRepo[-which(prevRepo=="")]
+   prevRepo <- trimws(gsub(pattern = "Package: ", replacement="",
+                           prevRepo[-which(prevRepo=="")]))
    currRepo <- system(sprintf(GIT_ARCHIVE, currBranch, manifest), intern=TRUE)
-   currRepo <- currRepo[-which(currRepo=="")]
+   currRepo <- trimws(gsub(pattern = "Package: ", replacement="",
+                           currRepo[-which(currRepo=="")]))
 
    # switch statement
    pkgs <- switch(status,
                   new = setdiff(currRepo, prevRepo),
                   removed = setdiff(prevRepo, currRepo)
                   )
-
-   gsub(pattern = "Package: ", replacement="", pkgs)
-
+   pkgs
 }
 
 printNewPackageTitles <- function(titles, destfile, overwrite=FALSE)
