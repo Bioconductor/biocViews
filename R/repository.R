@@ -525,18 +525,36 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     reposInfo <- read_REPOSITORY(reposRootPath)
     provided <- strsplit(reposInfo[, "provides"], ",")[[1L]]
 
-    ## Use code from tools to build a matrix of package info
-    ## by parsing the .tar.gz files
-    pkg.dir <- file.path(reposRootPath, reposInfo[, "source"])
-    db <- tools:::.build_repository_package_db(pkg.dir, fields, type, verbose)
 
-    ## Turn 'db' into a matrix with 1 row per package
-    if (length(db) != 0L) {
-        dbMat <- do.call(rbind, db)
-    } else {
-        fields <- unique(c(tools:::.get_standard_repository_db_fields(), fields))
-        dbMat <- matrix(nrow=0L, ncol=length(fields))
-        colnames(dbMat) <- fields
+    convertToMat <- function(reposRootPath, reposInfo, os, fields, verbose){
+
+        ## Use code from tools to build a matrix of package info
+        pkg.dir <- file.path(reposRootPath, reposInfo[, os])
+        if(grepl(os, pattern="mac.binary")) os = "mac.binary"
+        if(grepl(os, pattern="win.binary")) os = "win.binary"
+        db <- tools:::.build_repository_package_db(pkg.dir, fields, os, verbose)
+        ## Turn 'db' into a matrix with 1 row per package
+        if (length(db) != 0L) {
+            dbMatTemp <- do.call(rbind, db)
+        } else {
+            fields <- unique(c(tools:::.get_standard_repository_db_fields(), fields))
+            dbMatTemp <- matrix(nrow=0L, ncol=length(fields))
+            colnames(dbMatTemp) <- fields
+        }
+        dbMatTemp
+    }
+
+    os = provided[1]
+    dbMat = convertToMat(reposRootPath, reposInfo, os, fields, verbose)
+    if (length(provided) > 1){
+        otheros = provided[-1]
+        for(os in otheros){
+            dbMat2 = convertToMat(reposRootPath, reposInfo, os, fields, verbose)
+            tempMat = dbMat2[!(dbMat2[,"Package"] %in% dbMat[, "Package"]),
+                match(colnames(dbMat), colnames(dbMat2))]
+            colnames(tempMat) = colnames(dbMat)
+            dbMat = rbind(dbMat, tempMat)
+        }
     }
 
     ## Integrate version and archive file path info for the different contrib
@@ -576,8 +594,6 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
                     "\nSkipping this contrib path.")
             next
         }
-        ## FIXME: part of the lie we tell, there may be binary pkgs
-        ## for which we do not have a source pkgs.  For now, ignore.
         cDatGood <- cDat[, "Package"] %in% dbMat[, "Package"]
         dbMatIdx <- match(cDat[cDatGood, "Package"], dbMat[, "Package"])
         dbMatIdx <- dbMatIdx[!is.na(dbMatIdx)]
@@ -638,6 +654,11 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     dbMat <- cbind(dbMat, suggestsMe)
     linksToMe <- getReverseDepends(dbMat, "LinkingTo")
     dbMat <- cbind(dbMat, linksToMe)
+
+    # FIX ME:
+    # Add place Holder for valid packages compared to manifest
+    # That haven't built so they get a shell landing page rather
+    # than no landing page
 
     .write_repository_db(dbMat, reposRootPath, "VIEWS")
 }
