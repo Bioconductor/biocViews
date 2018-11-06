@@ -1,4 +1,4 @@
-genReposControlFiles <- function(reposRoot, contribPaths)
+genReposControlFiles <- function(reposRoot, contribPaths, manifestFile=NA)
 {
     ## Generate all control files for BioC hosted R
     ## package repositorys
@@ -18,7 +18,7 @@ genReposControlFiles <- function(reposRoot, contribPaths)
     }
     ## Write a VIEWS file at the top-level containing
     ## detailed package info
-    write_VIEWS(reposRoot, type="source")
+    write_VIEWS(reposRoot, type="source", manifestFile=manifestFile)
 
     ## Write a SYMBOLS file at the top-level containing the
     ## exported symbols for all packages that have name
@@ -508,7 +508,9 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
                                  "mac.binary",
                                  "mac.binary.mavericks",
                                  "mac.binary.el-capitan"),
-                        verbose = FALSE, vignette.dir="vignettes") {
+                        verbose = FALSE, vignette.dir="vignettes",
+                        manifestFile=NA
+                        ) {
     ## Copied from tools::write_PACKAGES
     if (is.null(fields))
       fields <- c("Title", "Description", "biocViews",
@@ -655,11 +657,30 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     linksToMe <- getReverseDepends(dbMat, "LinkingTo")
     dbMat <- cbind(dbMat, linksToMe)
 
-    # FIX ME:
     # Add place Holder for valid packages compared to manifest
     # That haven't built so they get a shell landing page rather
     # than no landing page
-
+    if (!is.na(manifestFile)){
+        if(file.exists(manifestFile)){
+            file  = readLines(manifestFile)
+            fmtFile = vapply(file, FUN = function(vl){
+                if(startsWith(vl, "Package")){
+                    trimws(gsub(vl, pattern="Package: ", replacement=""))
+                }else{
+                    ""
+                }},
+                FUN.VALUE=character(1), USE.NAMES=FALSE)
+            man_pkgs = fmtFile[-which(fmtFile=="")]
+            missing_pkgs = man_pkgs[!(man_pkgs %in% unname(dbMat[,"Package"]))]
+            add_mat = matrix(NA, nrow=length(missing_pkgs), ncol=ncol(dbMat))
+            rownames(add_mat) = missing_pkgs
+            # minimum info to create View
+            add_mat[,which(colnames(dbMat)=="Package")] = missing_pkgs
+            add_mat[,which(colnames(dbMat)=="Maintainer")] = "ERROR"
+            add_mat[,which(colnames(dbMat)=="Title")] = "ERROR"
+            dbMat = rbind(dbMat, add_mat)
+        }
+    }
     .write_repository_db(dbMat, reposRootPath, "VIEWS")
 }
 
