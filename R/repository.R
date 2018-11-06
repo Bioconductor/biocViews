@@ -552,10 +552,13 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
         otheros = provided[-1]
         for(os in otheros){
             dbMat2 = convertToMat(reposRootPath, reposInfo, os, fields, verbose)
-            tempMat = dbMat2[!(dbMat2[,"Package"] %in% dbMat[, "Package"]),
-                match(colnames(dbMat), colnames(dbMat2))]
-            colnames(tempMat) = colnames(dbMat)
-            dbMat = rbind(dbMat, tempMat)
+            idx = !(dbMat2[,"Package"] %in% dbMat[, "Package"])
+            if (length(which(idx)) != 0){
+                tempMat = dbMat2[idx,
+                    match(colnames(dbMat), colnames(dbMat2))]
+                colnames(tempMat) = colnames(dbMat)
+                dbMat = rbind(dbMat, tempMat)
+            }
         }
     }
 
