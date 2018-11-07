@@ -18,7 +18,7 @@ genReposControlFiles <- function(reposRoot, contribPaths, manifestFile=NA)
     }
     ## Write a VIEWS file at the top-level containing
     ## detailed package info
-    write_VIEWS(reposRoot, type="source", manifestFile=manifestFile)
+    write_VIEWS(reposRoot, manifestFile=manifestFile)
 
     ## Write a SYMBOLS file at the top-level containing the
     ## exported symbols for all packages that have name
@@ -503,11 +503,6 @@ read_REPOSITORY <- function(reposRootPath)
 
 
 write_VIEWS <- function(reposRootPath, fields = NULL,
-                        type = c("source",
-                                 "win.binary",
-                                 "mac.binary",
-                                 "mac.binary.mavericks",
-                                 "mac.binary.el-capitan"),
                         verbose = FALSE, vignette.dir="vignettes",
                         manifestFile=NA
                         ) {
@@ -519,14 +514,14 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
                   "hasReadme", "VignetteBuilder", "Video", "BugReports",
                   "PackageStatus", "git_url", "git_branch",
                   "git_last_commit", "git_last_commit_date", "Date/Publication")
-    if (missing(type))
-      type <- "source"
-    type <- match.arg(type)
 
     ## Read REPOSITORY file for contrib path info
     reposInfo <- read_REPOSITORY(reposRootPath)
     provided <- strsplit(reposInfo[, "provides"], ",")[[1L]]
-
+    fields = unique(c(tools:::.get_standard_repository_db_fields("source"),
+        tools:::.get_standard_repository_db_fields("mac.binary"),
+        tools:::.get_standard_repository_db_fields("win.binary"),
+        fields))
 
     convertToMat <- function(reposRootPath, reposInfo, os, fields, verbose){
 
@@ -539,7 +534,6 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
         if (length(db) != 0L) {
             dbMatTemp <- do.call(rbind, db)
         } else {
-            fields <- unique(c(tools:::.get_standard_repository_db_fields(), fields))
             dbMatTemp <- matrix(nrow=0L, ncol=length(fields))
             colnames(dbMatTemp) <- fields
         }
@@ -554,8 +548,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
             dbMat2 = convertToMat(reposRootPath, reposInfo, os, fields, verbose)
             idx = !(dbMat2[,"Package"] %in% dbMat[, "Package"])
             if (length(which(idx)) != 0){
-                tempMat = dbMat2[idx,
-                    match(colnames(dbMat), colnames(dbMat2))]
+                tempMat = dbMat2[idx,]
                 colnames(tempMat) = colnames(dbMat)
                 dbMat = rbind(dbMat, tempMat)
             }
