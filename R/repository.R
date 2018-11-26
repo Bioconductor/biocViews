@@ -549,7 +549,6 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
             idx = !(dbMat2[,"Package"] %in% dbMat[, "Package"])
             if (length(which(idx)) != 0){
                 tempMat = dbMat2[idx,]
-                colnames(tempMat) = colnames(dbMat)
                 dbMat = rbind(dbMat, tempMat)
             }
         }
