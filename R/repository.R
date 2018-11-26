@@ -1,4 +1,4 @@
-genReposControlFiles <- function(reposRoot, contribPaths)
+genReposControlFiles <- function(reposRoot, contribPaths, manifestFile=NA)
 {
     ## Generate all control files for BioC hosted R
     ## package repositorys
@@ -18,7 +18,7 @@ genReposControlFiles <- function(reposRoot, contribPaths)
     }
     ## Write a VIEWS file at the top-level containing
     ## detailed package info
-    write_VIEWS(reposRoot, type="source")
+    write_VIEWS(reposRoot, manifestFile=manifestFile)
 
     ## Write a SYMBOLS file at the top-level containing the
     ## exported symbols for all packages that have name
@@ -501,14 +501,10 @@ read_REPOSITORY <- function(reposRootPath)
     invisible(nrow(db))
 }
 
-
 write_VIEWS <- function(reposRootPath, fields = NULL,
-                        type = c("source",
-                                 "win.binary",
-                                 "mac.binary",
-                                 "mac.binary.mavericks",
-                                 "mac.binary.el-capitan"),
-                        verbose = FALSE, vignette.dir="vignettes") {
+                        verbose = FALSE, vignette.dir="vignettes",
+                        manifestFile=NA
+                        ) {
     ## Copied from tools::write_PACKAGES
     if (is.null(fields))
       fields <- c("Title", "Description", "biocViews",
@@ -517,26 +513,44 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
                   "hasReadme", "VignetteBuilder", "Video", "BugReports",
                   "PackageStatus", "git_url", "git_branch",
                   "git_last_commit", "git_last_commit_date", "Date/Publication")
-    if (missing(type))
-      type <- "source"
-    type <- match.arg(type)
 
     ## Read REPOSITORY file for contrib path info
     reposInfo <- read_REPOSITORY(reposRootPath)
     provided <- strsplit(reposInfo[, "provides"], ",")[[1L]]
+    fields = unique(c(tools:::.get_standard_repository_db_fields("source"),
+        tools:::.get_standard_repository_db_fields("mac.binary"),
+        tools:::.get_standard_repository_db_fields("win.binary"),
+        fields))
 
-    ## Use code from tools to build a matrix of package info
-    ## by parsing the .tar.gz files
-    pkg.dir <- file.path(reposRootPath, reposInfo[, "source"])
-    db <- tools:::.build_repository_package_db(pkg.dir, fields, type, verbose)
+    convertToMat <- function(reposRootPath, reposInfo, os, fields, verbose){
 
-    ## Turn 'db' into a matrix with 1 row per package
-    if (length(db) != 0L) {
-        dbMat <- do.call(rbind, db)
-    } else {
-        fields <- unique(c(tools:::.get_standard_repository_db_fields(), fields))
-        dbMat <- matrix(nrow=0L, ncol=length(fields))
-        colnames(dbMat) <- fields
+        ## Use code from tools to build a matrix of package info
+        pkg.dir <- file.path(reposRootPath, reposInfo[, os])
+        if(grepl(os, pattern="mac.binary")) os = "mac.binary"
+        if(grepl(os, pattern="win.binary")) os = "win.binary"
+        db <- tools:::.build_repository_package_db(pkg.dir, fields, os, verbose)
+        ## Turn 'db' into a matrix with 1 row per package
+        if (length(db) != 0L) {
+            dbMatTemp <- do.call(rbind, db)
+        } else {
+            dbMatTemp <- matrix(nrow=0L, ncol=length(fields))
+            colnames(dbMatTemp) <- fields
+        }
+        dbMatTemp
+    }
+
+    os = provided[1]
+    dbMat = convertToMat(reposRootPath, reposInfo, os, fields, verbose)
+    if (length(provided) > 1){
+        otheros = provided[-1]
+        for(os in otheros){
+            dbMat2 = convertToMat(reposRootPath, reposInfo, os, fields, verbose)
+            idx = !(dbMat2[,"Package"] %in% dbMat[, "Package"])
+            if (length(which(idx)) != 0){
+                tempMat = dbMat2[idx,]
+                dbMat = rbind(dbMat, tempMat)
+            }
+        }
     }
 
     ## Integrate version and archive file path info for the different contrib
@@ -576,8 +590,6 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
                     "\nSkipping this contrib path.")
             next
         }
-        ## FIXME: part of the lie we tell, there may be binary pkgs
-        ## for which we do not have a source pkgs.  For now, ignore.
         cDatGood <- cDat[, "Package"] %in% dbMat[, "Package"]
         dbMatIdx <- match(cDat[cDatGood, "Package"], dbMat[, "Package"])
         dbMatIdx <- dbMatIdx[!is.na(dbMatIdx)]
@@ -639,8 +651,33 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     linksToMe <- getReverseDepends(dbMat, "LinkingTo")
     dbMat <- cbind(dbMat, linksToMe)
 
+    # Add place Holder for valid packages compared to manifest
+    # That haven't built so they get a shell landing page rather
+    # than no landing page
+    if (!is.na(manifestFile)){
+        if(file.exists(manifestFile)){
+            file  = readLines(manifestFile)
+            fmtFile = vapply(file, FUN = function(vl){
+                if(startsWith(vl, "Package")){
+                    trimws(gsub(vl, pattern="Package: ", replacement=""))
+                }else{
+                    ""
+                }},
+                FUN.VALUE=character(1), USE.NAMES=FALSE)
+            man_pkgs = fmtFile[-which(fmtFile=="")]
+            missing_pkgs = man_pkgs[!(man_pkgs %in% unname(dbMat[,"Package"]))]
+            add_mat = matrix(NA, nrow=length(missing_pkgs), ncol=ncol(dbMat))
+            rownames(add_mat) = missing_pkgs
+            # minimum info to create View
+            add_mat[,which(colnames(dbMat)=="Package")] = missing_pkgs
+            add_mat[,which(colnames(dbMat)=="Maintainer")] = "ERROR"
+            add_mat[,which(colnames(dbMat)=="Title")] = "ERROR"
+            dbMat = rbind(dbMat, add_mat)
+        }
+    }
     .write_repository_db(dbMat, reposRootPath, "VIEWS")
 }
+
 
 getReverseDepends <- function(db, fieldName) {
     pkgNames <- db[, "Package"]
