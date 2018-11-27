@@ -1,4 +1,4 @@
-genReposControlFiles <- function(reposRoot, contribPaths, manifestFile=NA)
+genReposControlFiles <- function(reposRoot, contribPaths, manifestFile=NA, meatPath=NA)
 {
     ## Generate all control files for BioC hosted R
     ## package repositorys
@@ -18,7 +18,7 @@ genReposControlFiles <- function(reposRoot, contribPaths, manifestFile=NA)
     }
     ## Write a VIEWS file at the top-level containing
     ## detailed package info
-    write_VIEWS(reposRoot, manifestFile=manifestFile)
+    write_VIEWS(reposRoot, manifestFile=manifestFile, meatPath=meatPath)
 
     ## Write a SYMBOLS file at the top-level containing the
     ## exported symbols for all packages that have name
@@ -503,7 +503,7 @@ read_REPOSITORY <- function(reposRootPath)
 
 write_VIEWS <- function(reposRootPath, fields = NULL,
                         verbose = FALSE, vignette.dir="vignettes",
-                        manifestFile=NA
+                        manifestFile=NA, meatPath=NA
                         ) {
     ## Copied from tools::write_PACKAGES
     if (is.null(fields))
@@ -668,10 +668,80 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
             missing_pkgs = man_pkgs[!(man_pkgs %in% unname(dbMat[,"Package"]))]
             add_mat = matrix(NA, nrow=length(missing_pkgs), ncol=ncol(dbMat))
             rownames(add_mat) = missing_pkgs
-            # minimum info to create View
+            colnames(add_mat) = colnames(dbMat)
+            # manually fill info for missing packages
             add_mat[,which(colnames(dbMat)=="Package")] = missing_pkgs
-            add_mat[,which(colnames(dbMat)=="Maintainer")] = "ERROR"
-            add_mat[,which(colnames(dbMat)=="Title")] = "ERROR"
+            if (!is.na(meatPath)){
+            for(i in seq_along(missing_pkgs)){
+
+                add_mat = tryCatch({
+                    desc = read.dcf(file.path(meatPath, missing_pkgs[i],
+                        "DESCRIPTION"))
+
+                    for (dx in colnames(desc)){
+                        if (dx %in% colnames(add_mat)){
+                            add_mat[i, which(colnames(add_mat) == dx)] = desc[,dx]
+                        }else{
+                            # check for Authors@R and parse accordingly
+                            if (dx == "Authors@R"){
+                                ar = desc[,"Authors@R"]
+                                env <- new.env(parent=emptyenv())
+                                env[["c"]] = c
+                                env[["person"]] <- utils::person
+                                pp <- parse(text=ar, keep.source=TRUE)
+                                people =
+                                    tryCatch({
+                                        people <- eval(pp, env)
+                                        people
+                                    }, error=function(e) {
+                                        # could not parse Authors@R
+                                        people <- "ERROR"
+                                        people
+                                    }, warning = function(e){
+                                        people <- "ERROR"
+                                        people
+                                    })
+
+                                if (all(people == "ERROR")){
+                                    add_mat[i,which(colnames(dbMat)=="Maintainer")] = "ERROR"
+                                    add_mat[i,which(colnames(dbMat)=="Author")] = "ERROR"
+                                }else{
+                                    Author = paste0(unlist(people$given)," ", unlist(people$family), " <", unlist(people$email),">", collapse=", ")
+                                    add_mat[i,which(colnames(dbMat)=="Author")] = Author
+                                    idx = !is.na(unlist(lapply(people$role, FUN=match, x="cre")))
+                                    if (any(idx)){
+                                        people = people[idx]
+                                        add_mat[i,which(colnames(dbMat)=="Maintainer")] =
+                                            paste0(unlist(people$given)," ", unlist(people$family), " <", unlist(people$email),">", collapse=", ")
+                                    }else{
+                                        add_mat[i,which(colnames(dbMat)=="Maintainer")] = "ERROR"
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                    add_mat
+                }, error = function(err){
+                    add_mat[i,which(colnames(dbMat)=="Maintainer")] = "ERROR"
+                    add_mat[i,which(colnames(dbMat)=="Title")] = "ERROR"
+                    add_mat
+                }, warning = function(err){
+                    add_mat[i,which(colnames(dbMat)=="Maintainer")] = "ERROR"
+                    add_mat[i,which(colnames(dbMat)=="Title")] = "ERROR"
+                    add_mat
+                })
+            }
+        }
+            # make sure necessary columns are not NA
+            if (any(is.na(add_mat[,"Title"]))){
+                add_mat[which(is.na(add_mat[,"Title"])), "Title"] =
+                    "ERROR"
+            }
+             if (any(is.na(add_mat[,"Maintainer"]))){
+                add_mat[which(is.na(add_mat[,"Maintainer"])), "Maintainer"] =
+                    "ERROR"
+            }
             dbMat = rbind(dbMat, add_mat)
         }
     }
