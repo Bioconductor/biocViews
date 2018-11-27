@@ -401,7 +401,7 @@ getDocumentTitles <- function(docs, ext="pdf", src=c("Rnw", "Rmd"), reposRootPat
         return(character())
     filelist <- strsplit(docs, ", ", fixed = TRUE)
     unlist(lapply(filelist, function(files) {
-        if (is.na(files)) {
+        if (all(is.na(files))) {
             NA_character_
         }
         else {
