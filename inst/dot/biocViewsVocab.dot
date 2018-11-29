@@ -97,6 +97,7 @@ ResearchField -> SystemsBiology;
 ResearchField -> ComputationalChemistry;
 ResearchField -> Agroinformatics;
 ResearchField -> Transcriptomics;
+ResearchField -> ImmunoOncology;
 
 /* Software -> BiologicalQuestion */
 Software -> BiologicalQuestion;
@@ -540,5 +541,6 @@ Workflow -> EpigeneticsWorkflow;
 Workflow -> ProteomicsWorkflow;
 Workflow -> ResourceQueryingWorkflow;
 Workflow -> DifferentialSplicingWorkflow;
+Workflow -> ImmunoOncologyWorkflow;
 
 }
