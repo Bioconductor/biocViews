@@ -1,3 +1,21 @@
+CHANGES IN VERSION 1.51.11
+-------------------------
+
+NEW FEATURES
+
+    o (1.51.7) Cross check views with manifest file so all expected bioconductor
+    package get listed in biocViews. New argument to write_VIEWS manifestFile
+
+    o (1.51.9) New argument to write_VIEWS meatPath. For packages that fail to
+    build on any platform, use cloned repository DESCRIPTION file to fill in as
+    much information to the biocVIEWS entry.
+
+    o (1.51.10) Add new biocVIEW terms ImmunoOncolocy and
+    ImmunoOncologyWorkflow.
+
+    o (1.51.12) Allow NEWS file to be in .md format. R 3.6 started allowing
+    NEWS, NEWS.Rd and newly NEWS.md formats. Adjust code accordingly. 
+
 CHANGES IN VERSION 1.37.2
 -------------------------
 

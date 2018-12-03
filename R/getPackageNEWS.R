@@ -42,17 +42,20 @@ getPackageNEWS <- function(prevRepos="3.6",
 
 
     getNews <- function(pkg, ver, srcdir) {
-        newsloc <- file.path(srcdir, pkg, c("inst", "inst", "."),
-                             c("NEWS.Rd", "NEWS", "NEWS"))
+        newsloc <- file.path(srcdir, pkg, c("inst", "inst", "inst", ".","."),
+                             c("NEWS.Rd", "NEWS", "NEWS.md", "NEWS.md", "NEWS"))
         news <- head(newsloc[file.exists(newsloc)], 1)
         if (0L == length(news))
             return(NULL)
         tryCatch({
             db <-
-                if (grepl("Rd$", news))
+                if (grepl("Rd$", news)){
                     tools:::.build_news_db_from_package_NEWS_Rd(news)
-                else
+                } else if (grepl("md$", news)){
+                    tools:::.build_news_db_from_package_NEWS_md(news)
+                } else {
                     tools:::.news_reader_default(news)
+                }
             if (!is.null(db))
                 utils::news(Version > ver, db=db)
             else NULL
@@ -85,24 +88,53 @@ getNEWSFromFile <- function (dir, destfile, format = NULL, reader = NULL,
     newsRdFile2 <- file.path(dir, "inst", "NEWS.Rd")
 
     if (!file_test("-f", newsRdFile) && !file_test("-f", newsRdFile2)) {
-        nfile <- file.path(dir, "NEWS")
-        nfile2 <- file.path(dir, "inst", "NEWS")
 
-        if (!file_test("-f", nfile) && !file_test("-f", nfile2))
+
+        newsMdFile <- file.path(dir, "NEWS.md")
+        newsMdFile2 <- file.path(dir, "inst", "NEWS.md")
+
+        if (!file_test("-f", newsMdFile) && !file_test("-f", newsMdFile2)) {
+
+
+            nfile <- file.path(dir, "NEWS")
+            nfile2 <- file.path(dir, "inst", "NEWS")
+
+
+            if (!file_test("-f", nfile) && !file_test("-f", nfile2))
+                return(invisible())
+
+            nfile <- ifelse(file_test("-f", nfile), nfile, nfile2)
+
+            if (!is.null(format))
+                .NotYetUsed("format", FALSE)
+            if (!is.null(reader))
+                .NotYetUsed("reader", FALSE)
+
+            file <- file(destfile, "w+")
+            on.exit(close(file))
+            news <- paste(readLines(nfile), collapse="\n")
+            if ("md" == output)
+                news = mdIfy(news)
+            cat(news, file=file)
             return(invisible())
+        }
 
-        nfile <- ifelse(file_test("-f", nfile), nfile, nfile2)
-
-        if (!is.null(format))
-            .NotYetUsed("format", FALSE)
-        if (!is.null(reader))
-            .NotYetUsed("reader", FALSE)
-
+        newsMdFile <- ifelse(file_test("-f", newsMdFile), newsMdFile,
+                             newsMdFile2)
         file <- file(destfile, "w+")
         on.exit(close(file))
-        news <- paste(readLines(nfile), collapse="\n")
+        db <- tools:::.build_news_db_from_package_NEWS_md(newsMdFile)
+        news <- NULL
+        try(news <- capture.output(print(db)))
+        if (is.null(news))
+            {
+                message(sprintf("Error building news database for %s/%s",
+                                dir, destfile))
+                return(invisible())
+            }
+        news <- paste(news, collapse="\n")
         if ("md" == output)
-            news = mdIfy(news)
+            news <- mdIfy(news)
         cat(news, file=file)
         return(invisible())
     }
