@@ -526,6 +526,7 @@ RepositoryData -> ENCODE;
 
 ExperimentData -> PackageTypeData;
 PackageTypeData -> ExperimentHub;
+PackageTypeData -> ImmunoOncologyData;
 
 /****************************************************************************
  *                            ExperimentData                                *
