@@ -13,7 +13,8 @@
 # repo:  bioc data/experiment workflows
 getPackageNEWS <- function(prevRepos="3.6",
                            currRepos="3.7",
-                           repo=c("bioc", "data/experiment", "workflows")){
+                           repo=c("bioc", "data/experiment", "workflows"),
+                           srcdir=NULL){
 
     repo <- match.arg(repo)
     URL_BASE <- "http://master.bioconductor.org/packages/"
@@ -36,10 +37,12 @@ getPackageNEWS <- function(prevRepos="3.6",
     vers <- c(sub("\\.[[:digit:]]?$", ".0", prev[,"Version"]),
               setNames(rep("0.0", length(newpkgs)), newpkgs))
 
-    temp = tempdir()
-    system(paste0("scp -r webadmin@master.bioconductor.org:/extra/www/bioc/packages/",
-                  currRepos, "/", repo, "/news ", temp))
-
+    if (is.null(srcdir)){
+        temp = tempdir()
+        system(paste0("scp -r webadmin@master.bioconductor.org:/extra/www/bioc/packages/",
+                      currRepos, "/", repo, "/news ", temp))
+        srcdir <- paste0(temp, "/news")
+    }
 
     getNews <- function(pkg, ver, srcdir) {
         newsloc <- file.path(srcdir, pkg, c("inst", "inst", "inst", ".","."),
@@ -63,7 +66,7 @@ getPackageNEWS <- function(prevRepos="3.6",
     }
 
     ret <- Filter(function(x) !is.null(x) && 0L != nrow(x),
-                  Map(getNews, names(vers), vers, paste0(temp, "/news")))
+                  Map(getNews, names(vers), vers, srcdir))
     nms <- names(ret)
     s <- sort(nms)
     newRet <- ret[s]
