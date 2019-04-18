@@ -165,7 +165,7 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
             file.path(pkg, c("DESCRIPTION", "inst/CITATION")),
             result)
 
-        status <- untar(tarball, path, exdir=tmpdir, compressed="gzip")
+        status <- untar(tarball, path, exdir=tmpdir)
         if (status != 0L)
             stop("untar() returned status ", status)
         description <- packageDescription(pkg, tmpdir)
