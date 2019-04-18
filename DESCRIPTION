@@ -6,7 +6,7 @@ Author: VJ Carey <stvjc@channing.harvard.edu>,
         S Falcon <sfalcon@fhcrc.org> ,
         Sonali Arora
 Maintainer: Bioconductor Package Maintainer <maintainer@bioconductor.org>
-Depends: R (>= 2.4.0)
+Depends: R (>= 3.6.0)
 Imports: Biobase, graph (>= 1.9.26), methods, RBGL (>= 1.13.5), tools,
         utils, XML, RCurl, RUnit
 Suggests: BiocGenerics, knitr, commonmark
