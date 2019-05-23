@@ -651,6 +651,17 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     linksToMe <- getReverseDepends(dbMat, "LinkingTo")
     dbMat <- cbind(dbMat, linksToMe)
 
+
+    pkgs <- available.packages(repos = BiocManager::repositories())
+    biocrepos <- available.packages(repos = BiocManager::repositories()[c("BioCsoft","BioCann","BioCexp","BioCworkflows")])
+    deps <- tools::package_dependencies(rownames(biocrepos), db = pkgs, recursive=TRUE, which= c("Depends", "Imports", "LinkingTo"))
+    numDeps <- lapply(deps, length)
+    dependencyCount <- vapply(dbMat[,"Package"],
+                              FUN=function(x, res){
+                                  if(x %in% names(res)){as.numeric(res[x])}else{NA}
+                              },res=numDeps, FUN.VALUE=numeric(1), USE.NAMES=FALSE)
+    dbMat <- cbind(dbMat, dependencyCount)
+
     # Add place Holder for valid packages compared to manifest
     # That haven't built so they get a shell landing page rather
     # than no landing page
