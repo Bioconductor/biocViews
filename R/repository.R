@@ -651,6 +651,17 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     linksToMe <- getReverseDepends(dbMat, "LinkingTo")
     dbMat <- cbind(dbMat, linksToMe)
 
+    # add (recursive) dependency count for badge on landing page
+    all_repos <- repositories()
+    all_pkgs <- available.packages(repos = all_repos)
+    bioc_pkgs <- available.packages(repos = all_repos[setdiff(names(all_repos),
+                                        "CRAN")] )
+    deps <- package_dependencies(rownames(bioc_pkgs), db = all_pkgs,
+                                 recursive=TRUE)
+    numDeps <- lengths(deps)
+    dependencyCount <-  numDeps[dbMat[, "Package"]]
+    dbMat <- cbind(dbMat, dependencyCount)
+
     # Add place Holder for valid packages compared to manifest
     # That haven't built so they get a shell landing page rather
     # than no landing page
