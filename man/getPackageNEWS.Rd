@@ -13,11 +13,12 @@
   in the current repository.
 }
 \usage{
-getPackageNEWS(prevRepos="3.6", 
-               currRepos="3.7", 
-               repo=c("bioc", "data/experiment", "workflows"))
+getPackageNEWS(prevRepos="3.6",
+	       currRepos="3.7",
+	       repo=c("bioc", "data/experiment", "workflows"),
+	       srcdir = NULL)
 printNEWS(dbs, destfile, overwrite = FALSE, width = 68,
-          output=c("md", "text"), ...)
+	  output=c("md", "text"), ...)
 }
 
 \arguments{
@@ -29,6 +30,9 @@ printNEWS(dbs, destfile, overwrite = FALSE, width = 68,
   \item{repo}{\code{character(1)} Which repository to get NEWS
   for. bioc is software packages, data/experiment is for data experiment
   packages and workflows for workflow packages}
+
+  \item{srcdir}{Path to local checkout of package repositories, if NULL
+  will try and use files on main builders}
 
   \item{dbs}{A list of \code{news_db} elements, as returned by
     \code{getPackageNEWS}.}
@@ -48,7 +52,7 @@ printNEWS(dbs, destfile, overwrite = FALSE, width = 68,
 
 }
 \value{
-  A list of \code{news_db} files, as returned by \code{utils::news}, 
+  A list of \code{news_db} files, as returned by \code{utils::news},
   for each package for which relevant NEWS is available.
 }
 \author{
