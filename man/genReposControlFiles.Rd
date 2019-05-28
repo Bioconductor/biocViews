@@ -33,7 +33,7 @@ genReposControlFiles(reposRoot, contribPaths, manifestFile = NA,
   built will be given dummy entry for complete listing in bioc_VIEWS. If
   NA cross check is skipped and packages not built on any system will be
   missing from biocVIEWS}
-  \item{meanPath}{character(1). File path location to the directory
+  \item{meatPath}{character(1). File path location to the directory
   containing cloned repositories of Bioconductor packages. If
   manifestFile is used for cross checking and the meatPath is provided,
   entries from the DESCRIPTION file are manually entered into biocVIEWS

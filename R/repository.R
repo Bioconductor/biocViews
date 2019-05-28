@@ -539,6 +539,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
         dbMatTemp
     }
 
+    # get standard list of fields information for packages
     os = provided[1]
     dbMat = convertToMat(reposRootPath, reposInfo, os, fields, verbose)
     if (length(provided) > 1){
@@ -627,10 +628,14 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     names(allVigs) <- names(vigs)
     names(allTitles) <- names(vtitles)
 
+    # get any included extra files
     readmes <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "readmes", "README")
     news <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "news", "NEWS")
     install <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "install", "INSTALL")
-    license <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "licenses", "LICENSE")
+    license <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "licenses",
+                                 "LICENSE")
+
+    # add additional values to matrix for writing
     dbMat <- cbind(dbMat, allVigs)
     dbMat <- cbind(dbMat, allTitles)
     dbMat <- cbind(dbMat, readmes)
@@ -641,8 +646,9 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
 
     colnames(dbMat) <- c(fldNames, "vignettes", "vignetteTitles", "hasREADME",
         "hasNEWS", "hasINSTALL", "hasLICENSE", "Rfiles")
-    dependsOnMe <- getReverseDepends(dbMat, "Depends")
 
+    # get reverse dependency list
+    dependsOnMe <- getReverseDepends(dbMat, "Depends")
     dbMat <- cbind(dbMat, dependsOnMe)
     importsMe <- getReverseDepends(dbMat, "Imports")
     dbMat <- cbind(dbMat, importsMe)
@@ -650,6 +656,18 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     dbMat <- cbind(dbMat, suggestsMe)
     linksToMe <- getReverseDepends(dbMat, "LinkingTo")
     dbMat <- cbind(dbMat, linksToMe)
+
+
+    # add (recursive) dependency count for badge on landing page
+    all_repos <- repositories()
+    all_pkgs <- available.packages(repos = all_repos)
+    bioc_pkgs <- available.packages(repos = all_repos[setdiff(names(all_repos),
+                                        "CRAN")] )
+    deps <- package_dependencies(rownames(bioc_pkgs), db = all_pkgs,
+                                 recursive=TRUE)
+    numDeps <- lengths(deps)
+    dependencyCount <-  numDeps[dbMat[, "Package"]]
+    dbMat <- cbind(dbMat, dependencyCount)
 
     # Add place Holder for valid packages compared to manifest
     # That haven't built so they get a shell landing page rather
