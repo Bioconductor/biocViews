@@ -6,7 +6,9 @@ importFrom(Biobase, copySubstitute)
 
 importFrom(RBGL, sp.between)
 
-importFrom(tools, write_PACKAGES)
+importFrom(tools, write_PACKAGES, package_dependencies)
+
+importFrom(BiocManager, repositories)
 
 importFrom(stats, complete.cases, setNames)
 
