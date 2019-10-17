@@ -149,54 +149,60 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
     extractTopLevelFiles(reposRoot, srcContrib, destDir, "INSTALL")
 }
 
-.extract1Citation <- function(tarball, destdir) {
+.extract_citation <- function(tarball) {
+    pkgname <- pkgName(tarball)
     tmpdir <- tempdir()
-    withCallingHandlers(tryCatch({
-        result <- untar(tarball, list=TRUE)
-        status <- attr(result, "status")
-        if (!is.null(status) && status != 0)
-            stop("untar(list=TRUE) returned status ", status)
 
-        pkg <- pkgName(tarball)
-        status <- unlink(file.path(tmpdir, pkg), recursive=TRUE)
-        if (status != 0L)
-            stop("unlink() returned status ", status)
-        path <- intersect(
-            file.path(pkg, c("DESCRIPTION", "inst/CITATION")),
-            result)
+    ## Extract DESCRIPTION file from tarball.
+    ## Note that the path separator is **always** / in a tarball, even
+    ## on Windows, so do NOT use file.path() here.
+    path <- paste0(pkgname, "/DESCRIPTION")
+    status <- untar(tarball, path, exdir=tmpdir)
+    ## Should never happen.
+    if (status != 0L)
+        stop("failed to extract DESCRIPTION file from ", tarball)
 
+    ## Extract CITATION file from tarball, if present.
+    path <- paste0(pkgname, "/inst/CITATION")
+    all_paths <- untar(tarball, list=TRUE)
+    status <- attr(all_paths, "status")
+    if (!is.null(status) && status != 0L)
+        stop("failed to extract list of paths from ", tarball)
+    if (path %in% all_paths) {
         status <- untar(tarball, path, exdir=tmpdir)
+        ## Should never happen.
         if (status != 0L)
-            stop("untar() returned status ", status)
-        description <- packageDescription(pkg, tmpdir)
+            stop("failed to extract CITATION file from ", tarball)
+    } else {
+        ## Remove (possibly) pre-existing CITATION file from tmpdir.
+        ## Could happen if 'tmpdir' somehow already contained a stale source
+        ## tree for 'pkgname'.
+        full_path <- file.path(tmpdir, pkgname, "inst", "CITATION")
+        status <- unlink(full_path)
+        ## Should never happen.
+        if (status != 0L)
+            stop("failed to remove ", full_path, " file")
+    }
 
-        if (file.path(pkg, "inst/CITATION") %in% path) {
-            fpath <- file.path(tmpdir, path[2])
-            citation <- readCitationFile(fpath , description)
-        } else {
-            citation <- suppressWarnings(citation(pkg, tmpdir))
-        }
+    ## Make the citation object.
+    description <- packageDescription(pkgname, lib.loc=tmpdir)
+    citation(pkgname, lib.loc=tmpdir, auto=description)
+}
 
-        output <- capture.output(print(citation, style="html"))
-        ## filter out \Sexprs:
-        output <- output[grep("^\\\\Sexpr", output, invert=TRUE)]
-        if (!file.exists(file.path(destdir, pkg)))
-            dir.create(file.path(destdir, pkg))
-        cat(output, file=file.path(destdir, pkg, "citation.html"),
-            sep="\n")
-
-        TRUE
-    }, error=function(e) {
-        message("ERROR: extractCitations",
-                "\n  tarball: ", tarball,
-                "\n  error: ", conditionMessage(e))
-        FALSE
-    }), warning=function(w) {
-        message("WARNING: extractCitations",
-                "\n  tarball: ", tarball,
-                "\n  warning: ", conditionMessage(w))
-        invokeRestart("muffleWarning")
-    })
+.write_citation_as_HTML <- function(citation, destdir) {
+    destfile <- file.path(destdir, "citation.html")
+    if (dir.exists(destdir)) {
+        status <- unlink(destfile)
+        if (status != 0L)
+            stop("failed to remove previous ", destfile, " file")
+    } else {
+        if (!dir.create(destdir))
+            stop("failed to create ", destdir, " directory")
+    }
+    html <- capture.output(print(citation, style="html"))
+    ## Filter out lines starting with \Sexprs.
+    html <- html[grep("^\\\\Sexpr", html, invert=TRUE)]
+    cat(html, file=destfile, sep="\n")
 }
 
 extractCitations <- function(reposRoot, srcContrib, destDir) {
@@ -204,10 +210,18 @@ extractCitations <- function(reposRoot, srcContrib, destDir) {
         file.path(reposRoot, srcContrib),
         pattern="\\.tar\\.gz$", full.names=TRUE)
 
-    if (!file.exists(destDir))
-        dir.create(destDir, recursive=TRUE)
+    if (!dir.exists(destDir)) {
+        if (!dir.create(destDir, recursive=TRUE))
+            stop("failed to create ", destDir, " directory")
+    }
 
-    invisible(vapply(tarballs, .extract1Citation , logical(1), destDir))
+    for (tarball in tarballs) {
+        cat("Extract and process citation from ", tarball, " ...", sep="")
+        citation <- .extract_citation(tarball)
+        pkgname <- pkgName(tarball)
+        .write_citation_as_HTML(citation, file.path(destDir, pkgname))
+        cat("OK\n")
+    }
 }
 
 extractReadmes <- function(reposRoot, srcContrib, destDir) {
