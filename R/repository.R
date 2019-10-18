@@ -219,7 +219,7 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
     if (is.null(citation)) {
         cat("(failed! ==> replacing citation with red banner) ")
         html <- c("<p style=\"color: #B33\">Important note to the ",
-                  "maintainer the ", pkgname, "package: ",
+                  "maintainer of the ", pkgname, "package: ",
                   "An error occured while trying to generate the ",
                   "citation from the CITATION file. This typically ",
                   "occurs when the file contains R code that relies on ",
