@@ -149,6 +149,13 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
     extractTopLevelFiles(reposRoot, srcContrib, destDir, "INSTALL")
 }
 
+### Will return NULL if the citation could not be generated from the CITATION
+### file. This typically occurs when the file contains code that relies on
+### the package to be installed e.g. it contains calls to things like
+### packageVersion() or packageDate() instead of using 'meta$Version'
+### or 'meta$Date'. See
+### https://cran.r-project.org/doc/manuals/r-release/R-exts.html#CITATION-files
+### for the details.
 .extract_citation <- function(tarball) {
     pkgname <- pkgName(tarball)
     tmpdir <- tempdir()
@@ -156,40 +163,50 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
     ## Extract DESCRIPTION file from tarball.
     ## Note that the path separator is **always** / in a tarball, even
     ## on Windows, so do NOT use file.path() here.
-    path <- paste0(pkgname, "/DESCRIPTION")
-    status <- untar(tarball, path, exdir=tmpdir)
+    DESCRIPTION_tpath <- paste0(pkgname, "/DESCRIPTION")
+    status <- untar(tarball, DESCRIPTION_tpath, exdir=tmpdir)
     ## Should never happen.
     if (status != 0L)
         stop("failed to extract DESCRIPTION file from ", tarball)
+    description <- packageDescription(pkgname, lib.loc=tmpdir)
 
-    ## Extract CITATION file from tarball, if present.
-    path <- paste0(pkgname, "/inst/CITATION")
-    all_paths <- untar(tarball, list=TRUE)
-    status <- attr(all_paths, "status")
+    ## Remove any stale CITATION file from the tmpdir/pkgname/ folder (could
+    ## happen if 'tmpdir' somehow already contained a stale source tree
+    ## for 'pkgname').
+    CITATION_path <- file.path(tmpdir, pkgname, "inst", "CITATION")
+    status <- unlink(CITATION_path)
+    ## Should never happen.
+    if (status != 0L)
+        stop("failed to remove ", CITATION_path, " file")
+
+    all_tpaths <- untar(tarball, list=TRUE)
+    status <- attr(all_tpaths, "status")
     if (!is.null(status) && status != 0L)
         stop("failed to extract list of paths from ", tarball)
-    if (path %in% all_paths) {
-        status <- untar(tarball, path, exdir=tmpdir)
+    CITATION_tpath <- paste0(pkgname, "/inst/CITATION")
+
+    ## Extract CITATION file from tarball, if present, and use it to
+    ## generate citation.
+    if (CITATION_tpath %in% all_tpaths) {
+        status <- untar(tarball, CITATION_tpath, exdir=tmpdir)
         ## Should never happen.
         if (status != 0L)
             stop("failed to extract CITATION file from ", tarball)
-    } else {
-        ## Remove (possibly) pre-existing CITATION file from tmpdir.
-        ## Could happen if 'tmpdir' somehow already contained a stale source
-        ## tree for 'pkgname'.
-        full_path <- file.path(tmpdir, pkgname, "inst", "CITATION")
-        status <- unlink(full_path)
-        ## Should never happen.
-        if (status != 0L)
-            stop("failed to remove ", full_path, " file")
+        cat("(try to process CITATION file) ")
+        citation <- try(readCitationFile(CITATION_path, meta=description),
+                        silent=TRUE)
+        if (inherits(citation, "try-error"))
+            citation <- NULL
+        return(citation)
     }
 
-    ## Make the citation object.
-    description <- packageDescription(pkgname, lib.loc=tmpdir)
+    ## If there is no CITATION file, auto-generate citation from
+    ## DESCRIPTION file.
+    cat("(auto-generate from DESCRIPTION file) ")
     citation(pkgname, lib.loc=tmpdir, auto=description)
 }
 
-.write_citation_as_HTML <- function(citation, destdir) {
+.write_citation_as_HTML <- function(pkgname, citation, destdir) {
     destfile <- file.path(destdir, "citation.html")
     if (dir.exists(destdir)) {
         status <- unlink(destfile)
@@ -199,9 +216,25 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
         if (!dir.create(destdir))
             stop("failed to create ", destdir, " directory")
     }
-    html <- capture.output(print(citation, style="html"))
-    ## Filter out lines starting with \Sexprs.
-    html <- html[grep("^\\\\Sexpr", html, invert=TRUE)]
+    if (is.null(citation)) {
+        cat("(failed! ==> replacing citation with red banner) ")
+        html <- c("<p style=\"color: #B33\">Important note to the ",
+                  "maintainer the ", pkgname, "package: ",
+                  "An error occured while trying to generate the ",
+                  "citation from the CITATION file. This typically ",
+                  "occurs when the file contains R code that relies on ",
+                  "the package to be installed e.g. it contains calls ",
+                  "to things like <code>packageVersion()</code> or ",
+                  "<code>packageDate()</code> instead of using ",
+                  "<code>meta$Version</code> or <code>meta$Date</code>. ",
+                  "See <a href=\"hrehttps://cran.r-project.org/doc/manuals/",
+                  "r-release/R-exts.html#CITATION-files\">R documentation</a> ",
+                  "for more information.</p>")
+    } else {
+        html <- capture.output(print(citation, style="html"))
+        ## Filter out lines starting with \Sexprs.
+        html <- html[grep("^\\\\Sexpr", html, invert=TRUE)]
+    }
     cat(html, file=destfile, sep="\n")
 }
 
@@ -216,10 +249,10 @@ extractCitations <- function(reposRoot, srcContrib, destDir) {
     }
 
     for (tarball in tarballs) {
-        cat("Extract and process citation from ", tarball, " ...", sep="")
+        cat("Generate citation for ", tarball, " ... ", sep="")
         citation <- .extract_citation(tarball)
         pkgname <- pkgName(tarball)
-        .write_citation_as_HTML(citation, file.path(destDir, pkgname))
+        .write_citation_as_HTML(pkgname, citation, file.path(destDir, pkgname))
         cat("OK\n")
     }
 }
