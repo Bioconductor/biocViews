@@ -227,7 +227,7 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
                   "to things like <code>packageVersion()</code> or ",
                   "<code>packageDate()</code> instead of using ",
                   "<code>meta$Version</code> or <code>meta$Date</code>. ",
-                  "See <a href=\"hrehttps://cran.r-project.org/doc/manuals/",
+                  "See <a href=\"https://cran.r-project.org/doc/manuals/",
                   "r-release/R-exts.html#CITATION-files\">R documentation</a> ",
                   "for more information.</p>")
     } else {
