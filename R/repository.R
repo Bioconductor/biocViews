@@ -501,10 +501,11 @@ getHtmlTitle <- function(doc, src) {
     title
 }
 
-write_REPOSITORY <- function(reposRootPath, contribPaths) {
+write_REPOSITORY <- function(reposRootPath, contribPaths)
+{
     contrib <- as.list(contribPaths)
-    names(contrib) <- names(contribPaths)
-    contrib[["provides"]] <- paste(names(contrib), collapse=", ")
+    names(contrib) <- gsub("-", ".", names(contribPaths))
+    contrib[["provides"]] <- paste(names(contribPaths), collapse=", ")
     fn <- file.path(reposRootPath, "REPOSITORY")
     write.dcf(contrib, fn)
 }
