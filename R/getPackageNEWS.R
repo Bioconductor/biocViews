@@ -32,7 +32,7 @@ getPackageNEWS <- function(prevRepos="3.6",
     prev <- prev[rownames(prev) %in% rownames(curr),]
     newpkgs <- setdiff(rownames(curr), rownames(prev))
 
-    idx <- package_version(curr[newpkgs, "Version"]) >= "0.99.0"
+    idx <- package_version(curr[newpkgs, "Version"], strict=FALSE) >= "0.99.0"
     newpkgs <- newpkgs[idx]
     vers <- c(sub("\\.[[:digit:]]?$", ".0", prev[,"Version"]),
               setNames(rep("0.0", length(newpkgs)), newpkgs))
