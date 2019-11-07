@@ -2,8 +2,11 @@ genReposControlFiles <- function(reposRoot, contribPaths, manifestFile=NA, meatP
 {
     ## Generate all control files for BioC hosted R
     ## package repositorys
+    message("Generating repos control files:\n")
 
-    write_REPOSITORY(reposRoot, contribPaths)
+    message("  - write_REPOSITORY() ... ", appendLF=FALSE)
+    st <- system.time(write_REPOSITORY(reposRoot, contribPaths))[["elapsed"]]
+    message("OK (total time: ", st, ")\n")
     ## Write PACKAGES files for all contrib paths
     packagesPaths <- file.path(reposRoot, contribPaths)
     names(packagesPaths) <- names(contribPaths)
@@ -14,16 +17,26 @@ genReposControlFiles <- function(reposRoot, contribPaths, manifestFile=NA, meatP
         } else if (substr(type, 1, 10) == "mac.binary") {
             type <- "mac.binary"
         }
-        write_PACKAGES(path, type=type)
+        message("  - write_PACKAGES() to ", path, " ... ", appendLF=FALSE)
+        st <- system.time(write_PACKAGES(path, type=type))[["elapsed"]]
+        message("OK (total time: ", st, ")\n")
     }
     ## Write a VIEWS file at the top-level containing
     ## detailed package info
-    write_VIEWS(reposRoot, manifestFile=manifestFile, meatPath=meatPath)
+    message("  - write_VIEWS() ... ", appendLF=FALSE)
+    st <- system.time(
+            write_VIEWS(reposRoot, manifestFile=manifestFile, meatPath=meatPath)
+          )[["elapsed"]]
+    message("OK (total time: ", st, ")\n")
 
     ## Write a SYMBOLS file at the top-level containing the
     ## exported symbols for all packages that have name
     ## spaces.  This is used to build a searchable index.
-    write_SYMBOLS(reposRoot, verbose=TRUE)
+    message("  - write_SYMBOLS() ... ", appendLF=FALSE)
+    st <- system.time(write_SYMBOLS(reposRoot, verbose=TRUE))[["elapsed"]]
+    message("OK (total time: ", st, ")\n")
+
+    message("DONE Generating repos control files.\n")
 }
 
 pkgName <- function(tarball) {
@@ -130,7 +143,7 @@ extractTopLevelFiles <- function(reposRoot, srcContrib, destDir, fileName) {
     extractFileFromTarball <- function(tarball, unpackDir=".") {
         pkg <- pkgName(tarball)
         cleanUnpackDir(tarball, unpackDir, pattern=fileName)
-        cat(paste("Attempting to extract", fileName, "from", tarball, "\n"))
+        message("Attempting to extract ", fileName, " from ", tarball)
         unpack(tarball, unpackDir, file.path(pkg, fileName))
     }
 
@@ -193,7 +206,7 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
         ## Should never happen.
         if (status != 0L)
             stop("failed to extract CITATION file from ", tarball)
-        cat("(try to process CITATION file) ")
+        message("(try to process CITATION file) ", appendLF=FALSE)
         citation <- try(readCitationFile(CITATION_path, meta=description),
                         silent=TRUE)
         if (inherits(citation, "try-error"))
@@ -203,7 +216,7 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
 
     ## If there is no CITATION file, auto-generate citation from
     ## DESCRIPTION file.
-    cat("(auto-generate from DESCRIPTION file) ")
+    message("(auto-generate from DESCRIPTION file) ", appendLF=FALSE)
     citation(pkgname, lib.loc=tmpdir, auto=description)
 }
 
@@ -219,7 +232,8 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
             stop("failed to create ", destdir, " directory")
     }
     if (is.null(citation)) {
-        cat("(failed! ==> replacing citation with red banner) ")
+        message("(failed! ==> replacing citation with red banner) ",
+                appendLF=FALSE)
         html <- c("<p style=\"color: #B33\">Important note to the ",
                   "maintainer of the ", pkgname, "package: ",
                   "An error occured while trying to generate the ",
@@ -252,11 +266,11 @@ extractCitations <- function(reposRoot, srcContrib, destDir)
     }
 
     for (tarball in tarballs) {
-        cat("Generate citation for ", tarball, " ... ", sep="")
+        message("Generate citation for ", tarball, " ... ", appendLF=FALSE)
         citation <- .extract_citation(tarball)
         pkgname <- pkgName(tarball)
         .write_citation_as_HTML(pkgname, citation, file.path(destDir, pkgname))
-        cat("OK\n")
+        message("OK")
     }
 }
 
