@@ -33,7 +33,7 @@ genReposControlFiles <- function(reposRoot, contribPaths, manifestFile=NA, meatP
     ## exported symbols for all packages that have name
     ## spaces.  This is used to build a searchable index.
     message("- write_SYMBOLS() ... ", appendLF=FALSE)
-    t <- system.time(write_SYMBOLS(reposRoot, verbose=TRUE))[["elapsed"]]
+    t <- system.time(write_SYMBOLS(reposRoot))[["elapsed"]]
     message(sprintf("OK (total time: %.2fs)", t))
 
     message("DONE Generating repos control files.")
@@ -938,9 +938,9 @@ write_SYMBOLS <- function(dir, verbose=FALSE, source.dirs=FALSE) {
     extractNAMESPACEFromTarball <- function(tarball, unpackDir=tdir) {
         ## helper function to unpack NAMESPACE file from the tarball
         ret <- unpack(tarball, unpackDir, "'*/NAMESPACE'")
-        if (ret != 0)
-          warning("tar had non-zero exit status for NAMESPACE extract of: ",
-                  tarball)
+        #if (ret != 0)
+        #  warning("tar had non-zero exit status for NAMESPACE extract of: ",
+        #          tarball)
     }
 
     writeField <- function(field, v) {
