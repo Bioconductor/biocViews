@@ -2,11 +2,11 @@ genReposControlFiles <- function(reposRoot, contribPaths, manifestFile=NA, meatP
 {
     ## Generate all control files for BioC hosted R
     ## package repositorys
-    message("Generating repos control files:\n")
+    message("Generating repos control files:")
 
-    message("  - write_REPOSITORY() ... ", appendLF=FALSE)
+    message("- write_REPOSITORY() ... ", appendLF=FALSE)
     st <- system.time(write_REPOSITORY(reposRoot, contribPaths))[["elapsed"]]
-    message("OK (total time: ", st, ")\n")
+    message("OK (total time: ", st, ")")
     ## Write PACKAGES files for all contrib paths
     packagesPaths <- file.path(reposRoot, contribPaths)
     names(packagesPaths) <- names(contribPaths)
@@ -17,26 +17,26 @@ genReposControlFiles <- function(reposRoot, contribPaths, manifestFile=NA, meatP
         } else if (substr(type, 1, 10) == "mac.binary") {
             type <- "mac.binary"
         }
-        message("  - write_PACKAGES() to ", path, " ... ", appendLF=FALSE)
+        message("- write_PACKAGES() to ", path, " ... ", appendLF=FALSE)
         st <- system.time(write_PACKAGES(path, type=type))[["elapsed"]]
-        message("OK (total time: ", st, ")\n")
+        message("OK (total time: ", st, ")")
     }
     ## Write a VIEWS file at the top-level containing
     ## detailed package info
-    message("  - write_VIEWS() ... ", appendLF=FALSE)
+    message("- write_VIEWS() ... ", appendLF=FALSE)
     st <- system.time(
             write_VIEWS(reposRoot, manifestFile=manifestFile, meatPath=meatPath)
           )[["elapsed"]]
-    message("OK (total time: ", st, ")\n")
+    message("OK (total time: ", st, ")")
 
     ## Write a SYMBOLS file at the top-level containing the
     ## exported symbols for all packages that have name
     ## spaces.  This is used to build a searchable index.
-    message("  - write_SYMBOLS() ... ", appendLF=FALSE)
+    message("- write_SYMBOLS() ... ", appendLF=FALSE)
     st <- system.time(write_SYMBOLS(reposRoot, verbose=TRUE))[["elapsed"]]
-    message("OK (total time: ", st, ")\n")
+    message("OK (total time: ", st, ")")
 
-    message("DONE Generating repos control files.\n")
+    message("DONE Generating repos control files.")
 }
 
 pkgName <- function(tarball) {
