@@ -5,8 +5,8 @@ genReposControlFiles <- function(reposRoot, contribPaths, manifestFile=NA, meatP
     message("Generating repos control files:")
 
     message("- write_REPOSITORY() ... ", appendLF=FALSE)
-    st <- system.time(write_REPOSITORY(reposRoot, contribPaths))[["elapsed"]]
-    message("OK (total time: ", st, ")")
+    t <- system.time(write_REPOSITORY(reposRoot, contribPaths))[["elapsed"]]
+    message(sprintf("OK (total time: %.2fs)", t))
     ## Write PACKAGES files for all contrib paths
     packagesPaths <- file.path(reposRoot, contribPaths)
     names(packagesPaths) <- names(contribPaths)
@@ -18,23 +18,23 @@ genReposControlFiles <- function(reposRoot, contribPaths, manifestFile=NA, meatP
             type <- "mac.binary"
         }
         message("- write_PACKAGES() to ", path, " ... ", appendLF=FALSE)
-        st <- system.time(write_PACKAGES(path, type=type))[["elapsed"]]
-        message("OK (total time: ", st, ")")
+        t <- system.time(write_PACKAGES(path, type=type))[["elapsed"]]
+        message(sprintf("OK (total time: %.2fs)", t))
     }
     ## Write a VIEWS file at the top-level containing
     ## detailed package info
     message("- write_VIEWS() ... ", appendLF=FALSE)
-    st <- system.time(
+    t <- system.time(
             write_VIEWS(reposRoot, manifestFile=manifestFile, meatPath=meatPath)
           )[["elapsed"]]
-    message("OK (total time: ", st, ")")
+    message(sprintf("OK (total time: %.2fs)", t))
 
     ## Write a SYMBOLS file at the top-level containing the
     ## exported symbols for all packages that have name
     ## spaces.  This is used to build a searchable index.
     message("- write_SYMBOLS() ... ", appendLF=FALSE)
-    st <- system.time(write_SYMBOLS(reposRoot, verbose=TRUE))[["elapsed"]]
-    message("OK (total time: ", st, ")")
+    t <- system.time(write_SYMBOLS(reposRoot, verbose=TRUE))[["elapsed"]]
+    message(sprintf("OK (total time: %.2fs)", t))
 
     message("DONE Generating repos control files.")
 }
