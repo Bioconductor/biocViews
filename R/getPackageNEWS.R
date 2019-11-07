@@ -164,7 +164,7 @@ getNEWSFromFile <- function (dir, destfile, format = NULL, reader = NULL,
 
 
 printNEWS <- function(dbs, destfile, overwrite=FALSE, width=68,
-                      output=c("md", "text"), ...)
+                      output=c("md", "text"), relativeLink=FALSE, ...)
 {
     output <- match.arg(output)
     dbs <- lapply(dbs, function(db) {
@@ -174,12 +174,13 @@ printNEWS <- function(dbs, destfile, overwrite=FALSE, width=68,
         })
         db
     })
+    urlBase <- ifelse(relativeLink, "/packages/","https://bioconductor.org/packages/")
     txt <- capture.output({
         for (i in seq_along(dbs)) {
             tryCatch({
                 cat(sprintf(
-                    "\n[%s](https://bioconductor.org/packages/%s)\n%s\n\n",
-                    names(dbs)[[i]], names(dbs)[[i]],
+                    "\n[%s](%s%s)\n%s\n\n",
+                    names(dbs)[[i]], urlBase, names(dbs)[[i]],
                     paste(rep("-", nchar(names(dbs)[[i]])), collapse="")))
                 print(dbs[[i]])
             }, error=function(err) {
@@ -242,7 +243,7 @@ printNewPackageTitles <- function(titles, destfile, overwrite=FALSE)
         file=stdout(), sep="\n")
 }
 
-getPackageDescriptions <- function(pkgs, outfile, output=c("md", "text"))
+getPackageDescriptions <- function(pkgs, outfile, output=c("md", "text"),relativeLink=FALSE)
 {
 
     output <- match.arg(output)
@@ -258,11 +259,12 @@ getPackageDescriptions <- function(pkgs, outfile, output=c("md", "text"))
     DESC_FILE <-
         "git archive --remote=ssh://git@git.bioconductor.org/packages/%s master DESCRIPTION|tar -xO > %s"
 
+    urlBase <- ifelse(relativeLink, "/packages/","https://bioconductor.org/packages/")
     desc = lapply(pkgs, function(pkg) {
         system(sprintf(DESC_FILE, pkg, file))
         d = read.dcf(file)[,"Description"]
-        paste(strwrap(sprintf("- [%s](https://bioconductor.org/packages/%s) %s",
-                              pkg, pkg, d), width=70, exdent=exdent),
+        paste(strwrap(sprintf("- [%s](%s%s) %s",
+                              pkg, urlBase, pkg, d), width=70, exdent=exdent),
               collapse="\n")
     })
     cat(noquote(unlist(desc)), sep="\n\n", file=outfile)

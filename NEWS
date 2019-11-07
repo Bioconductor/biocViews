@@ -1,3 +1,17 @@
+CHANGES IN VERSION 1.55.0
+-------------------------
+
+NEW FEATURES
+
+    o (1.55.2) printNEWS and getPackageDescriptions now have argument option
+    'relativeLink` that allows for relative links instead of hard coded urls for
+    website. Important for release announcement.
+
+BUG FIX
+
+    o (1.55.1) If new package fails to build still include in release
+    announcement and don't fail out for lack of version number.
+
 CHANGES IN VERSION 1.51.11
 -------------------------
 
@@ -14,7 +28,7 @@ NEW FEATURES
     ImmunoOncologyWorkflow.
 
     o (1.51.12) Allow NEWS file to be in .md format. R 3.6 started allowing
-    NEWS, NEWS.Rd and newly NEWS.md formats. Adjust code accordingly. 
+    NEWS, NEWS.Rd and newly NEWS.md formats. Adjust code accordingly.
 
 CHANGES IN VERSION 1.37.2
 -------------------------
@@ -22,4 +36,4 @@ CHANGES IN VERSION 1.37.2
 NEW FEATURES
 
     o Add new function recommendPackages for finding packages tagged with
-      a set of biocViews. 
+      a set of biocViews.
