@@ -18,7 +18,7 @@ getPackageNEWS(prevRepos="3.6",
 	       repo=c("bioc", "data/experiment", "workflows"),
 	       srcdir = NULL)
 printNEWS(dbs, destfile, overwrite = FALSE, width = 68,
-	  output=c("md", "text"), ...)
+	  output=c("md", "text"), relativeLink=FALSE, ...)
 }
 
 \arguments{
@@ -47,6 +47,10 @@ printNEWS(dbs, destfile, overwrite = FALSE, width = 68,
     be wrapped to, excluding indent.}
 
   \item{output}{\code{character(1)} output to text or markdown format.}
+
+  \item{relativeLink}{Should links to packages be relative links on
+  bioconductor.org website or include full url
+  'https//bioconductor.org'. default: FALSE is full url.}
 
   \item{...}{additional arguments, unused.}
 

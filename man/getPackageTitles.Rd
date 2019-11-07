@@ -17,7 +17,7 @@ getPackageTitles(prevBranch="RELEASE_3_6",
                  currBranch="master",
                  manifest=c("software.txt", "data-experiment.txt", "workflows.txt"),
                  status = c("new", "removed"))
-getPackageDescriptions(pkgs, outfile, output=c("md", "text"))
+getPackageDescriptions(pkgs, outfile, output=c("md", "text"), relativeLink=FALSE)
 }
 
 \arguments{
@@ -39,6 +39,9 @@ getPackageDescriptions(pkgs, outfile, output=c("md", "text"))
 
   \item{output}{\code{character(1)} output to text or markdown format.}
 
+  \item{relativeLink}{Should links to packages be relative links on
+  bioconductor.org website or include full url
+  'https//bioconductor.org'. default: FALSE is full url.}
 }
 \value{
   A list of package titles.
