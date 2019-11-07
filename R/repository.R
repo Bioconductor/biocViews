@@ -30,9 +30,10 @@ pkgName <- function(tarball) {
     strsplit(basename(tarball), "_", fixed=TRUE)[[1L]][1L]
 }
 
-unpack <- function(tarball, unpackDir, wildcards, ...) {
-    cmd <- paste("tar", "-C", unpackDir, "-xzf", tarball, "--wildcards", wildcards)
-    system(cmd, ...)
+unpack <- function(tarball, unpackDir, wildcards)
+{
+    args <- c("-C", unpackDir, "-xzf", tarball, "--wildcards", wildcards)
+    system2("tar", args, stderr=NULL)
 }
 
 cleanUnpackDir <- function(tarball, unpackDir, subDir="", pattern=NULL) {
@@ -130,8 +131,7 @@ extractTopLevelFiles <- function(reposRoot, srcContrib, destDir, fileName) {
         pkg <- pkgName(tarball)
         cleanUnpackDir(tarball, unpackDir, pattern=fileName)
         cat(paste("Attempting to extract", fileName, "from", tarball, "\n"))
-        unpack(tarball, unpackDir, file.path(pkg, fileName),
-               ignore.stdout=TRUE, ignore.stderr=TRUE)
+        unpack(tarball, unpackDir, file.path(pkg, fileName))
     }
 
     tarballs <- list.files(file.path(reposRoot, srcContrib),
@@ -156,7 +156,8 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
 ### or 'meta$Date'. See
 ### https://cran.r-project.org/doc/manuals/r-release/R-exts.html#CITATION-files
 ### for the details.
-.extract_citation <- function(tarball) {
+.extract_citation <- function(tarball)
+{
     pkgname <- pkgName(tarball)
     tmpdir <- tempdir()
 
@@ -206,7 +207,8 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
     citation(pkgname, lib.loc=tmpdir, auto=description)
 }
 
-.write_citation_as_HTML <- function(pkgname, citation, destdir) {
+.write_citation_as_HTML <- function(pkgname, citation, destdir)
+{
     destfile <- file.path(destdir, "citation.html")
     if (dir.exists(destdir)) {
         status <- unlink(destfile)
@@ -238,7 +240,8 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
     cat(html, file=destfile, sep="\n")
 }
 
-extractCitations <- function(reposRoot, srcContrib, destDir) {
+extractCitations <- function(reposRoot, srcContrib, destDir)
+{
     tarballs <- list.files(
         file.path(reposRoot, srcContrib),
         pattern="\\.tar\\.gz$", full.names=TRUE)
@@ -271,8 +274,6 @@ extractReadmes <- function(reposRoot, srcContrib, destDir) {
     extractTopLevelFiles(reposRoot, srcContrib, destDir, "README")
 }
 
-
-
 extractNEWS <- function(reposRoot, srcContrib, destDir) {
 
     if (missing(destDir))
@@ -282,8 +283,7 @@ extractNEWS <- function(reposRoot, srcContrib, destDir) {
         pkg <- pkgName(tarball)
         cleanUnpackDir(tarball, unpackDir, pattern="NEWS")
         cat("Attempting to extract NEWS from", tarball, "\n")
-        unpack(tarball, unpackDir, "'*NEWS*'",
-               ignore.stdout=TRUE, ignore.stderr=TRUE)
+        unpack(tarball, unpackDir, "'*NEWS*'")
     }
 
     convertNEWSToText <- function(tarball, srcDir, destDir) {
@@ -308,7 +308,6 @@ extractNEWS <- function(reposRoot, srcContrib, destDir) {
 
     invisible(NULL)
 }
-
 
 extractVignettes <- function(reposRoot, srcContrib, destDir) {
     ## Extract vignettes from source package tarballs
@@ -342,10 +341,6 @@ extractVignettes <- function(reposRoot, srcContrib, destDir) {
 
     invisible(lapply(tarballs, extractVignettesFromTarball, unpackDir=destDir))
 }
-
-
-#
-
 
 extractHTMLDocuments <- function(reposRoot, srcContrib, destDir) {
     ## Extract HTML documents from source package tarballs
@@ -393,11 +388,6 @@ extractHTMLDocuments <- function(reposRoot, srcContrib, destDir) {
         unpackDir=destDir))
 }
 
-
-
-#
-
-
 getDcfValues <- function(values) {
     if (is.na(values)) return (character(0))
     values <- gsub("\n", " ", values, fixed=TRUE)
@@ -409,8 +399,6 @@ getDcfValues <- function(values) {
     res
 }
 
-
-
 getFileExistsAttr <- function(pkgList, reposRootPath, dir, filename) {
     unlist(lapply(pkgList, function(pkg) {
         ret <- logical(0)
@@ -421,7 +409,6 @@ getFileExistsAttr <- function(pkgList, reposRootPath, dir, filename) {
         ret
     }))
 }
-
 
 getFileLinks <- function(pkgList, reposRootPath, vignette.dir, ext,
                          ignore.case=FALSE) {
@@ -814,7 +801,6 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     .write_repository_db(dbMat, reposRootPath, "VIEWS")
 }
 
-
 getReverseDepends <- function(db, fieldName) {
     pkgNames <- db[, "Package"]
     names(pkgNames) <- NULL
@@ -842,7 +828,6 @@ writeRFilesFromVignettes <- function(reposRoot, reposUrl="..",
           downloadStatsUrl, devHistoryUrl)
     StangleHTMLVignettes(reposRoot)
 }
-
 
 .printf <- function(...) print(noquote(sprintf(...)))
 
@@ -872,7 +857,6 @@ StangleHTMLVignettes <- function(reposRoot)
 
 }
 
-
 writeRepositoryHtml <- function(reposRoot, title, reposUrl="..",
                                 viewUrl="../..", reposFullUrl=reposUrl,
                                 downloadStatsUrl="", devHistoryUrl="",
@@ -898,7 +882,6 @@ writeRepositoryHtml <- function(reposRoot, title, reposUrl="..",
     res
 }
 
-
 writePackageDetailHtml <- function(pkgList, htmlDir="html",
                                    backgroundColor="transparent") {
     if (!file.exists(htmlDir))
@@ -918,7 +901,6 @@ writePackageDetailHtml <- function(pkgList, htmlDir="html",
     res
 }
 
-
 writeRepositoryIndexHtml <- function(pkgList, reposRoot, title, htmlDir="html",
                                      link.rel=TRUE)
 {
@@ -931,7 +913,6 @@ writeRepositoryIndexHtml <- function(pkgList, reposRoot, title, htmlDir="html",
     f <- file.path(reposRoot, htmlFilename(repos))
     writeHtmlDoc(htmlDoc(repos), f)
 }
-
 
 write_SYMBOLS <- function(dir, verbose=FALSE, source.dirs=FALSE) {
     con <- file(file.path(dir, "SYMBOLS"), open="w")
@@ -984,3 +965,4 @@ write_SYMBOLS <- function(dir, verbose=FALSE, source.dirs=FALSE) {
     close(con)
     NULL
 }
+
