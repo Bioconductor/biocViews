@@ -32,9 +32,9 @@ genReposControlFiles <- function(reposRoot, contribPaths, manifestFile=NA, meatP
     ## Write a SYMBOLS file at the top-level containing the
     ## exported symbols for all packages that have name
     ## spaces.  This is used to build a searchable index.
-    message("- write_SYMBOLS() ... ", appendLF=FALSE)
-    t <- system.time(write_SYMBOLS(reposRoot))[["elapsed"]]
-    message(sprintf("OK (total time: %.2fs)", t))
+    #message("- write_SYMBOLS() ... ", appendLF=FALSE)
+    #t <- system.time(write_SYMBOLS(reposRoot))[["elapsed"]]
+    #message(sprintf("OK (total time: %.2fs)", t))
 
     message("DONE Generating repos control files.")
 }
