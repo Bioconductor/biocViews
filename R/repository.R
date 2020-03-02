@@ -235,10 +235,10 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
         message("(failed! ==> replacing citation with red banner) ",
                 appendLF=FALSE)
         html <- c("<p style=\"color: #B33\">Important note to the ",
-                  "maintainer of the ", pkgname, "package: ",
-                  "An error occured while trying to generate the ",
-                  "citation from the CITATION file. This typically ",
-                  "occurs when the file contains R code that relies on ",
+                  "maintainer of the ", pkgname, "package: An error ",
+                  "occured while trying to generate the citation ",
+                  "from the CITATION file. This typically occurs ",
+                  "when the file contains R code that relies on ",
                   "the package to be installed e.g. it contains calls ",
                   "to things like <code>packageVersion()</code> or ",
                   "<code>packageDate()</code> instead of using ",
@@ -247,7 +247,19 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
                   "r-release/R-exts.html#CITATION-files\">R documentation</a> ",
                   "for more information.</p>")
     } else {
-        html <- capture.output(print(citation, style="html"))
+        ## print() can fail on a citation object. See:
+        ## https://bugs.r-project.org/bugzilla/show_bug.cgi?id=17725
+        html <- try(capture.output(print(citation, style="html")), silent=TRUE)
+        if (inherits(html, "try-error")) {
+            message("(failed! ==> replacing citation with red banner) ",
+                    appendLF=FALSE)
+            html <- c("<p style=\"color: #B33\">Important note to the ",
+                      "maintainer of the ", pkgname, "package: An error ",
+                      "occured while trying to generate the citation ",
+                      "from the CITATION file. Please make sure that the ",
+                      "CITATION file in your package is valid by calling ",
+                      "<code>utils::readCitationFile()</code> on it.</p>")
+        }
         ## Filter out lines starting with \Sexprs.
         html <- html[grep("^\\\\Sexpr", html, invert=TRUE)]
     }
