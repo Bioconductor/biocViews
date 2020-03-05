@@ -98,6 +98,7 @@ ResearchField -> ComputationalChemistry;
 ResearchField -> Agroinformatics;
 ResearchField -> Transcriptomics;
 ResearchField -> ImmunoOncology;
+ResearchField -> Epitranscriptomics;
 
 /* Software -> BiologicalQuestion */
 Software -> BiologicalQuestion;
