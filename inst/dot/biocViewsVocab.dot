@@ -83,6 +83,7 @@ ResearchField -> Metagenomics;
 ResearchField -> Proteomics;
 ResearchField -> Lipidomics;
 ResearchField -> Epigenetics;
+ResearchField -> Phylogenetics;
 ResearchField -> Pharmacogenomics;
 ResearchField -> Pharmacogenetics;
 ResearchField -> Cheminformatics;
