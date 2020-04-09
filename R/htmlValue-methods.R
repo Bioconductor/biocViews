@@ -157,11 +157,13 @@ setMethod("htmlValue", signature(object="pdDownloadInfo"),
           function(object) {
               flds <- c(source="source.ver",
                         win.binary="win.binary.ver",
+                        mac.binary="mac.binary.ver",
                         mac.binary.mavericks="mac.binary.mavericks.ver",
                         `mac.binary.el-capitan`="mac.binary.el-capitan.ver")
 
               fileTypes <- list(source="Package source",
                                 win.binary="Windows 32-bit binary",
+                                mac.binary="macOS 10.13 (High Sierra) binary",
                                 mac.binary.mavericks="MacOS X 10.9 (Mavericks) binary",
                                 `mac.binary.el-capitan`="MacOS X 10.11 (El Capitan) binary")
               makeLinkHelper <- function(type) {

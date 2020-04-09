@@ -10,9 +10,9 @@
 
   \preformatted{
     source: src/contrib
-    win.binary: bin/windows/contrib/3.4
-    mac.binary.el-capitan: bin/mac/el-capitan/contrib/3.4
-    provides: source, win.binary, mac.binary.el-capitan
+    win.binary: bin/windows/contrib/4.0
+    mac.binary: bin/macosx/contrib/4.0
+    provides: source, win.binary, mac.binary
   }
 }
 \usage{

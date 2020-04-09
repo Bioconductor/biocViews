@@ -57,6 +57,10 @@ Objects can be created by calls of the form \code{new("PackageDetail", ...)}.
     string for the source package}
     \item{\code{win.binary.ver}:}{Object of class \code{"character"}
     version string for the 32-bit Windows binary package }
+    \item{\code{mac.binary}:}{Object of class \code{"character"}
+    version string for the macOS High Sierra binary package }
+    \item{\code{mac.binary.mavericks.ver}:}{Object of class \code{"character"}
+    version string for the OS X Mavericks binary package }
     \item{\code{mac.binary.el-capitan.ver}:}{Object of class \code{"character"}
     version string for the OS X El Capitan binary package }
     \item{\code{downloadStatsUrl}:}{Object of class \code{"character"} An
@@ -133,8 +137,8 @@ pd <- new("PackageDetail",
           vignetteScripts="vignettes/MyFancyPackage/inst/doc/MFP1.R\nvignettes/MyFancyPackage/inst/doc/MFP2.R",
           vignetteTitles="MFP1 Document,\nMFP2 Document",
           source.ver="src/contrib/MyFancyPackage_1.2.3.tar.gz",
-          win.binary.ver="bin/windows/contrib/3.4/MyFancyPackage_1.2.2.zip",
-          `mac.binary.el-capitan.ver`="bin/macosx/el-capitan/contrib/3.4/MyFancyPackage_1.2.3.tgz",
+          win.binary.ver="bin/windows/contrib/4.0/MyFancyPackage_1.2.2.zip",
+          mac.binary.ver="bin/macosx/contrib/4.0/MyFancyPackage_1.2.3.tgz",
           dependsOnMe=c("PackageThatExposesMe"),
           importsMe=c("AnEvenFancierPackage","AMuchFancierPackage"),
           suggestsMe="PackageThatUsesMeInVignette",
