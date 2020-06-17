@@ -680,8 +680,8 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
 
     formatVec <- function(vec){
         vec <- gsub(pattern="NA, NA", replacement=NA, vec)
-        vec <- gsub(pattern="NA, ", replacement="", vec)
-        vec <- gsub(pattern=", NA", replacement="", vec)
+        vec <- gsub(pattern="^NA, ", replacement="", vec)
+        vec <- gsub(pattern=", NA$", replacement="", vec)
         vec
     }
     allVigs <- formatVec(allVigs)
