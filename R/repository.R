@@ -174,38 +174,46 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
     pkgname <- pkgName(tarball)
     tmpdir <- tempdir()
 
-    ## Extract DESCRIPTION file from tarball.
+    ## Remove any stale DESCRIPTION or CITATION file from the tmpdir/pkgname/
+    ## folder (could happen e.g. if 'tmpdir' somehow already contained a stale
+    ## source tree for 'pkgname').
+    tmp_pkgdir <- file.path(tmpdir, pkgname)
+    DESCRIPTION_path <- file.path(tmp_pkgdir, "DESCRIPTION")
+    CITATION_path <- file.path(tmp_pkgdir, "inst", "CITATION")
+    paths <- c(DESCRIPTION_path, CITATION_path)
+    status <- unlink(paths)
+    ## Should never happen.
+    if (status != 0L)
+        stop("failed to remove files DESCRIPTION and/or ",
+             "inst/CITATION from folder ", tmp_pkgdir)
+
+    ## Try to extract files DESCRIPTION and inst/CITATION from tarball.
     ## Note that the path separator is **always** / in a tarball, even
     ## on Windows, so do NOT use file.path() here.
     DESCRIPTION_tpath <- paste0(pkgname, "/DESCRIPTION")
-    status <- untar(tarball, DESCRIPTION_tpath, exdir=tmpdir)
-    ## Should never happen.
-    if (status != 0L)
+    CITATION_tpath <- paste0(pkgname, "/inst/CITATION")
+    tpaths <- c(DESCRIPTION_tpath, CITATION_tpath)
+    status <- untar(tarball, tpaths, exdir=tmpdir)
+    ## Unfortunately, there are some rare situations where untar() returns
+    ## a non-zero value even though the requested files get successfully
+    ## extracted. This happens with some package source tarballs generated
+    ## by 'R CMD build' but seem corrupted e.g.:
+    ##   > untar("simpleSingleCell_1.13.5.tar.gz", "simpleSingleCell/DESCRIPTION")
+    ##   /bin/tar: Skipping to next header
+    ##   /bin/tar: Skipping to next header
+    ##   /bin/tar: Exiting with failure status due to previous errors
+    ##   Warning message:
+    ##   In untar("simpleSingleCell_1.13.5.tar.gz", "simpleSingleCell/DESCRIPTION") :
+    ##     ‘/bin/tar -xf 'simpleSingleCell_1.13.5.tar.gz' 'simpleSingleCell/DESCRIPTION'’ returned error code 2
+    ## So instead of checking 'status', we check for the existence of the
+    ## extracted files.
+    if (!file.exists(DESCRIPTION_path))  # should never happen
         stop("failed to extract DESCRIPTION file from ", tarball)
+
     description <- packageDescription(pkgname, lib.loc=tmpdir)
 
-    ## Remove any stale CITATION file from the tmpdir/pkgname/ folder (could
-    ## happen if 'tmpdir' somehow already contained a stale source tree
-    ## for 'pkgname').
-    CITATION_path <- file.path(tmpdir, pkgname, "inst", "CITATION")
-    status <- unlink(CITATION_path)
-    ## Should never happen.
-    if (status != 0L)
-        stop("failed to remove ", CITATION_path, " file")
-
-    all_tpaths <- untar(tarball, list=TRUE)
-    status <- attr(all_tpaths, "status")
-    if (!is.null(status) && status != 0L)
-        stop("failed to extract list of paths from ", tarball)
-    CITATION_tpath <- paste0(pkgname, "/inst/CITATION")
-
-    ## Extract CITATION file from tarball, if present, and use it to
-    ## generate citation.
-    if (CITATION_tpath %in% all_tpaths) {
-        status <- untar(tarball, CITATION_tpath, exdir=tmpdir)
-        ## Should never happen.
-        if (status != 0L)
-            stop("failed to extract CITATION file from ", tarball)
+    ## If tarball contains a CITATION file, use it to generate the citation.
+    if (file.exists(CITATION_path)) {
         message("(try to process CITATION file) ", appendLF=FALSE)
         citation <- try(readCitationFile(CITATION_path, meta=description),
                         silent=TRUE)
