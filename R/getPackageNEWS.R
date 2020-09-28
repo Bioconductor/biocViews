@@ -168,12 +168,13 @@ printNEWS <- function(dbs, destfile, overwrite=FALSE, width=68,
 {
     output <- match.arg(output)
     dbs <- lapply(dbs, function(db) {
-        db[["Text"]] <- sapply(db[["Text"]], function(elt) {
-            paste(strwrap(elt, width=options()[["width"]] - 10),
-                  collapse="\n")
-        })
-        db
-    })
+         db[["Text"]] <- sapply(db[["Text"]], function(elt) {
+             elt <- unlist(strsplit(elt, "\n"))
+             paste(strwrap(elt, width=options()[["width"]] - 10),
+                   collapse="\n")
+         })
+         db
+     })
     urlBase <- ifelse(relativeLink, "/packages/","https://bioconductor.org/packages/")
     txt <- capture.output({
         for (i in seq_along(dbs)) {

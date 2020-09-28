@@ -3,6 +3,7 @@ CHANGES IN VERSION 1.57.0
 
 BUG FIX
 
+    o (1.57.4) In NEWS generation, fix formatting.
     o (1.57.1) In VIEWS generation fix but with vignetteTitles. When combinding
     different format types could potentially remove vignette titles that ended
     with "RNA,". Do strict start of and end of string check for formatting.
