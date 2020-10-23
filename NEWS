@@ -1,6 +1,10 @@
 CHANGES IN VERSION 1.57.0
 -------------------------
 
+NEW FEATURES
+
+    o (1.57.5) New views AnnotationHubSoftware and ExperimentHubSoftware
+
 BUG FIX
 
     o (1.57.4) In NEWS generation, fix formatting.

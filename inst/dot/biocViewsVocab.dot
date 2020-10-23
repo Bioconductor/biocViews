@@ -73,6 +73,8 @@ Technology -> SAGE;
 Technology -> CRISPR;
 Technology -> SingleCell;
 Technology -> ddPCR;
+Technology -> AnnotationHubSoftware;
+Technology -> ExperimentHubSoftware;
 
 /* Software -> ResearchFields */
 Software -> ResearchField;
