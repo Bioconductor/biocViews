@@ -1,6 +1,15 @@
 Package: biocViews
-Version: 1.57.5
 Title: Categorized views of R package repositories
+Description: Infrastructure to support 'views' used to classify
+    Bioconductor packages. 'biocViews' are directed acyclic
+    graphs of terms from a controlled vocabulary. There are three
+    major classifications, corresponding to 'software', 'annotation',
+    and 'experiment data' packages.
+biocViews: Infrastructure
+URL: http://bioconductor.org/packages/BiocViews
+BugReports: https://github.com/Bioconductor/BiocViews/issues
+Version: 1.57.5
+License: Artistic-2.0
 Author: VJ Carey <stvjc@channing.harvard.edu>,
         BJ Harshfield <rebjh@channing.harvard.edu>,
         S Falcon <sfalcon@fhcrc.org> ,
@@ -11,15 +20,7 @@ Depends: R (>= 3.6.0)
 Imports: Biobase, graph (>= 1.9.26), methods, RBGL (>= 1.13.5), tools,
         utils, XML, RCurl, RUnit, BiocManager
 Suggests: BiocGenerics, knitr, commonmark
-Description: Infrastructure to support 'views' used to classify
-    Bioconductor packages. 'biocViews' are directed acyclic
-    graphs of terms from a controlled vocabulary. There are three
-    major classifications, corresponding to 'software', 'annotation',
-    and 'experiment data' packages.
-License: Artistic-2.0
-URL: http://www.bioconductor.org/packages/release/BiocViews.html
 Collate: AllClasses.R AllGenerics.R as-methods.R htmlDoc-methods.R
         htmlFilename-methods.R htmlValue-methods.R show-methods.R
         getPackNames.R packageDetails.R pump.R repository.R showvoc.R
         getPackageNEWS.R validation_tests.R recommendBiocViews.R
-biocViews: Infrastructure
