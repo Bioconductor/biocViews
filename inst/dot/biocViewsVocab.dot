@@ -217,6 +217,7 @@ Organism -> Callithrix_jacchus;
 Organism -> Canis_familiaris;
 Organism -> Cicer_arietinum;
 Organism -> Ciona_intestinalis;
+Organism -> Chlamydomonas_reinhardtii;
 Organism -> Danio_rerio;
 Organism -> Drosophila_melanogaster;
 Organism -> Drosophila_virilis;
