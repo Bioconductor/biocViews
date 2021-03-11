@@ -1,3 +1,11 @@
+CHANGES IN VERSION 1.59.0
+-------------------------
+
+ENHANCEMENT
+
+    o (1.57.2) Add CRAN packages to reverse dependency list
+    o (1.57.1) Add biocViews term Chlamydomonas_reinhardtii
+
 CHANGES IN VERSION 1.57.0
 -------------------------
 
