@@ -716,20 +716,23 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     colnames(dbMat) <- c(fldNames, "vignettes", "vignetteTitles", "hasREADME",
         "hasNEWS", "hasINSTALL", "hasLICENSE", "Rfiles")
 
-    # get reverse dependency list
-    dependsOnMe <- getReverseDepends(dbMat, "Depends")
+    # get reverse dependency list including CRAN
+    all_repos <- repositories()
+    all_pkgs <- available.packages(repos = all_repos)
+    mm = match(dbMat[,"Package"], all_pkgs[,"Package"])
+
+
+    dependsOnMe <- getReverseDepends(all_pkgs, "Depends")[mm]
     dbMat <- cbind(dbMat, dependsOnMe)
-    importsMe <- getReverseDepends(dbMat, "Imports")
+    importsMe <- getReverseDepends(all_pkgs, "Imports")[mm]
     dbMat <- cbind(dbMat, importsMe)
-    suggestsMe <- getReverseDepends(dbMat, "Suggests")
+    suggestsMe <- getReverseDepends(all_pkgs, "Suggests")[mm]
     dbMat <- cbind(dbMat, suggestsMe)
-    linksToMe <- getReverseDepends(dbMat, "LinkingTo")
+    linksToMe <- getReverseDepends(all_pkgs, "LinkingTo")[mm]
     dbMat <- cbind(dbMat, linksToMe)
 
 
     # add (recursive) dependency count for badge on landing page
-    all_repos <- repositories()
-    all_pkgs <- available.packages(repos = all_repos)
     bioc_pkgs <- available.packages(repos = all_repos[setdiff(names(all_repos),
                                         "CRAN")] )
     deps <- package_dependencies(rownames(bioc_pkgs), db = all_pkgs,
@@ -999,4 +1002,3 @@ write_SYMBOLS <- function(dir, verbose=FALSE, source.dirs=FALSE) {
     close(con)
     NULL
 }
-
