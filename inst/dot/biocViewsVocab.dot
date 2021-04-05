@@ -109,6 +109,7 @@ BiologicalQuestion -> AlternativeSplicing;
 BiologicalQuestion -> Coverage;
 BiologicalQuestion -> DemethylateRegionDetection;
 BiologicalQuestion -> DenovoAssembler;
+BiologicalQuestion -> DifferentialDNA3DStructure;
 BiologicalQuestion -> DifferentialExpression;
 BiologicalQuestion -> DifferentialMethylation;
 BiologicalQuestion -> DifferentialPeakCalling;
