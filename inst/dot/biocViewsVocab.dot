@@ -199,6 +199,8 @@ Infrastructure -> DataImport;
 Infrastructure -> DataRepresentation;
 Infrastructure -> GUI;
 
+/* Software -> ShinyApps */
+Software -> ShinyApps;
 
 /****************************************************************************
  *                            AnnotationData                                *
