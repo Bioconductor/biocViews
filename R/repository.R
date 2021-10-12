@@ -316,7 +316,6 @@ extractNEWS <- function(reposRoot, srcContrib, destDir) {
     extractNewsFromTarball <- function(tarball, unpackDir=".") {
         pkg <- pkgName(tarball)
         cleanUnpackDir(tarball, unpackDir, pattern="NEWS")
-        cat("Attempting to extract NEWS from", tarball, "\n")
         unpack(tarball, unpackDir, "'*NEWS*'")
     }
 
@@ -337,8 +336,14 @@ extractNEWS <- function(reposRoot, srcContrib, destDir) {
     if (!file.info(destDir)$isdir)
       stop("destDir must specify a directory")
     unpackDir <- tempdir()
-    lapply(tarballs, extractNewsFromTarball, unpackDir=unpackDir)
-    lapply(tarballs, convertNEWSToText, srcDir=unpackDir, destDir=destDir)
+    lapply(tarballs, function(tarball) {
+        cat("Attempting to extract NEWS from", tarball, "\n")
+        extractNewsFromTarball(tarball, unpackDir=unpackDir)
+        res <- try(convertNEWSToText(tarball, srcDir=unpackDir,
+                                              destDir=destDir))
+        if (inherits(res, "try-error"))
+            cat("FAILED!\n")
+    })
 
     invisible(NULL)
 }
