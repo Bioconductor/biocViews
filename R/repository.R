@@ -575,6 +575,16 @@ read_REPOSITORY <- function(reposRootPath)
     invisible(nrow(db))
 }
 
+## To manually run/debug write_VIEWS() on the central builder (e.g. on
+## nebbiolo2), start R-4.1 from the biocpush account and do:
+##   library(BiocManager)  # check that the Bioconductor version is correct
+##   repositories()        # check that all the repositories are correct
+##   library(biocViews)
+##   reposRoot <- "~/PACKAGES/3.14/bioc"
+##   manifestFile <- "~biocbuild/bbs-3.14-bioc/manifest/software.txt"
+##   meatPath <- "~biocbuild/bbs-3.14-bioc/MEAT0"
+##   setwd(reposRoot)
+##   write_VIEWS(reposRoot, manifestFile=manifestFile, meatPath=meatPath)
 write_VIEWS <- function(reposRootPath, fields = NULL,
                         verbose = FALSE, vignette.dir="vignettes",
                         manifestFile=NA, meatPath=NA
