@@ -750,7 +750,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     # add (recursive) dependency count for badge on landing page
     bioc_pkgs <- available.packages(repos = all_repos[setdiff(names(all_repos),
                                         "CRAN")] )
-    deps <- package_dependencies(rownames(bioc_pkgs), db = all_pkgs,
+    deps <- tools::package_dependencies(rownames(bioc_pkgs), db = all_pkgs,
                                  recursive=TRUE)
     numDeps <- lengths(deps)
     dependencyCount <-  numDeps[dbMat[, "Package"]]
@@ -778,51 +778,21 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
             add_mat[,which(colnames(dbMat)=="Package")] = missing_pkgs
             if (!is.na(meatPath)){
             for(i in seq_along(missing_pkgs)){
-
+                message(missing_pkgs[i], "\n")
                 add_mat = tryCatch({
-                    desc = read.dcf(file.path(meatPath, missing_pkgs[i],
-                        "DESCRIPTION"))
+                   desc <- tools:::.read_description(file.path(meatPath, missing_pkgs[i], "DESCRIPTION"))
 
-                    for (dx in colnames(desc)){
+                    for (dx in names(desc)){
                         if (dx %in% colnames(add_mat)){
-                            add_mat[i, which(colnames(add_mat) == dx)] = desc[,dx]
+                            add_mat[i, which(colnames(add_mat) == dx)] = desc[dx]
                         }else{
                             # check for Authors@R and parse accordingly
                             if (dx == "Authors@R"){
-                                ar = desc[,"Authors@R"]
-                                env <- new.env(parent=emptyenv())
-                                env[["c"]] = c
-                                env[["person"]] <- utils::person
-                                pp <- parse(text=ar, keep.source=TRUE)
-                                people =
-                                    tryCatch({
-                                        people <- eval(pp, env)
-                                        people
-                                    }, error=function(e) {
-                                        # could not parse Authors@R
-                                        people <- "ERROR"
-                                        people
-                                    }, warning = function(e){
-                                        people <- "ERROR"
-                                        people
-                                    })
-
-                                if (all(people == "ERROR")){
-                                    add_mat[i,which(colnames(dbMat)=="Maintainer")] = "ERROR"
-                                    add_mat[i,which(colnames(dbMat)=="Author")] = "ERROR"
-                                }else{
-                                    Author = paste0(unlist(people$given)," ", unlist(people$family), " <", unlist(people$email),">", collapse=", ")
-                                    add_mat[i,which(colnames(dbMat)=="Author")] = Author
-                                    idx = !is.na(unlist(lapply(people$role, FUN=match, x="cre")))
-                                    if (any(idx)){
-                                        people = people[idx]
-                                        add_mat[i,which(colnames(dbMat)=="Maintainer")] =
-                                            paste0(unlist(people$given)," ", unlist(people$family), " <", unlist(people$email),">", collapse=", ")
-                                    }else{
-                                        add_mat[i,which(colnames(dbMat)=="Maintainer")] = "ERROR"
-                                    }
-
-                                }
+                                authMain <-
+                                    tools:::.expand_package_description_db_R_fields(desc)
+                                add_mat[i,which(colnames(dbMat)=="Maintainer")] = authMain["Maintainer"]
+                                add_mat[i,which(colnames(dbMat)=="Author")] = authMain["Author"]
+  
                             }
                         }
                     }
@@ -837,7 +807,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
                     add_mat
                 })
             }
-        }
+            }
             # make sure necessary columns are not NA
             if (any(is.na(add_mat[,"Title"]))){
                 add_mat[which(is.na(add_mat[,"Title"])), "Title"] =
