@@ -1,3 +1,10 @@
+CHANGES IN VERSION 1.62.0
+-------------------------
+
+BUG FIX
+
+    o (1.62.1) Fix parsing of Authors@R for writing VIEWS
+
 CHANGES IN VERSION 1.61.0
 -------------------------
 
