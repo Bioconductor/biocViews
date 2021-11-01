@@ -778,7 +778,6 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
             add_mat[,which(colnames(dbMat)=="Package")] = missing_pkgs
             if (!is.na(meatPath)){
             for(i in seq_along(missing_pkgs)){
-                message(missing_pkgs[i], "\n")
                 add_mat = tryCatch({
                    desc <- tools:::.read_description(file.path(meatPath, missing_pkgs[i], "DESCRIPTION"))
 
