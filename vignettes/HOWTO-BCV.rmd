@@ -1,0 +1,150 @@
+---
+title: "HOWTO generate biocViews HTML"
+author: "S. Falcon and V.J. Carey"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+vignette: >
+  %\VignetteIndexEntry{Quick-start Guide}
+  %\VignetteEncoding{UTF-8}
+  %\VignetteEngine{knitr::rmarkdown}
+output:
+  BiocStyle::html_document:
+    number_sections: no
+    toc: yes
+    toc_depth: 2
+editor_options: 
+  markdown: 
+    wrap: 72
+---
+
+
+```{r include=FALSE}
+
+if(!require(biocViews)){
+    install.packages("biocViews")
+    library(Biobase)
+}
+
+```
+
+# Overview
+
+The purpose of *biocViews* is create HTML pages that categorize packages
+in a Bioconductor package repository according to terms, or *views*, in
+a controlled vocabulary. The fundamental resource is the VIEWS file
+placed at the root of a repository. This file contains the complete
+DESCRIPTION file contents for each package along with additional meta
+data describing the location of package artifacts such as archive files
+for different platforms and vignettes.
+
+The standard behavior of the view generation program is to query the
+repository over the internet. This package includes a static sample
+VIEWS file so that the examples in this document can run without
+internet access.
+
+# Establishing a vocabulary of terms
+
+We use `dot` to describe the vocabulary. For details on the `dot`
+syntax, see <http://www.graphviz.org/doc/info/lang.html>.
+
+```{r Establishing a vocabulary of terms, echo=TRUE, message=FALSE, warning=FALSE}
+
+vocabFile <- system.file("dot/biocViewsVocab.dot", package="biocViews")
+cat(readLines(vocabFile)[1:20], sep="\n")
+cat("...\n")
+
+```
+
+The dot description is transformed to a GXL document using `dot2gxl`, a
+tool included in the graphviz distribution. The GXL is then converted to
+a *graphNEL* instance using `fromGXL` from the *graph* package. There is
+a helper script in the root of the *biocViews* package called
+`updateVocab.sh` that automates the update process if the required tools
+are available. The script will also attempt to dump the ontology graph
+into a local SQLite database using tools from *DBI* and *RSQLite*. The
+information in this database can be used to create a dynamic HTML
+representation of the graph by means of a PHP script.
+
+The definition of the vocabulary lacks a notion of order. Since the
+purpose of the vocabulary is primarily for display, a valuable
+improvement would be to use graph attributes to allow the ordering of
+the terms.
+
+Another missing piece is a place to put a text description of each term.
+This could also be achieved using graph attributes.
+
+## Use Case: adding a term to the vocabulary
+
+To add a new term to the vocabulary:
+
+1. edit the *dot* file `dot/biocViewsVocab.dot` and add the desired term. Note that terms cannot contain spaces and that the underscore character, `_`, should be used instead.
+2. ensure that R and dot2gxl are on your PATH.
+3. cd into the biocViews working copy directory.
+4. run the updateVocab.sh script.
+5. reinstall the package and test that the new term is part of the vocabulary. In short, you will load the data using `data(biocViewsVocab)` and check that the term is a node of the graph instance.
+6. commit changes to svn.
+
+## Use Case: updating BioConductor website
+
+This is for BioConductor web administrator:
+
+1. update local copy of biocViews using `svn update`.
+2. find the correct instance R that is used to generate HTML pages on BioConductor website, and install the updated `biocViews`.
+3. re-generate the related HTML packages by using `/home/biocadmin/bin/prepareRepos-*.sh` and `/home/biocadmin/bin/pushRepos-*.sh`.
+
+# Querying a repository
+
+To generate a list of *BiocViews* objects that can be used to generate
+HTML views, you will need the repository URL and a graph representation
+of the vocabulary.
+
+There are three main Bioconductor package repositories: a software
+repository containing analytic packages, an annotation data repository,
+and an experiment data repository. The vocabulary of terms has a single
+top-level node, all other nodes have at least one parent. The top-level
+node, *BiocViews*, has three children that correspond to the three main
+Bioconductor repositories: *Software*, *AnnotationData*, and
+*ExperimentData*. Views for each repository are created separately using
+`getBiocSubViews`. Below, we demonstrate how to build the *Software* set
+of views.
+
+
+```{r Querying a repository, echo=TRUE, message=FALSE, warning=FALSE}
+
+data(biocViewsVocab)
+reposPath <- system.file("doc", package="biocViews")
+reposUrl <- paste("file://", reposPath, sep="") 
+biocViews <- getBiocSubViews(reposUrl, biocViewsVocab, topTerm="Software")
+print(biocViews[1:2])
+
+```
+
+
+
+To query the currently available vocabulary terms, use function
+`getSubTerms` on the *graphNEL* object `biocViewsVocab`. The second
+argument of this function takes a character of the base term for which
+all subterms should be returned. For a complete list use
+`term="BiocViews"`.
+
+```{r getSubTerms, message=FALSE, warning=FALSE}
+
+getSubTerms(biocViewsVocab, term="Technology")
+
+```
+
+
+
+# Generating HTML
+
+By default, the set of HTML views will link to package description pages
+located in the html subdirectory of the remote repository.
+
+```{r Generating HTML, echo=TRUE, message=FALSE, warning=FALSE}
+
+viewsDir <- file.path(tempdir(), "biocViews")
+dir.create(viewsDir)
+writeBiocViews(biocViews, dir=viewsDir)
+dir(viewsDir)[1:2]
+ 
+```
+
