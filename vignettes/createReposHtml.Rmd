@@ -43,12 +43,12 @@ directory as reposRoot. Place your packages as follows:
 
 You will need the following parameters:
 
-```{r echo=TRUE, eval=FALSE}
-> reposRoot <- "path/to/reposRoot"
-> ## The names are essential
-> contribPaths <- c(source="src/contrib",
-+                   win.binary="bin/windows/contrib/4.0",
-+                   mac.binary="bin/macosx/contrib/4.0")
+```{r eval=FALSE}
+reposRoot <- "path/to/reposRoot"
+## The names are essential
+contribPaths <- c(source="src/contrib",
+                   win.binary="bin/windows/contrib/4.0",
+                   mac.binary="bin/macosx/contrib/4.0")
 ```
 
 # Extracting vignettes
@@ -56,8 +56,8 @@ You will need the following parameters:
 The `extractVignettes` function extracts pdf files from inst/doc. The default is 
 to extract to a reposRoot/vignettes.
 
-```{r echo=TRUE, eval=FALSE}
-> extractVignettes(reposRoot, contribPaths["source"])
+```{r eval=FALSE}
+extractVignettes(reposRoot, contribPaths["source"])
 ```
 
 # Generating the control files
@@ -66,8 +66,8 @@ The `genReposControlFiles` function will generate the PACKAGES files for each
 contrib path and also create a VIEWS file with complete info for later use by 
 biocViews.
 
-```{r echo=TRUE, eval=FALSE}
-> genReposControlFiles(reposRoot, contribPaths)
+```{r eval=FALSE}
+genReposControlFiles(reposRoot, contribPaths)
 ```
 
 # Generating the HTML
@@ -80,7 +80,7 @@ Two CSS files are included with *biocViews* that are automatically copied along
 side the appropriate HTML files during the HTML generation process. These CSS 
 files are:
 
-```{r echo=TRUE, eval=FALSE}
+```{r eval=FALSE}
 reposRoot/repository-detail.css
 reposRoot/html/package-detail.css
 ```
@@ -120,22 +120,21 @@ A more flexible approach is to create dummy classes for each output "chunk".
 Each dummy class contains (subclasses) *PackageDescription* and that's it. We 
 then can take advantage of the behavior of the as method to convert.
 
-```{r echo=TRUE, eval=FALSE}
-> ## Define classes like this for each logical document chunk
-> setClass("pdAuthorMaintainerInfo", contains="PackageDetail")
-> setClass("pdVignetteInfo", contains="PackageDetail")
-> ## Then define a htmlValue method
-> setMethod("htmlValue", signature(object="pdDescriptionInfo"),
-+            function(object) {
-+            node <- xmlNode("p", cleanText(object@Description),
-+                             attrs=c(class="description"))
-+           node
-+         })
-> ## Then you can make use of all this...
-> ## Assume object contains a PackageDetail instance
-> authorInfo <- as(object, "pdAuthorMaintainerInfo")
-> dom$addNode(htmlValue(authorInfo))
-> 
+```{r eval=FALSE}
+## Define classes like this for each logical document chunk
+setClass("pdAuthorMaintainerInfo", contains="PackageDetail")
+setClass("pdVignetteInfo", contains="PackageDetail")
+## Then define a htmlValue method
+setMethod("htmlValue", signature(object="pdDescriptionInfo"),
+           function(object) {
+           node <- xmlNode("p", cleanText(object@Description),
+                            attrs=c(class="description"))
+           node
+         })
+## Then you can make use of all this...
+## Assume object contains a PackageDetail instance
+authorInfo <- as(object, "pdAuthorMaintainerInfo")
+dom$addNode(htmlValue(authorInfo))
 ```
 
 One advantage of this setup is that we can now define a method to generate 
@@ -148,7 +147,7 @@ We could parameterize as follows. Not sure this makes things easier to follow,
 but it does demonstrate how you could start building up documents in a more 
 programatic fashion.
 
-```{r echo=TRUE, eval=FALSE}
+```{r eval=FALSE}
 details <- list(heading=list(tag="h3", text="Details"),
                 content="pdDetailsInfo")
 downloads <- list(heading=list(tag="h3", text="Download Package"),
