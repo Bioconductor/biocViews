@@ -204,7 +204,7 @@ extractINSTALLfiles <- function(reposRoot, srcContrib, destDir) {
     ##   /bin/tar: Exiting with failure status due to previous errors
     ##   Warning message:
     ##   In untar("simpleSingleCell_1.13.5.tar.gz", "simpleSingleCell/DESCRIPTION") :
-    ##     ‘/bin/tar -xf 'simpleSingleCell_1.13.5.tar.gz' 'simpleSingleCell/DESCRIPTION'’ returned error code 2
+    ##     "/bin/tar -xf 'simpleSingleCell_1.13.5.tar.gz' 'simpleSingleCell/DESCRIPTION'" returned error code 2
     ## So instead of checking 'status', we check for the existence of the
     ## extracted files.
     if (!file.exists(DESCRIPTION_path))  # should never happen
@@ -791,7 +791,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
                                     tools:::.expand_package_description_db_R_fields(desc)
                                 add_mat[i,which(colnames(dbMat)=="Maintainer")] = authMain["Maintainer"]
                                 add_mat[i,which(colnames(dbMat)=="Author")] = authMain["Author"]
-  
+
                             }
                         }
                     }
