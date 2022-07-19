@@ -80,7 +80,7 @@ Two CSS files are included with *biocViews* that are automatically copied along
 side the appropriate HTML files during the HTML generation process. These CSS 
 files are:
 
-```{r eval=FALSE}
+```
 reposRoot/repository-detail.css
 reposRoot/html/package-detail.css
 ```
