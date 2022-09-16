@@ -14,8 +14,7 @@ genReposControlFiles <- function(reposRoot, contribPaths, manifestFile=NA, meatP
         path <- packagesPaths[[type]]
         if (type == "win64.binary") {
             type <- "win.binary"
-        } else if (substr(type, 1, 10) == "mac.binary" or
-                   stringr::str_replace(type, "arm64.", "") == "mac.binary") {
+        } else if (substr(type, 1, 10) == "mac.binary" || gsub("arm64", "", type) == "mac.binary") {
             type <- "mac.binary"
         }
         message("- write_PACKAGES() to ", path, " ... ", appendLF=FALSE)
