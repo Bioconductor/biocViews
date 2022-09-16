@@ -1,10 +1,6 @@
 CHANGES IN VERSION 1.65.0
 -------------------------
 
-BUG FIX
-
-    o (1.64.5) Fix bug for genReposControlFiles
-
 ENHANCEMENT
 
     o (1.65.4) Change to allow Mac ARM64 binaries
