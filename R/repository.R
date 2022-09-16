@@ -14,7 +14,8 @@ genReposControlFiles <- function(reposRoot, contribPaths, manifestFile=NA, meatP
         path <- packagesPaths[[type]]
         if (type == "win64.binary") {
             type <- "win.binary"
-        } else if (substr(type, 1, 10) == "mac.binary") {
+        } else if (substr(type, 1, 10) == "mac.binary" or
+                   stringr::str_replace(type, "arm64.", "") == "mac.binary") {
             type <- "mac.binary"
         }
         message("- write_PACKAGES() to ", path, " ... ", appendLF=FALSE)
@@ -610,7 +611,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
 
         ## Use code from tools to build a matrix of package info
         pkg.dir <- file.path(reposRootPath, reposInfo[, os])
-        if(grepl(os, pattern="mac.binary")) os = "mac.binary"
+        if(grepl(os, pattern="mac.*.binary")) os = "mac.binary"
         if(grepl(os, pattern="win.binary")) os = "win.binary"
         db <- tools:::.build_repository_package_db(pkg.dir, fields, os, verbose)
         ## Turn 'db' into a matrix with 1 row per package
@@ -651,6 +652,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
                           'source'=".tar.gz",
                           'win.binary'=".zip",
                           'mac.binary'=,
+                          'mac.arm64.binary'=,
                           'mac.binary.mavericks'=,
                           'mac.binary.el-capitan'=".tgz",
                           stop("unknown type"))
