@@ -3,6 +3,7 @@ CHANGES IN VERSION 1.65.0
 
 ENHANCEMENT
 
+    o (1.65.4) Change to allow Mac ARM64 binaries
     o (1.65.2) Convert Sweave vignettes to Rmd
     o (1.65.2) Add .gitignore
 
