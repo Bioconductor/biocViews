@@ -14,7 +14,7 @@ genReposControlFiles <- function(reposRoot, contribPaths, manifestFile=NA, meatP
         path <- packagesPaths[[type]]
         if (type == "win64.binary") {
             type <- "win.binary"
-        } else if (substr(type, 1, 10) == "mac.binary" || gsub("arm64.", "", type, fixed = TRUE) == "mac.binary") {
+        } else if (substr(type, 1, 10) == "mac.binary") {
             type <- "mac.binary"
         }
         message("- write_PACKAGES() to ", path, " ... ", appendLF=FALSE)
@@ -651,7 +651,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
                           'source'=".tar.gz",
                           'win.binary'=".zip",
                           'mac.binary'=,
-                          'mac.arm64.binary'=,
+                          'mac.binary.big-sur-arm64'=,
                           'mac.binary.mavericks'=,
                           'mac.binary.el-capitan'=".tgz",
                           stop("unknown type"))
