@@ -172,6 +172,8 @@ WorkflowStep -> Visualization;
 Visualization -> Network;
 WorkflowStep -> GenomeBrowsers;
 
+/* Software -> WorkflowManagement */
+
 /* Software -> StatisticalMethod */
 Software -> StatisticalMethod;
 StatisticalMethod -> Bayesian;
