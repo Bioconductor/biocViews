@@ -173,6 +173,7 @@ Visualization -> Network;
 WorkflowStep -> GenomeBrowsers;
 
 /* Software -> WorkflowManagement */
+Software -> WorkflowManagement;
 
 /* Software -> StatisticalMethod */
 Software -> StatisticalMethod;
