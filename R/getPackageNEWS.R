@@ -15,7 +15,14 @@ getPackageNEWS <- function(prevRepos="3.6",
                            currRepos="3.7",
                            repo=c("bioc", "data/experiment", "workflows"),
                            srcdir=NULL){
-
+    .Deprecated(
+        "getPackagesNEWS", "ReleaseLaunch",
+        c(
+            "'getPackageNEWS' is deprecated.\n",
+            "Use 'ReleaseLaunch::getPackagesNEWS' instead.\n",
+            "See help(\"getPackagesNEWS\", package = \"ReleaseLaunch\")"
+        )
+    )
     repo <- match.arg(repo)
     URL_BASE <- "http://master.bioconductor.org/packages/"
     VIEWS <- "%s%s/%s/VIEWS"
@@ -166,6 +173,14 @@ getNEWSFromFile <- function (dir, destfile, format = NULL, reader = NULL,
 printNEWS <- function(dbs, destfile, overwrite=FALSE, width=68,
                       output=c("md", "text"), relativeLink=FALSE, ...)
 {
+    .Deprecated(
+        "printNEWS", "ReleaseLaunch",
+        c(
+            "'printNEWS' is deprecated.\n",
+            "Use 'ReleaseLaunch::printNEWS' instead.\n",
+            "See help(\"printNEWS\", package = \"ReleaseLaunch\")"
+        )
+    )
     output <- match.arg(output)
     dbs <- lapply(dbs, function(db) {
          db[["Text"]] <- sapply(db[["Text"]], function(elt) {
