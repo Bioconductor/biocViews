@@ -178,7 +178,7 @@ printNEWS <- function(dbs, destfile, overwrite=FALSE, width=68,
         c(
             "'printNEWS' is deprecated.\n",
             "Use 'ReleaseLaunch::printNEWS' instead.\n",
-            "See help(\"printNEWS\", package = \"ReleaseLaunch\")"
+            "See help(\"biocViews-deprecated\")"
         )
     )
     output <- match.arg(output)

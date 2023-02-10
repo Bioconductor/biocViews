@@ -314,7 +314,7 @@ extractNEWS <- function(reposRoot, srcContrib, destDir) {
         c(
             "'extractNEWS' is deprecated.\n",
             "Use 'ReleaseLaunch::extractNEWS' instead.\n",
-            "See help(\"extractNEWS\", package = \"ReleaseLaunch\")"
+            "See help(\"biocViews-deprecated\")"
         )
     )
 
