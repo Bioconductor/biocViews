@@ -9,7 +9,7 @@
 ## collate package NEWS files using starting version number in
 ## prevRepos, and membership in currRepos as references. Package
 ## source tree rooted at srcDir, possibiblly as tarred files
-
+utils::globalVariables("Version")
 # repo:  bioc data/experiment workflows
 getPackageNEWS <- function(prevRepos="3.6",
                            currRepos="3.7",
@@ -20,7 +20,7 @@ getPackageNEWS <- function(prevRepos="3.6",
         c(
             "'getPackageNEWS' is deprecated.\n",
             "Use 'ReleaseLaunch::getPackagesNEWS' instead.\n",
-            "See help(\"getPackagesNEWS\", package = \"ReleaseLaunch\")"
+            "See help(\"biocViews-deprecated\")"
         )
     )
     repo <- match.arg(repo)
