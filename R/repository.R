@@ -309,14 +309,6 @@ extractReadmes <- function(reposRoot, srcContrib, destDir) {
 }
 
 extractNEWS <- function(reposRoot, srcContrib, destDir) {
-    .Deprecated(
-        "extractNEWS", "ReleaseLaunch",
-        c(
-            "'extractNEWS' is deprecated.\n",
-            "Use 'ReleaseLaunch::extractNEWS' instead.\n",
-            "See help(\"biocViews-deprecated\")"
-        )
-    )
 
     if (missing(destDir))
       destDir <- file.path(reposRoot, "news")
