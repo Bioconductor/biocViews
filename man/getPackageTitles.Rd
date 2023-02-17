@@ -13,11 +13,15 @@
   bioconductor to retrieve description.
 }
 \usage{
-getPackageTitles(prevBranch="RELEASE_3_6",
-                 currBranch="master",
-                 manifest=c("software.txt", "data-experiment.txt", "workflows.txt"),
-                 status = c("new", "removed"))
-getPackageDescriptions(pkgs, outfile, output=c("md", "text"), relativeLink=FALSE)
+getPackageTitles(
+  prevBranch="RELEASE_3_6",
+  currBranch="master",
+  manifest=c("software.txt", "data-experiment.txt", "workflows.txt"),
+  status = c("new", "removed")
+)
+getPackageDescriptions(
+  pkgs, outfile, output=c("md", "text"), relativeLink=FALSE
+)
 }
 
 \arguments{
@@ -62,8 +66,12 @@ deprecatedSoft = setdiff(getPackageTitles(status="removed"), rmSoft)
 
 # repeated above for data-experiment packages
 newData = getPackageTitles(manifest="data-experiment.txt")
-rmData = getPackageTitles(currBranch="RELEASE_3_7", manifest="data-experiment.txt", status="removed")
-deprecatedData = setdiff(getPackageTitles(manifest="data-experiment.txt", status="removed"), rmData)
+rmData = getPackageTitles(
+  currBranch="RELEASE_3_7", manifest="data-experiment.txt", status="removed"
+)
+deprecatedData = setdiff(
+getPackageTitles(manifest="data-experiment.txt", status="removed"), rmData
+)
 }
 }
 \keyword{manip}% __ONLY ONE__ keyword per line

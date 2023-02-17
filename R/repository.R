@@ -911,6 +911,8 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     .write_repository_db(dbMat, reposRootPath, "VIEWS")
 }
 
+utils::globalVariables("Package")
+
 getReverseDepends <- function(db, fieldName) {
     pkgNames <- db[, "Package"]
     names(pkgNames) <- NULL

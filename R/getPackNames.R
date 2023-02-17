@@ -58,11 +58,11 @@ readPackageInfo <- function(file, fields = NULL, all = FALSE) {
                               paste(lapply(sub("pdf$", "Rnw", vigs),
                                            function(v) {
                                            if (file.exists(v))
-                                               tools:::vignetteInfo(v)[["title"]]
+                                               tools::vignetteInfo(v)[["title"]]
                                            else {
                                                v <- sub("Rnw$", "rnw", v)
                                                if (file.exists(v))
-                                                   tools:::vignetteInfo(v)[["title"]]
+                                                   tools::vignetteInfo(v)[["title"]]
                                                else
                                                    sub("rnw$", "pdf", basename(v))
                                            }
