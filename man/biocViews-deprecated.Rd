@@ -2,15 +2,14 @@
 
 \alias{getPackageNEWS}
 \alias{printNEWS}
-\alias{extractNEWS}
 \alias{biocViews-deprecated}
 
 \title{Deprecated NEWS functions in biocViews}
 
 \description{
     Functions working with a package's NEWS file have been moved out of the
-    package. These include \code{getPackageNEWS}, \code{printNEWS}, and
-    \code{extractNEWS}. Please see the \code{ReleaseLaunch} package.
+    package. These include \code{getPackageNEWS}, and \code{printNEWS}.
+    Please see the \code{ReleaseLaunch} package.
 }
 
 \usage{
@@ -24,7 +23,6 @@ printNEWS(
     dbs, destfile, overwrite = FALSE, width = 68, output=c("md", "text"),
     relativeLink=FALSE, ...
 )
-extractNEWS(reposRoot, srcContrib, destDir)
 }
 
 \arguments{
@@ -59,12 +57,6 @@ extractNEWS(reposRoot, srcContrib, destDir)
   'https//bioconductor.org'. default: FALSE is full url.}
 
   \item{...}{additional arguments, unused.}
-  
-  \item{reposRoot}{Top level path for CRAN-style repos}
-  
-  \item{srcContrib}{Location of source packages}
-  
-  \item{destDir}{where to extract}
 }
 
 \value{
@@ -78,4 +70,3 @@ extractNEWS(reposRoot, srcContrib, destDir)
 \seealso{\url{https://github.com/Bioconductor/ReleaseLaunch}}
 
 \keyword{manip}% __ONLY ONE__ keyword per line
-\keyword{utilities}
