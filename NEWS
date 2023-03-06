@@ -1,3 +1,11 @@
+CHANGES IN VERSION 1.66.0
+-------------------------
+
+ENHANCEMENT
+
+    o (1.66.3) Add LongRead biocViews term
+    o (1.66.1) Add WorkflowManagement biocViews term
+
 CHANGES IN VERSION 1.65.0
 -------------------------
 
