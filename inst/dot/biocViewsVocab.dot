@@ -52,6 +52,7 @@ Sequencing -> MicrobialStrain;
 Sequencing -> HiC;
 Sequencing -> PooledScreens;
 Sequencing -> MNaseSeq;
+Sequencing -> LongRead;
 Technology -> Microarray;
 Microarray -> MultiChannel;
 Microarray -> OneChannel;
