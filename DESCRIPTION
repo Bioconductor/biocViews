@@ -6,9 +6,9 @@ Description: Infrastructure to support 'views' used to classify
     major classifications, corresponding to 'software', 'annotation',
     and 'experiment data' packages.
 biocViews: Infrastructure
-URL: http://bioconductor.org/packages/BiocViews
-BugReports: https://github.com/Bioconductor/BiocViews/issues
-Version: 1.67.3
+URL: http://bioconductor.org/packages/biocViews
+BugReports: https://github.com/Bioconductor/biocViews/issues
+Version: 1.67.4
 License: Artistic-2.0
 Author: VJ Carey <stvjc@channing.harvard.edu>,
         BJ Harshfield <rebjh@channing.harvard.edu>,
