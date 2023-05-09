@@ -8,7 +8,7 @@ Description: Infrastructure to support 'views' used to classify
 biocViews: Infrastructure
 URL: http://bioconductor.org/packages/biocViews
 BugReports: https://github.com/Bioconductor/biocViews/issues
-Version: 1.68.0
+Version: 1.68.1
 License: Artistic-2.0
 Author: VJ Carey <stvjc@channing.harvard.edu>,
         BJ Harshfield <rebjh@channing.harvard.edu>,
