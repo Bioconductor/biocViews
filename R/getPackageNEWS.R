@@ -9,13 +9,20 @@
 ## collate package NEWS files using starting version number in
 ## prevRepos, and membership in currRepos as references. Package
 ## source tree rooted at srcDir, possibiblly as tarred files
-
+utils::globalVariables("Version")
 # repo:  bioc data/experiment workflows
 getPackageNEWS <- function(prevRepos="3.6",
                            currRepos="3.7",
                            repo=c("bioc", "data/experiment", "workflows"),
                            srcdir=NULL){
-
+    .Deprecated(
+        "getPackagesNEWS", "ReleaseLaunch",
+        c(
+            "'getPackageNEWS' is deprecated.\n",
+            "Use 'ReleaseLaunch::getPackagesNEWS' instead.\n",
+            "See help(\"biocViews-deprecated\")"
+        )
+    )
     repo <- match.arg(repo)
     URL_BASE <- "http://master.bioconductor.org/packages/"
     VIEWS <- "%s%s/%s/VIEWS"
@@ -73,99 +80,17 @@ getPackageNEWS <- function(prevRepos="3.6",
 
 }
 
-
-## based on tools:::.build_news_db()
-getNEWSFromFile <- function (dir, destfile, format = NULL, reader = NULL,
-    output=c("md", "text"))
-{
-    mdIfy <- function(txt)
-    {
-        lines <- strsplit(txt, "\n")
-        segs <- lines[[1]]
-        segs <- sub("^    o +", "- ", segs)
-        segs <- sub("^\t", "  ", segs)
-        return(paste(segs, collapse="\n"))
-    }
-
-    newsRdFile <- file.path(dir, "NEWS.Rd") ## should never be found
-    newsRdFile2 <- file.path(dir, "inst", "NEWS.Rd")
-
-    if (!file_test("-f", newsRdFile) && !file_test("-f", newsRdFile2)) {
-
-
-        newsMdFile <- file.path(dir, "NEWS.md")
-        newsMdFile2 <- file.path(dir, "inst", "NEWS.md")
-
-        if (!file_test("-f", newsMdFile) && !file_test("-f", newsMdFile2)) {
-
-
-            nfile <- file.path(dir, "NEWS")
-            nfile2 <- file.path(dir, "inst", "NEWS")
-
-
-            if (!file_test("-f", nfile) && !file_test("-f", nfile2))
-                return(invisible())
-
-            nfile <- ifelse(file_test("-f", nfile), nfile, nfile2)
-
-            if (!is.null(format))
-                .NotYetUsed("format", FALSE)
-            if (!is.null(reader))
-                .NotYetUsed("reader", FALSE)
-
-            file <- file(destfile, "w+")
-            on.exit(close(file))
-            news <- paste(readLines(nfile), collapse="\n")
-            if ("md" == output)
-                news = mdIfy(news)
-            cat(news, file=file)
-            return(invisible())
-        }
-
-        newsMdFile <- ifelse(file_test("-f", newsMdFile), newsMdFile,
-                             newsMdFile2)
-        file <- file(destfile, "w+")
-        on.exit(close(file))
-        db <- tools:::.build_news_db_from_package_NEWS_md(newsMdFile)
-        news <- NULL
-        try(news <- capture.output(print(db)))
-        if (is.null(news))
-            {
-                message(sprintf("Error building news database for %s/%s",
-                                dir, destfile))
-                return(invisible())
-            }
-        news <- paste(news, collapse="\n")
-        if ("md" == output)
-            news <- mdIfy(news)
-        cat(news, file=file)
-        return(invisible())
-    }
-
-    newsRdFile <- ifelse(file_test("-f", newsRdFile), newsRdFile, newsRdFile2)
-
-    file <- file(destfile, "w+")
-    on.exit(close(file))
-    db <- tools:::.build_news_db_from_package_NEWS_Rd(newsRdFile)
-    news <- NULL
-    try(news <- capture.output(print(db)))
-    if (is.null(news))
-    {
-        message(sprintf("Error building news database for %s/%s",
-            dir, destfile))
-        return(invisible())
-    }
-    news <- paste(news, collapse="\n")
-    if ("md" == output)
-        news <- mdIfy(news)
-    cat(news, file=file)
-    return(invisible())
-}
-
-
 printNEWS <- function(dbs, destfile, overwrite=FALSE, width=68,
                       output=c("md", "text"), relativeLink=FALSE, ...)
 {
+    .Deprecated(
+        "printNEWS", "ReleaseLaunch",
+        c(
+            "'printNEWS' is deprecated.\n",
+            "Use 'ReleaseLaunch::printNEWS' instead.\n",
+            "See help(\"biocViews-deprecated\")"
+        )
+    )
     output <- match.arg(output)
     dbs <- lapply(dbs, function(db) {
          db[["Text"]] <- sapply(db[["Text"]], function(elt) {
