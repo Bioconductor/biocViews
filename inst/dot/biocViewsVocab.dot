@@ -253,6 +253,7 @@ Organism -> Pseudomonas_aeruginosa;
 Organism -> Rattus_norvegicus;
 Organism -> Saccharomyces_cerevisiae;
 Organism -> Saccharum_officinarum;
+Organism -> Salmo_salar;
 Organism -> Schizosaccharomyces_pombe;
 Organism -> Staphylococcus_aureus;
 Organism -> Sus_scrofa;
