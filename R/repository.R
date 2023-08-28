@@ -449,6 +449,22 @@ getFileExistsAttr <- function(pkgList, reposRootPath, dir, filename) {
     }))
 }
 
+DESCfieldExistsAttr <- function(pkgList, reposRootPath, field) {
+    vapply(
+        pkgList,
+        function(pkg) {
+            filedir <- file.path(reposRootPath, pkg)
+            file <- file.path(filedir, "DESCRIPTION")
+            result <- file.exists(file)
+            if (result) {
+                field <- as.character(read.dcf(file, fields = field))
+                result <- !is.na(field) && identical(length(field), 1L)
+            }
+            result
+        }, logical(1L)
+    )
+}
+
 getFileLinks <- function(pkgList, reposRootPath, vignette.dir, ext,
                          ignore.case=FALSE) {
     if (length(pkgList) == 0L)
@@ -720,6 +736,8 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     install <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "install", "INSTALL")
     license <- getFileExistsAttr(dbMat[, "Package"], reposRootPath, "licenses",
                                  "LICENSE")
+    authorsr <-
+        DESCfieldExistsAttr(dbMat[, "Package"], reposRootPath, "Authors@R")
 
     # add additional values to matrix for writing
     dbMat <- cbind(dbMat, allVigs)
@@ -729,9 +747,10 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
     dbMat <- cbind(dbMat, install)
     dbMat <- cbind(dbMat, license)
     dbMat <- cbind(dbMat, rfiles)
+    dbMat <- cbind(dbMat, authorsr)
 
     colnames(dbMat) <- c(fldNames, "vignettes", "vignetteTitles", "hasREADME",
-        "hasNEWS", "hasINSTALL", "hasLICENSE", "Rfiles")
+        "hasNEWS", "hasINSTALL", "hasLICENSE", "Rfiles", "hasAuthorsAtR")
 
     # get reverse dependency list including CRAN
     all_repos <- repositories()
