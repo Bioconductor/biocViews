@@ -8,7 +8,7 @@ Description: Infrastructure to support 'views' used to classify
 biocViews: Infrastructure
 URL: http://bioconductor.org/packages/biocViews
 BugReports: https://github.com/Bioconductor/biocViews/issues
-Version: 1.73.0
+Version: 1.73.1
 License: Artistic-2.0
 Author: VJ Carey <stvjc@channing.harvard.edu>,
         BJ Harshfield <rebjh@channing.harvard.edu>,
@@ -24,4 +24,5 @@ Collate: AllClasses.R AllGenerics.R as-methods.R htmlDoc-methods.R
         htmlFilename-methods.R htmlValue-methods.R show-methods.R
         getPackNames.R packageDetails.R pump.R repository.R showvoc.R
         getPackageNEWS.R validation_tests.R recommendBiocViews.R
+	dump_concept.R
 VignetteBuilder: knitr

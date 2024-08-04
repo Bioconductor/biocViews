@@ -45,4 +45,4 @@ export("writeBiocViews", "getBiocViews", "write_VIEWS", "write_REPOSITORY",
        "getBiocSubViews", "validate_bioc_views", "writeTopLevelView",
        "writeHtmlDoc", "write_SYMBOLS", "writeRFilesFromVignettes",
        "getPackageNEWS", "printNEWS","recommendBiocViews",
-       "recommendPackages", "guessPackageType")
+       "recommendPackages", "guessPackageType", "dump_concept")

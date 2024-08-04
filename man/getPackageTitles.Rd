@@ -14,8 +14,9 @@
 }
 \usage{
 getPackageTitles(prevBranch="RELEASE_3_6",
-                 currBranch="master",
-                 manifest=c("software.txt", "data-experiment.txt", "workflows.txt"),
+                 currBranch="devel",
+                 manifest=c("software.txt", "data-experiment.txt", 
+                   "workflows.txt", "data-annotation.txt", "books.txt"),
                  status = c("new", "removed"))
 getPackageDescriptions(pkgs, outfile, output=c("md", "text"), relativeLink=FALSE)
 }
