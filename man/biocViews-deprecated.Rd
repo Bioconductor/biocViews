@@ -1,24 +1,28 @@
-\name{getPackageNEWS}
+\name{biocViews-deprecated}
+
 \alias{getPackageNEWS}
 \alias{printNEWS}
-\title{
-  Retrieve and print package NEWS
-}
-\description{
+\alias{biocViews-deprecated}
 
-  These functions visit two Bioconductor releases, identifying
-  packages that are present in the \sQuote{current} repository and have
-  NEWS since the base version of the same package in the
-  \sQuote{previous} release. All NEWS is reported for packages only
-  in the current repository.
+\title{Deprecated NEWS functions in biocViews}
+
+\description{
+    Functions working with a package's NEWS file have been moved out of the
+    package. These include \code{getPackageNEWS}, and \code{printNEWS}.
+    Please see the \code{ReleaseLaunch} package.
 }
+
 \usage{
-getPackageNEWS(prevRepos="3.6",
-	       currRepos="3.7",
-	       repo=c("bioc", "data/experiment", "workflows"),
-	       srcdir = NULL)
-printNEWS(dbs, destfile, overwrite = FALSE, width = 68,
-	  output=c("md", "text"), relativeLink=FALSE, ...)
+getPackageNEWS(
+    prevRepos="3.6",
+	currRepos="3.7",
+	repo=c("bioc", "data/experiment", "workflows"),
+	srcdir = NULL
+)
+printNEWS(
+    dbs, destfile, overwrite = FALSE, width = 68, output=c("md", "text"),
+    relativeLink=FALSE, ...
+)
 }
 
 \arguments{
@@ -53,8 +57,8 @@ printNEWS(dbs, destfile, overwrite = FALSE, width = 68,
   'https//bioconductor.org'. default: FALSE is full url.}
 
   \item{...}{additional arguments, unused.}
-
 }
+
 \value{
   A list of \code{news_db} files, as returned by \code{utils::news},
   for each package for which relevant NEWS is available.
@@ -62,5 +66,7 @@ printNEWS(dbs, destfile, overwrite = FALSE, width = 68,
 \author{
   Martin Morgan \url{mtmorgan@fhcrc.org} and Lori Shepherd
 }
+
+\seealso{\url{https://github.com/Bioconductor/ReleaseLaunch}}
 
 \keyword{manip}% __ONLY ONE__ keyword per line
