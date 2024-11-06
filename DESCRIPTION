@@ -24,5 +24,5 @@ Collate: AllClasses.R AllGenerics.R as-methods.R htmlDoc-methods.R
         htmlFilename-methods.R htmlValue-methods.R show-methods.R
         getPackNames.R packageDetails.R pump.R repository.R showvoc.R
         getPackageNEWS.R validation_tests.R recommendBiocViews.R
-	dump_concept.R
+	dump_concept.R build_html_mans.R
 VignetteBuilder: knitr
