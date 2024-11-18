@@ -174,9 +174,9 @@ build_meta_rdxrefs_db <-
 #' @export
 build_html_mans <- function(package_dirs, src_base) {
     packages <- basename(package_dirs)
-    html_dir <- file.path(src_base, "manuals")
-    if (!dir.exists(html_dir)) dir.create(html_dir, recursive = TRUE)
-    outfiles <- file.path(html_dir, paste0(packages, ".html"))
+    man_dir <- file.path(src_base, "manuals")
+    if (!dir.exists(man_dir)) dir.create(man_dir, recursive = TRUE)
+    outfiles <- file.path(man_dir, packages, "man", paste0(packages, ".html"))
     for (i in seq_along(package_dirs)) {
         tools::pkg2HTML(
             dir = package_dirs[i],
