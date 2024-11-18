@@ -26,3 +26,5 @@ Collate: AllClasses.R AllGenerics.R as-methods.R htmlDoc-methods.R
         getPackageNEWS.R validation_tests.R recommendBiocViews.R
 	dump_concept.R build_html_mans.R
 VignetteBuilder: knitr
+RoxygenNote: 7.3.2
+Encoding: UTF-8
