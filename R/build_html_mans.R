@@ -199,7 +199,10 @@ build_html_mans <- function(package_dirs, reposRoot) {
     man_dir <- file.path(reposRoot, "manuals")
     if (!dir.exists(man_dir)) dir.create(man_dir, recursive = TRUE)
     outfiles <- file.path(man_dir, packages, "man", paste0(packages, ".html"))
+    outdirs <- dirname(outfiles)
     for (i in seq_along(package_dirs)) {
+        if (!dir.exists(outdirs[i]))
+            dir.create(outdirs[i], recursive = TRUE)
         tools::pkg2HTML(
             dir = package_dirs[i],
             out = outfiles[i]
