@@ -175,7 +175,8 @@ build_meta_rdxrefs_db <-
 
 #' @rdname html-manuals
 #'
-#' @param package_dirs `character()` A vector of local package directories.
+#' @param package_dirs `character()` A vector of local source package
+#'   directories.
 #'
 #' @examples
 #' if (interative()) {
