@@ -8,19 +8,19 @@
 \alias{build_html_mans}
 \title{Helper functions to generate HTML pages for reference manuals}
 \usage{
-build_db_from_source(package_dir, src_destDir)
+build_db_from_source(package_dir, reposRoot)
 
 build_meta_aliases_db(web_dir, aliases_db_file, force = FALSE)
 
 build_meta_rdxrefs_db(web_dir, rdxrefs_db_file, force = FALSE)
 
-build_html_mans(package_dirs, src_destDir)
+build_html_mans(package_dirs, reposRoot)
 }
 \arguments{
 \item{package_dir}{`character(1)` The local path to a package for which to
 build the aliases and cross-ref databases (`rds` files).}
 
-\item{src_destDir}{`character(1)` The path to the base hosting directory for
+\item{reposRoot}{`character(1)` The path to the base hosting directory for
 the package repository. This is typically a location on the BBS server.}
 
 \item{web_dir}{`character(1)` The `web/packages` local directory that is
@@ -53,17 +53,17 @@ if (interactive()) {
 
     ## generate from Bioc package source dirs
     packages <- file.path(normalizePath("~/bioc"), bioc_sub)
-    src_destDir <- "~/minibioc/packages/3.20/bioc"
+    reposRoot <- "~/minibioc/packages/3.20/bioc"
 
     for (package in packages) {
-       build_db_from_source(package, src_destDir)
+       build_db_from_source(package, reposRoot)
     }
 }
 if (interactive()) {
-    src_destDir <- "~/minibioc/packages/3.20/bioc/"
-    web_dir <- file.path(src_destDir, "web", "packages")
+    reposRoot <- "~/minibioc/packages/3.20/bioc/"
+    web_dir <- file.path(reposRoot, "web", "packages")
 
-    meta_folder <- file.path(contrib.url(src_destDir), "Meta")
+    meta_folder <- file.path(contrib.url(reposRoot), "Meta")
     if (!dir.exists(meta_folder)) dir.create(meta_folder, recursive = TRUE)
     aliases_db_file <- file.path(meta_folder, "aliases.rds")
 
@@ -72,10 +72,10 @@ if (interactive()) {
     saveRDS(meta_aliases_db, aliases_db_file, version = 2)
 }
 if (interactive()) {
-    src_destDir <- "~/minibioc/packages/3.20/bioc/"
-    web_dir <- file.path(src_destDir, "web", "packages")
+    reposRoot <- "~/minibioc/packages/3.20/bioc/"
+    web_dir <- file.path(reposRoot, "web", "packages")
 
-    meta_folder <- file.path(contrib.url(src_destDir), "Meta")
+    meta_folder <- file.path(contrib.url(reposRoot), "Meta")
     if (!dir.exists(meta_folder)) dir.create(meta_folder, recursive = TRUE)
     rdxrefs_db_file <- file.path(meta_folder, "rdxrefs.rds")
 
@@ -93,8 +93,8 @@ if (interative()) {
 
     ## generate from Bioc package source dirs
     packages <- file.path(normalizePath("~/bioc"), bioc_sub)
-    src_destDir <- "~/minibioc/packages/3.20/bioc"
+    reposRoot <- "~/minibioc/packages/3.20/bioc"
 
-    build_html_mans(packages, src_destDir)
+    build_html_mans(packages, reposRoot)
 }
 }

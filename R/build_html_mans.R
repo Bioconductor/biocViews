@@ -6,7 +6,7 @@
 #' @param package_dir `character(1)` The local path to a package for which to
 #'   build the aliases and cross-ref databases (`rds` files).
 #'
-#' @param src_destDir `character(1)` The path to the base hosting directory for
+#' @param reposRoot `character(1)` The path to the base hosting directory for
 #'   the package repository. This is typically a location on the BBS server.
 #'
 #' @examples
@@ -20,17 +20,17 @@
 #'
 #'     ## generate from Bioc package source dirs
 #'     packages <- file.path(normalizePath("~/bioc"), bioc_sub)
-#'     src_destDir <- "~/minibioc/packages/3.20/bioc"
+#'     reposRoot <- "~/minibioc/packages/3.20/bioc"
 #'
 #'     for (package in packages) {
-#'        build_db_from_source(package, src_destDir)
+#'        build_db_from_source(package, reposRoot)
 #'     }
 #' }
 #' @export
-build_db_from_source <- function(package_dir, src_destDir) {
+build_db_from_source <- function(package_dir, reposRoot) {
     tmp_dir <- tempdir()
     package <- basename(package_dir)
-    package_web_dir <- file.path(src_destDir, "web", "packages", package)
+    package_web_dir <- file.path(reposRoot, "web", "packages", package)
     if (!dir.exists(package_web_dir))
         dir.create(package_web_dir, recursive = TRUE)
     db <- tools::Rd_db(dir = package_dir)
@@ -75,10 +75,10 @@ build_db_from_source <- function(package_dir, src_destDir) {
 #'
 #' @examples
 #' if (interactive()) {
-#'     src_destDir <- "~/minibioc/packages/3.20/bioc/"
-#'     web_dir <- file.path(src_destDir, "web", "packages")
+#'     reposRoot <- "~/minibioc/packages/3.20/bioc/"
+#'     web_dir <- file.path(reposRoot, "web", "packages")
 #'
-#'     meta_folder <- file.path(contrib.url(src_destDir), "Meta")
+#'     meta_folder <- file.path(contrib.url(reposRoot), "Meta")
 #'     if (!dir.exists(meta_folder)) dir.create(meta_folder, recursive = TRUE)
 #'     aliases_db_file <- file.path(meta_folder, "aliases.rds")
 #'
@@ -118,10 +118,10 @@ is_file <- function(x) file.exists(x) && !file.info(x)[["isdir"]]
 #'
 #' @examples
 #' if (interactive()) {
-#'     src_destDir <- "~/minibioc/packages/3.20/bioc/"
-#'     web_dir <- file.path(src_destDir, "web", "packages")
+#'     reposRoot <- "~/minibioc/packages/3.20/bioc/"
+#'     web_dir <- file.path(reposRoot, "web", "packages")
 #'
-#'     meta_folder <- file.path(contrib.url(src_destDir), "Meta")
+#'     meta_folder <- file.path(contrib.url(reposRoot), "Meta")
 #'     if (!dir.exists(meta_folder)) dir.create(meta_folder, recursive = TRUE)
 #'     rdxrefs_db_file <- file.path(meta_folder, "rdxrefs.rds")
 #'
@@ -167,14 +167,14 @@ build_meta_rdxrefs_db <-
 #'
 #'     ## generate from Bioc package source dirs
 #'     packages <- file.path(normalizePath("~/bioc"), bioc_sub)
-#'     src_destDir <- "~/minibioc/packages/3.20/bioc"
+#'     reposRoot <- "~/minibioc/packages/3.20/bioc"
 #'
-#'     build_html_mans(packages, src_destDir)
+#'     build_html_mans(packages, reposRoot)
 #' }
 #' @export
-build_html_mans <- function(package_dirs, src_destDir) {
+build_html_mans <- function(package_dirs, reposRoot) {
     packages <- basename(package_dirs)
-    man_dir <- file.path(src_destDir, "manuals")
+    man_dir <- file.path(reposRoot, "manuals")
     if (!dir.exists(man_dir)) dir.create(man_dir, recursive = TRUE)
     outfiles <- file.path(man_dir, packages, "man", paste0(packages, ".html"))
     for (i in seq_along(package_dirs)) {
