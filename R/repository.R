@@ -77,7 +77,7 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
     buildManualsFromTarball <- function(tarball, unpackDir=".") {
         ## helper function to unpack pdf & Rd files from the vig
         status <- TRUE
-        cleanUnpackDir(tarball, unpackDir, "man", ".*\\.(pdf|Rd|rd)$")
+        cleanUnpackDir(tarball, unpackDir, "man", ".*\\.(html|pdf|Rd|rd)$")
         ret <- unpack(tarball, unpackDir, "'*/man/*.[Rr]d'")
         if (ret != 0) {
             warning("non-zero exit status ", ret, " extracting man pages: ",
@@ -87,11 +87,16 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
             pkg <- pkgName(tarball)
             pkgDir <- file.path(unpackDir, pkg, "man")
             RCmd <- file.path(Sys.getenv("R_HOME"), "bin", "R")
+            ## create pdf
             Rd2pdfCmd <- paste0(
                 RCmd, " CMD Rd2pdf --no-preview ",
                 "--output=", pkgDir, "/", pkg, ".pdf ",
                 "--title=", pkg, " ", pkgDir, "/*.[Rr]d")
             ret <- system(Rd2pdfCmd)
+            ## create html
+            hooks <- list(pkg_href = function(pkg) sprintf("../../%s/man/%s.html", pkg, pkg))
+            tools::pkg2HTML(dir = pkgDir, out = paste0(pkgDir, "/", pkg, ".html"),
+                            hooks = hooks)
             cleanUnpackDir(tarball, unpackDir, "man", ".*\\.(Rd|rd)$")
             if (ret != 0) {
                 warning("non-zero exit status ", ret, " building ref man: ", pkg)
