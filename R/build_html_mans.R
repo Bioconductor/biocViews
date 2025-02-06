@@ -205,7 +205,15 @@ build_html_mans <- function(package_dirs, reposRoot) {
             dir.create(outdirs[i], recursive = TRUE)
         tools::pkg2HTML(
             dir = package_dirs[i],
-            out = outfiles[i]
+            out = outfiles[i],
+            hooks = list(
+                pkg_href = function(pkg) {
+                    sprintf(
+                        "../../%s/man/%s.html",
+                        pkg, pkg
+                    )
+                }
+            )
         )
     }
     outfiles
