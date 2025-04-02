@@ -76,13 +76,6 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
     if (missing(destDir))
         destDir <- file.path(reposRoot, "manuals")
 
-    rCmdRd2pdf <- function(r_path, output, pkg, pkgDir) {
-        CmdRd2pdf <- paste0("CMD Rd2pdf --no-preview --output=", output,
-                            " --title=", pkg, " ", pkgDir)
-        print(paste(r_path, CmdRd2pdf))
-        system2(r_path, CmdRd2pdf, stdout = FALSE, stderr = FALSE)
-    }
-
     buildManualsFromTarball <- function(tarball, unpackDir=".") {
         ## helper function to unpack pdf & Rd files from the vig
         cleanUnpackDir(tarball, unpackDir, "man", ".*\\.(pdf|Rd|rd)$")
@@ -92,20 +85,21 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
         pkg <- pkgName(tarball)
         pkgDir <- file.path(unpackDir, pkg)
         pkgManDir <- file.path(pkgDir, "man")
-        pdf_file <- paste(file.path(pkgManDir, pkg), "pdf", sep = ".")
+        if (dir.exists(pkgManDir))
+          unlink(pkgManDir, recursive = TRUE)
+        tmp_file <- paste(file.path(pkgDir, pkg), "pdf", sep = ".")
         r_path <- file.path(Sys.getenv("R_HOME"), "bin", "R")
-        # Fails if pdf exists or man exists with no .Rd files
-        ret <- rCmdRd2pdf(r_path, pdf_file, pkg, pkgDir)
-        if (ret != 0 || !file.exists(pdf_file)) {
-            # Make temporary file to move to man path
-            tmp_file <- paste(file.path(pkgDir, pkg), "pdf", sep = ".")
-            unlink(pkgManDir, recursive = TRUE)
-            ret <- rCmdRd2pdf(r_path, tmp_file, pkg, pkgDir)
+        CmdRd2pdf <- paste0("CMD Rd2pdf --no-preview --output=", tmp_file,
+                            " --title=", pkg, " ", pkgDir)
+        print(paste(r_path, CmdRd2pdf))
+        system2(r_path, CmdRd2pdf, stdout = FALSE, stderr = FALSE)
+        if (!file.exists(tmp_file))
+          stop("non-zero exit status ", ret, " building ref man: ", pkg)
+        if (!dir.exists(pkgManDir))
             dir.create(pkgManDir)
-            file.rename(tmp_file, pdf_file)
-            if (ret != 0)
-              stop("non-zero exit status ", ret, " building ref man: ", pkg)
-        }
+        file.rename(tmp_file,
+                    paste(file.path(pkgManDir, pkg), "pdf", sep = "."))
+        cleanUnpackDir(tarball, unpackDir, "man", ".*\\.(Rd|rd)$")
         TRUE
     }
 
@@ -121,7 +115,7 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
             tryCatch({
                 buildManualsFromTarball(tarball, ...)
             }, error = function(e) {
-                warning("error extracting manual for ", tarball,
+                warning("error extracting manual for: ", tarball,
                         "\n  ", conditionMessage(e))
                 FALSE
             })
