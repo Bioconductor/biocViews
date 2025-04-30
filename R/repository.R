@@ -80,25 +80,35 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
         ## helper function to unpack pdf & Rd files from the vig
         cleanUnpackDir(tarball, unpackDir, "man", ".*\\.(pdf|Rd|rd)$")
         ret <- unpack(tarball, unpackDir, "")
-        if (ret != 0)
-            stop("non-zero exit status ", ret, " extracting ", tarball)
+        if (ret != 0) {
+            warning("non-zero exit status ", ret, " extracting ", tarball)
+            return(FALSE)
+        }
         pkg <- pkgName(tarball)
         pkgDir <- file.path(unpackDir, pkg)
         pkgManDir <- file.path(pkgDir, "man")
-        if (dir.exists(pkgManDir))
-          unlink(pkgManDir, recursive = TRUE)
-        tmp_file <- paste(file.path(pkgDir, pkg), "pdf", sep = ".")
+        # Remove if exists without an .Rd file
+        if (dir.exists(pkgManDir) &&
+            length(list.files(pkgManDir, pattern = ".*\\.(Rd|rd)")) == 0)
+            unlink(pkgManDir, recursive = TRUE)
+        tmp_file <- file.path(pkgDir, paste0(pkg, ".pdf"))
         r_path <- file.path(Sys.getenv("R_HOME"), "bin", "R")
         CmdRd2pdf <- paste0("CMD Rd2pdf --no-preview --output=", tmp_file,
-                            " --title=", pkg, " ", pkgDir)
-        print(paste(r_path, CmdRd2pdf))
-        system2(r_path, CmdRd2pdf, stdout = FALSE, stderr = FALSE)
-        if (!file.exists(tmp_file))
-          stop("non-zero exit status ", ret, " building ref man: ", pkg)
+                            " --force --title=", pkg, " ", pkgDir)
+        ret <- system2(r_path, CmdRd2pdf, stdout = FALSE, stderr = FALSE)
+        if (!file.exists(tmp_file) || ret != 0) {
+            warning("non-zero exit status ", ret, " building ref man ", pkg)
+            return(FALSE)
+        }
         if (!dir.exists(pkgManDir))
             dir.create(pkgManDir)
-        file.rename(tmp_file,
-                    paste(file.path(pkgManDir, pkg), "pdf", sep = "."))
+        file.copy(tmp_file, file.path(pkgManDir, paste0(pkg, ".pdf")),
+                  overwrite = TRUE)
+        pkgFiles <- list.files(pkgDir)
+        pkgFiles <- pkgFiles[!grepl("man", pkgFiles)]
+        pkgFiles <- unname(sapply(pkgFiles,
+                                  function(pkgFiles) file.path(pkgDir, pkgFiles)))
+        unlink(pkgFiles, recursive = TRUE)
         cleanUnpackDir(tarball, unpackDir, "man", ".*\\.(Rd|rd)$")
         TRUE
     }
