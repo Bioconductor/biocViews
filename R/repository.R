@@ -78,7 +78,7 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
 
     buildManualsFromTarball <- function(tarball, unpackDir=".") {
         ## helper function to unpack pdf & Rd files from the vig
-        cleanUnpackDir(tarball, unpackDir, "man", ".*\\.(pdf|Rd|rd)$")
+        cleanUnpackDir(tarball, unpackDir, "man", ".*\\.(html|pdf|Rd|rd)$")
         ret <- unpack(tarball, unpackDir, "")
         if (ret != 0) {
             warning("non-zero exit status ", ret, " extracting ", tarball)
@@ -104,6 +104,9 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
             dir.create(pkgManDir)
         file.copy(tmp_file, file.path(pkgManDir, paste0(pkg, ".pdf")),
                   overwrite = TRUE)
+        hooks <- list(pkg_href = function(pkg) sprintf("../../%s/man/%s.html", pkg, pkg))
+        tools::pkg2HTML(dir = pkgDir, out = paste0(pkgManDir, "/", pkg, ".html"),
+                        hooks = hooks)
         pkgFiles <- list.files(pkgDir)
         pkgFiles <- pkgFiles[!grepl("man", pkgFiles)]
         pkgFiles <- unname(sapply(pkgFiles,
