@@ -6,9 +6,14 @@
 #' @examples
 #' cat(substring(dump_concept("ResearchField"), 1, 152), "\n")
 #' @export
-dump_concept = function (x, edob = edges(biocViewsVocab)) 
+dump_concept <- function (x, edob = NULL) 
 {
-    data("biocViewsVocab", package = "biocViews")
+    if (is.null(edob)) {
+        dataenv <- new.env(parent = emptyenv())
+        data("biocViewsVocab", package = "biocViews", envir = dataenv)
+        biocViewsVocab <- dataenv[["biocViewsVocab"]]
+        edob <- edges(biocViewsVocab)
+    }
     paste(x, "\n\t", paste(edob[[x]], collapse = "\n\t"), collapse = "\n\t", 
         "\n", sep = "")
 }
