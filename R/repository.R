@@ -829,7 +829,7 @@ getReverseDepends <- function(db, fieldName) {
     names(pkgNames) <- NULL
     df <- as.data.frame(db, stringsAsFactors=FALSE)
     depCols <- lapply(pkgNames, function(x) {
-        pkgRecord <- subset(df, Package==x)
+        pkgRecord <- subset(df, df$Package==x)
         pkgNames %in% getDcfValues(pkgRecord[fieldName])
     })
     depMat <- do.call(cbind, depCols)
