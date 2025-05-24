@@ -5,7 +5,7 @@
 \title{produce character stream for use with Protege entities/class hierarchy ingestion 
 based on biocViews subgraphs}
 \usage{
-dump_concept(x, edob = edges(biocViewsVocab))
+dump_concept(x, edob = NULL)
 }
 \arguments{
 \item{x}{character(1) name of a node in the biocViewsVocab graph}
