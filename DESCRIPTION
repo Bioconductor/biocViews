@@ -10,12 +10,14 @@ URL: http://bioconductor.org/packages/biocViews
 BugReports: https://github.com/Bioconductor/biocViews/issues
 Version: 1.77.3
 License: Artistic-2.0
-Author: VJ Carey <stvjc@channing.harvard.edu>,
-        BJ Harshfield <rebjh@channing.harvard.edu>,
-        S Falcon <sfalcon@fhcrc.org> ,
-        Sonali Arora,
-        Lori Shepherd <lori.shepherd@roswellpark.org>
-Maintainer: Bioconductor Package Maintainer <maintainer@bioconductor.org>
+Authors@R: c(
+    person("Vincent", "Carey", role = "aut"),
+    person("Benjamin", "Harshfield", role = "aut"),
+    person("Seth", "Falcon", role = "aut"),
+    person("Sonali", "Arora", role = "aut"),
+    person("Lori", "Shepherd", role = "aut"),
+    person("Bioconductor Package", , "Maintainer",
+        "maintainer@bioconductor.org", "cre"))
 Depends: R (>= 3.6.0)
 Imports: Biobase, graph (>= 1.9.26), methods, RBGL (>= 1.13.5), tools,
         utils, XML, RCurl, RUnit, BiocManager
