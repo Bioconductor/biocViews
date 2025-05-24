@@ -102,6 +102,8 @@ ResearchField -> SystemsBiology;
 ResearchField -> ComputationalChemistry;
 ResearchField -> Agroinformatics;
 ResearchField -> Transcriptomics;
+ResearchField -> Immunology;
+ResearchField -> Immunogenetics;
 ResearchField -> ImmunoOncology;
 ResearchField -> Epitranscriptomics;
 
