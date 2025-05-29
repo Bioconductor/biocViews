@@ -1,3 +1,11 @@
+CHANGES IN VERSION 1.77.2
+-------------------------
+
+ENHANCEMENT
+
+    o (1.77.2) Add build_db_from_source, build_meta_aliases_db, build_meta_rdxrefs_db
+
+
 CHANGES IN VERSION 1.67.0
 -------------------------
 
