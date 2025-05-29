@@ -48,3 +48,8 @@ po/*~
 
 # RStudio Connect folder
 rsconnect/
+
+# inst/repo/*/manuals
+inst/repo/bioc/src/manuals
+inst/repo/data/annotation/src/manuals
+inst/repo/data/experiment/src/manuals
