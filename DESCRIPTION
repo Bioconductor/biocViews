@@ -19,10 +19,12 @@ Maintainer: Bioconductor Package Maintainer <maintainer@bioconductor.org>
 Depends: R (>= 3.6.0)
 Imports: Biobase, graph (>= 1.9.26), methods, RBGL (>= 1.13.5), tools,
         utils, XML, RCurl, RUnit, BiocManager
-Suggests: BiocGenerics, knitr, commonmark, BiocStyle
+Suggests: BiocGenerics, BiocPkgTools, knitr, commonmark, BiocStyle
 Collate: AllClasses.R AllGenerics.R as-methods.R htmlDoc-methods.R
         htmlFilename-methods.R htmlValue-methods.R show-methods.R
         getPackNames.R packageDetails.R pump.R repository.R showvoc.R
         getPackageNEWS.R validation_tests.R recommendBiocViews.R
-	dump_concept.R
+	dump_concept.R build_dbs.R
 VignetteBuilder: knitr
+RoxygenNote: 7.3.2
+Encoding: UTF-8
