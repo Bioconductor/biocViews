@@ -136,7 +136,7 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
     } else {
         n <- 0
     }
-    paste(sum(n), "/", length(tarballs), "tarball manuals processsed")
+    paste(sum(n), "/", length(tarballs), "tarball manuals processed")
 }
 
 
