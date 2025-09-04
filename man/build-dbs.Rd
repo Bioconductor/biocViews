@@ -53,10 +53,6 @@ The alias and cross-reference files are generated from the package source
 directory but may also be generated from a built package tarball
 (functionality not included). The code is meant to run on the BBS, typically
 after a package has been built or updated.
-
-The `build_html_mans` function is used to generate the HTML manuals for each
-package. These pages will be hosted on the BBS server and linked in the
-package landing page.
 }
 \examples{
 if (interactive()) {
