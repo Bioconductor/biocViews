@@ -204,6 +204,7 @@ Infrastructure -> ThirdPartyClient
 Infrastructure -> DataImport;
 Infrastructure -> DataRepresentation;
 Infrastructure -> GUI;
+Infrastructure -> GPU;
 
 /* Software -> ShinyApps */
 Software -> ShinyApps;
