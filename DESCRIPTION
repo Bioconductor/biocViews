@@ -16,7 +16,7 @@ Authors@R: c(
     person("Seth", "Falcon", role = "aut"),
     person("Sonali", "Arora", role = "aut"),
     person("Lori", "Shepherd", role = "aut"),
-    person("Bioconductor Package", , "Maintainer",
+    person("Bioconductor Package", "Maintainer", ,
         "maintainer@bioconductor.org", "cre"))
 Depends: R (>= 3.6.0)
 Imports: Biobase, graph (>= 1.9.26), methods, RBGL (>= 1.13.5), tools,
