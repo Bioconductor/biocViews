@@ -43,7 +43,7 @@ genReposControlFiles(reposRoot, contribPaths, manifestFile = NA,
 }
 \author{Seth Falcon}
 \seealso{
-  \code{\link[tools:writePACKAGES]{write_PACKAGES}},
+  \code{\link[tools:write_PACKAGES]{write_PACKAGES}},
   \code{\link{extractVignettes}},
   \code{\link{write_REPOSITORY}},
   \code{\link{write_VIEWS}}
