@@ -30,7 +30,7 @@ write_REPOSITORY(reposRootPath, contribPaths)
 \author{Seth Falcon}
 
 \seealso{
-  \code{\link[tools:writePACKAGES]{write_PACKAGES}},
+  \code{\link[tools:write_PACKAGES]{write_PACKAGES}},
   \code{\link{extractVignettes}},
   \code{\link{genReposControlFiles}},
   \code{\link{write_VIEWS}}
