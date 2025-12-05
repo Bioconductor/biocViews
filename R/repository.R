@@ -458,7 +458,7 @@ DESCfieldExistsAttr <- function(pkgList, reposRootPath, field) {
             result <- file.exists(file)
             if (result) {
                 field <- as.character(read.dcf(file, fields = field))
-                result <- !is.na(field) && identical(length(field), 1L)
+                result <- identical(length(field), 1L) && !is.na(field)
             }
             result
         }, logical(1L)
