@@ -653,6 +653,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
                           'mac.binary'=,
                           'mac.binary.big-sur-x86_64'=,
                           'mac.binary.big-sur-arm64'=,
+                          'mac.binary.sonoma-arm64'=,
                           'mac.binary.mavericks'=,
                           'mac.binary.el-capitan'=".tgz",
                           stop("unknown type"))
