@@ -103,8 +103,7 @@ ResearchField -> ComputationalChemistry;
 ResearchField -> Agroinformatics;
 ResearchField -> Transcriptomics;
 ResearchField -> Epitranscriptomics;
-
-/* ResearchField -> Immunology */
+ResearchField -> Immunology;
 Immunology -> Immunogenetics;
 Immunology -> ImmunoOncology;
 Immunology -> ImmunoPrevention;
