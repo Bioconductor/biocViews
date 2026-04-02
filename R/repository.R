@@ -596,8 +596,7 @@ write_VIEWS <- function(reposRootPath, fields = NULL,
                   "SystemRequirements", "organism", "manufacturer",
                   "hasReadme", "VignetteBuilder", "Video", "BugReports",
                   "PackageStatus", "git_url", "git_branch",
-                  "git_last_commit", "git_last_commit_date", "Date/Publication",
-                  "Config/Bioconductor/UnsupportedPlatforms")
+                  "git_last_commit", "git_last_commit_date", "Date/Publication")
 
     ## Read REPOSITORY file for contrib path info
     reposInfo <- read_REPOSITORY(reposRootPath)
