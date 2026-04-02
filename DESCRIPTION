@@ -8,7 +8,7 @@ Description: Infrastructure to support 'views' used to classify
 biocViews: Infrastructure
 URL: http://bioconductor.org/packages/biocViews
 BugReports: https://github.com/Bioconductor/biocViews/issues
-Version: 1.78.1
+Version: 1.78.2
 License: Artistic-2.0
 Authors@R: c(
     person("Vincent", "Carey", role = "aut"),
