@@ -16,9 +16,8 @@ importFrom(utils, download.file, Stangle, available.packages,
            capture.output, contrib.url, data, file_test, head,
            packageDescription, readCitationFile, untar)
 
-importMethodsFrom(XML, saveXML)
+importFrom(xml2, read_html, xml_find_all, xml_text)
 
-importFrom(XML, xmlNode, xmlOutputDOM, xmlTree, htmlParse, xpathApply, xmlValue)
 
 importFrom(RCurl, getURL)
 
