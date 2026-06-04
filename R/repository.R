@@ -305,7 +305,7 @@ extractReadmes <- function(reposRoot, srcContrib, destDir) {
     ## Under destDir, for tarball foo_1.2.3.tar.gz, you will
     ## get destDir/foo/inst/doc/*.pdf
     ##
-    extractTopLevelFiles(reposRoot, srcContrib, destDir, "README")
+    extractTopLevelFiles(reposRoot, srcContrib, destDir, "README*")
 }
 
 extractNEWS <- function(reposRoot, srcContrib, destDir) {
