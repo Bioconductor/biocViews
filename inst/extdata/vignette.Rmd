@@ -1,0 +1,23 @@
+---
+title: "The Vignette Package"
+author: "Vignette Author"
+date: "`r format(Sys.Date(), '%A, %B %d, %Y')`"
+always_allow_html: yes
+output:
+  BiocStyle::html_document:
+    df_print: paged
+    toc_float: true
+vignette: >
+  %\VignetteIndexEntry{Vignette for beginners}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r init, results='hide', echo=FALSE, warning=FALSE, message=FALSE}
+library(knitr)
+opts_chunk$set(warning=FALSE, message=FALSE)
+```
+
+
+# What is a vignette?
+

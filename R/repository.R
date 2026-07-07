@@ -519,8 +519,8 @@ getHtmlTitle <- function(doc, src) {
     title <- getVignetteIndexEntry(src)
     if (is.na(title)) {
         ## now look for an HTML title
-        doc <- htmlParse(doc)
-        res <- xpathApply(doc, "//title", xmlValue)
+        doc <- read_html(doc)
+        res <- lapply(xml_find_all(doc, "//title"), xml_text)
         if (length(res))
             title <- res[[1L]]
     }

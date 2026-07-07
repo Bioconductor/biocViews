@@ -20,13 +20,13 @@ Authors@R: c(
         "maintainer@bioconductor.org", "cre"))
 Depends: R (>= 4.6.0)
 Imports: Biobase, graph (>= 1.9.26), methods, RBGL (>= 1.13.5), tools,
-        utils, XML, RCurl, RUnit, BiocManager
+        utils, xml2, RCurl, RUnit, BiocManager
 Suggests: BiocGenerics, BiocPkgTools, knitr, commonmark, BiocStyle
-Collate: AllClasses.R AllGenerics.R as-methods.R htmlDoc-methods.R
+Collate: AllClasses.R AllGenerics.R xml2_helpers.R as-methods.R htmlDoc-methods.R
         htmlFilename-methods.R htmlValue-methods.R show-methods.R
         getPackNames.R packageDetails.R pump.R repository.R showvoc.R
         getPackageNEWS.R validation_tests.R recommendBiocViews.R
 	dump_concept.R build_dbs.R
 VignetteBuilder: knitr
-RoxygenNote: 7.3.2
 Encoding: UTF-8
+Config/roxygen2/version: 8.0.0
