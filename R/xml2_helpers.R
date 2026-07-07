@@ -26,12 +26,12 @@
 ## document, we keep a lightweight parent document.
 
 xmlNode <- function(name, ..., attrs = NULL) {
-    doc  <- xml2::xml_new_document()
-    root <- xml2::xml_add_child(doc, name)
+    doc  <- xml_new_document()
+    root <- xml_add_child(doc, name)
 
     if (!is.null(attrs) && length(attrs) > 0) {
         for (nm in names(attrs))
-            xml2::xml_attr(root, nm) <- attrs[[nm]]
+            xml_attr(root, nm) <- attrs[[nm]]
     }
 
     args <- list(...)
@@ -45,13 +45,13 @@ xmlNode <- function(name, ..., attrs = NULL) {
     txt_acc <- character()
     for (child in args) {
         if (inherits(child, "xml_node")) {
-            xml2::xml_add_child(root, child)
+            xml_add_child(root, child)
         } else if (is.character(child)) {
             txt <- paste0(child, collapse = "")
             if (nzchar(txt)) {
                 if (mixed) {
-                    sp <- xml2::xml_add_child(root, "span")
-                    xml2::xml_set_text(sp, txt)
+                    sp <- xml_add_child(root, "span")
+                    xml_set_text(sp, txt)
                 } else {
                     txt_acc <- c(txt_acc, txt)
                 }
@@ -59,7 +59,7 @@ xmlNode <- function(name, ..., attrs = NULL) {
         }
     }
     if (!mixed && length(txt_acc)) {
-        xml2::xml_set_text(root, paste0(txt_acc, collapse = ""))
+        xml_set_text(root, paste0(txt_acc, collapse = ""))
     }
     root
 }
@@ -76,12 +76,12 @@ xmlNode <- function(name, ..., attrs = NULL) {
 ## The stateful part is a stack of open nodes held in the environment.
 
 .makeXmlDomBuilder <- function(rootTag, attrs = NULL) {
-    doc  <- xml2::xml_new_document()
-    root <- xml2::xml_add_child(doc, rootTag)
+    doc  <- xml_new_document()
+    root <- xml_add_child(doc, rootTag)
 
     if (!is.null(attrs) && length(attrs)) {
         for (nm in names(attrs))
-            xml2::xml_attr(root, nm) <- attrs[[nm]]
+            xml_attr(root, nm) <- attrs[[nm]]
     }
 
     ## stack: top of stack is the currently open node
@@ -93,11 +93,11 @@ xmlNode <- function(name, ..., attrs = NULL) {
 
     ## addTag(name, text?, attrs = NULL, close = TRUE)
     addTag <- function(name, ..., attrs = NULL, close = TRUE) {
-        node <- xml2::xml_add_child(current(), name)
+        node <- xml_add_child(current(), name)
 
         if (!is.null(attrs) && length(attrs) > 0) {
             for (nm in names(attrs))
-                xml2::xml_attr(node, nm) <- attrs[[nm]]
+                xml_attr(node, nm) <- attrs[[nm]]
         }
 
         args <- list(...)
@@ -107,13 +107,13 @@ xmlNode <- function(name, ..., attrs = NULL) {
         txt_acc <- character()
         for (child in args) {
             if (inherits(child, "xml_node")) {
-                xml2::xml_add_child(node, child)
+                xml_add_child(node, child)
             } else if (is.character(child)) {
                 txt <- paste0(child, collapse = "")
                 if (nzchar(txt)) {
                     if (mixed) {
-                        sp <- xml2::xml_add_child(node, "span")
-                        xml2::xml_set_text(sp, txt)
+                        sp <- xml_add_child(node, "span")
+                        xml_set_text(sp, txt)
                     } else {
                         txt_acc <- c(txt_acc, txt)
                     }
@@ -121,7 +121,7 @@ xmlNode <- function(name, ..., attrs = NULL) {
             }
         }
         if (!mixed && length(txt_acc))
-            xml2::xml_set_text(node, paste0(txt_acc, collapse = ""))
+            xml_set_text(node, paste0(txt_acc, collapse = ""))
 
         if (!close) {
             push(node)
@@ -132,7 +132,7 @@ xmlNode <- function(name, ..., attrs = NULL) {
     ## addNode(node)  -- append a pre-built xml_node
     addNode <- function(node) {
         if (inherits(node, "xml_node")) {
-            xml2::xml_add_child(current(), node)
+            xml_add_child(current(), node)
         }
         invisible(NULL)
     }
