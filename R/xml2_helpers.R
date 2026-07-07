@@ -101,13 +101,27 @@ xmlNode <- function(name, ..., attrs = NULL) {
         }
 
         args <- list(...)
+        node_children <- vapply(args, inherits, logical(1), "xml_node")
+        mixed <- any(node_children) && any(!node_children)
+
+        txt_acc <- character()
         for (child in args) {
             if (inherits(child, "xml_node")) {
                 xml2::xml_add_child(node, child)
-            } else if (is.character(child) && nzchar(child)) {
-                xml2::xml_set_text(node, child)
+            } else if (is.character(child)) {
+                txt <- paste0(child, collapse = "")
+                if (nzchar(txt)) {
+                    if (mixed) {
+                        sp <- xml2::xml_add_child(node, "span")
+                        xml2::xml_set_text(sp, txt)
+                    } else {
+                        txt_acc <- c(txt_acc, txt)
+                    }
+                }
             }
         }
+        if (!mixed && length(txt_acc))
+            xml2::xml_set_text(node, paste0(txt_acc, collapse = ""))
 
         if (!close) {
             push(node)
