@@ -18,7 +18,7 @@ Authors@R: c(
     person("Lori", "Shepherd", role = "aut"),
     person("Bioconductor Package", "Maintainer", ,
         "maintainer@bioconductor.org", "cre"))
-Depends: R (>= 3.6.0)
+Depends: R (>= 4.6.0)
 Imports: Biobase, graph (>= 1.9.26), methods, RBGL (>= 1.13.5), tools,
         utils, XML, RCurl, RUnit, BiocManager
 Suggests: BiocGenerics, BiocPkgTools, knitr, commonmark, BiocStyle
