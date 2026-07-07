@@ -58,7 +58,7 @@ xmlNode <- function(name, ..., attrs = NULL) {
             }
         }
     }
-    if (!mixed && length(txt_acc))
+    if (!mixed && length(txt_acc)) {
         xml2::xml_set_text(root, paste0(txt_acc, collapse = ""))
     }
     root
