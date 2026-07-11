@@ -58,47 +58,62 @@ cleanUnpackDir <- function(tarball, unpackDir, subDir="", pattern=NULL) {
     unlink(files)
 }
 
+
 extractManuals <- function(reposRoot, srcContrib, destDir) {
     ## Extract Rd man pages from source package tarballs and
     ## convert to pdf documents
     ##
     ## reposRoot - Top level path for CRAN-style repos
+    ##             $HOME/PACKAGES/3.21/data/experiment
     ## srcContrib - Location of source packages
+    ##              'src/contrib'
     ## destDir - where to extract.
     ##
     ## Notes:
     ## Under destDir, for tarball foo_1.2.3.tar.gz, you will
     ## get destDir/foo/man/*.pdf
     ##
-
     if (missing(destDir))
         destDir <- file.path(reposRoot, "manuals")
 
     buildManualsFromTarball <- function(tarball, unpackDir=".") {
         ## helper function to unpack pdf & Rd files from the vig
-        status <- TRUE
-        cleanUnpackDir(tarball, unpackDir, "man", ".*\\.(pdf|Rd|rd)$")
-        ret <- unpack(tarball, unpackDir, "'*/man/*.[Rr]d'")
+        cleanUnpackDir(tarball, unpackDir, "man", ".*\\.(html|pdf|Rd|rd)$")
+        ret <- unpack(tarball, unpackDir, "")
         if (ret != 0) {
-            warning("non-zero exit status ", ret, " extracting man pages: ",
-                    tarball)
-            status <- FALSE
-        } else {
-            pkg <- pkgName(tarball)
-            pkgDir <- file.path(unpackDir, pkg, "man")
-            RCmd <- file.path(Sys.getenv("R_HOME"), "bin", "R")
-            Rd2pdfCmd <- paste0(
-                RCmd, " CMD Rd2pdf --no-preview ",
-                "--output=", pkgDir, "/", pkg, ".pdf ",
-                "--title=", pkg, " ", pkgDir, "/*.[Rr]d")
-            ret <- system(Rd2pdfCmd)
-            cleanUnpackDir(tarball, unpackDir, "man", ".*\\.(Rd|rd)$")
-            if (ret != 0) {
-                warning("non-zero exit status ", ret, " building ref man: ", pkg)
-                status <- FALSE
-            }
+            warning("non-zero exit status ", ret, " extracting ", tarball)
+            return(FALSE)
         }
-        status
+        pkg <- pkgName(tarball)
+        pkgDir <- file.path(unpackDir, pkg)
+        pkgManDir <- file.path(pkgDir, "man")
+        # Remove if exists without an .Rd file
+        if (dir.exists(pkgManDir) &&
+            length(list.files(pkgManDir, pattern = ".*\\.(Rd|rd)")) == 0)
+            unlink(pkgManDir, recursive = TRUE)
+        tmp_file <- file.path(pkgDir, paste0(pkg, ".pdf"))
+        r_path <- file.path(Sys.getenv("R_HOME"), "bin", "R")
+        CmdRd2pdf <- paste0("CMD Rd2pdf --no-preview --output=", tmp_file,
+                            " --force --title=", pkg, " ", pkgDir)
+        ret <- system2(r_path, CmdRd2pdf, stdout = FALSE, stderr = FALSE)
+        if (!file.exists(tmp_file) || ret != 0) {
+            warning("non-zero exit status ", ret, " building ref man ", pkg)
+            return(FALSE)
+        }
+        if (!dir.exists(pkgManDir))
+            dir.create(pkgManDir)
+        file.copy(tmp_file, file.path(pkgManDir, paste0(pkg, ".pdf")),
+                  overwrite = TRUE)
+        hooks <- list(pkg_href = function(pkg) sprintf("../../%s/man/%s.html", pkg, pkg))
+        tools::pkg2HTML(dir = pkgDir, out = paste0(pkgManDir, "/", pkg, ".html"),
+                        hooks = hooks)
+        pkgFiles <- list.files(pkgDir)
+        pkgFiles <- pkgFiles[!grepl("man", pkgFiles)]
+        pkgFiles <- unname(sapply(pkgFiles,
+                                  function(pkgFiles) file.path(pkgDir, pkgFiles)))
+        unlink(pkgFiles, recursive = TRUE)
+        cleanUnpackDir(tarball, unpackDir, "man", ".*\\.(Rd|rd)$")
+        TRUE
     }
 
     tarballs <- list.files(file.path(reposRoot, srcContrib),
@@ -107,7 +122,8 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
         dir.create(destDir, recursive=TRUE)
     if (!file.info(destDir)$isdir)
         stop("destDir must specify a directory")
-    if (endsWith(reposRoot, "data/annotation")) {
+    repoType <- unlist(strsplit(reposRoot, "/")) |> tail(n=1)
+    if (repoType %in% c("bioc", "annotation", "experiment")) {
         n <- vapply(tarballs, function(tarball, ...) {
             tryCatch({
                 buildManualsFromTarball(tarball, ...)
@@ -120,7 +136,7 @@ extractManuals <- function(reposRoot, srcContrib, destDir) {
     } else {
         n <- 0
     }
-    paste(sum(n), "/", length(tarballs), "tarball manuals processsed")
+    paste(sum(n), "/", length(tarballs), "tarball manuals processed")
 }
 
 

@@ -1,20 +1,17 @@
 \name{extractManuals}
 \alias{extractManuals}
 \alias{extractCitations}
-\title{Extract Rd man pages and build pdf reference manuals from local package
+\title{Generate html and pdf reference manuals from local package
   repository}
 \description{
-  This function extracts Rd man pages and builds pdf reference manuals
-  from the \code{man} subdirectory of R source packages archives
+  This function generates html and pdf reference manuals
+  in the \code{man} subdirectory of R source packages archives
   (\code{.tar.gz}) found in a local package repository.
 
-  All Rd files found in \code{man} will be extracted and used during
-  the pdf construction process.  Only source package archives will be
-  processed.  The constructed pdf files will be extracted under
-  \code{destDir} and will be found in \code{PKGNAME/man/*.pdf}.
-
-  Prior to extraction, all Rd and pdf files in \code{destDir/PKGNAME/man}
-  will be removed.
+  Only source package archives will be processed.  The constructed
+  html and pdf files will be extracted under \code{destDir}
+  and will be found in \code{PKGNAME/man/*.html} or
+  \code{PKGNAME/man/*.pdf}.
 }
 \usage{
 extractManuals(reposRoot, srcContrib, destDir)
@@ -22,7 +19,8 @@ extractManuals(reposRoot, srcContrib, destDir)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{reposRoot}{character vector giving the path to the root of the
-    local CRAN-style package repository}
+    local CRAN-style package repository, such as
+    \code{$HOME/PACKAGES/3.21/data/experiment}.}
   \item{srcContrib}{character vector giving the relative path from the
     \code{reposRoot} to the source packages.  In a standard CRAN-style
     repository, this will be \code{src/contrib}.}
