@@ -58,6 +58,46 @@ cleanUnpackDir <- function(tarball, unpackDir, subDir="", pattern=NULL) {
     unlink(files)
 }
 
+tryPkg2HTML <- function(tarball, unpackDir) {
+    cleanUnpackDir(tarball, unpackDir, "man", ".*\\.(html)$")
+    pkg <- pkgName(tarball)
+    pkgDir <- file.path(unpackDir, pkg, "man")
+    if (!dir.exists(pkgDir))
+        dir.create(pkgDir, recursive=TRUE)
+    out <- file.path(pkgDir, paste0(pkg, ".html"))
+    hooks <- list(
+        pkg_href = function(pkg) sprintf("../../%s/man/%s.html", pkg, pkg)
+    )
+    tryCatch({
+        tools::pkg2HTML(
+            package = tarball, out = out, hooks = hooks
+        )
+    }, error = function(e) {
+        warning(
+            "error generating HTML manual for: ", pkg, "\n  ",
+            conditionMessage(e)
+        )
+    })
+}
+
+extractHTMLManuals <- function(
+    reposRoot, srcContrib, destDir = file.path(reposRoot, "manuals")
+) {
+    tarballs <- list.files(
+        path = file.path(reposRoot, srcContrib),
+        pattern = "\\.tar\\.gz$",
+        full.names = TRUE
+    )
+    if (!dir.exists(destDir))
+        dir.create(destDir, recursive = TRUE)
+
+    lapply(
+        tarballs,
+        tryPkg2HTML,
+        unpackDir = destDir
+    )
+}
+
 extractManuals <- function(reposRoot, srcContrib, destDir) {
     ## Extract Rd man pages from source package tarballs and
     ## convert to pdf documents
