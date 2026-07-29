@@ -30,3 +30,4 @@ Collate: AllClasses.R AllGenerics.R as-methods.R htmlDoc-methods.R
 VignetteBuilder: knitr
 RoxygenNote: 7.3.2
 Encoding: UTF-8
+RoxygenNote: 7.3.2
