@@ -1,3 +1,11 @@
+CHANGES IN VERSION 1.78.0
+-------------------------
+
+NEW FEATURES
+
+    o getPackageNEWS and printNEWS are deprecated from biocViews.
+    See help('biocViews-deprecated') for more details.
+
 CHANGES IN VERSION 1.77.2
 -------------------------
 
