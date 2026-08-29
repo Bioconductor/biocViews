@@ -5,7 +5,7 @@ validate_bioc_views <- function(pkg)
 {
     bvStr <- packageDescription(pkg)$biocViews
     checkTrue(!is.null(bvStr), paste("No biocViews defined for package", pkg))
-    bvStr <- gsub(" ", "", bvStr)
+    bvStr <- gsub("\\s", "", bvStr)
     views <- strsplit(bvStr, ",")[[1]]
     biocViewsVocab <- NULL
     data("biocViewsVocab", envir=environment())
