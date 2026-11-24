@@ -48,6 +48,25 @@ test_printNEWS_truncation_link_uses_repo <- function()
     )))
 }
 
+test_printNEWS_link_uses_repo_attribute <- function()
+{
+    ## NEWS combined from several repositories links each package to its
+    ## own repository, regardless of the 'repo' argument
+    soft <- .toyNEWS()
+    attr(soft, "repo") <- "bioc"
+    wf <- .toyNEWS()
+    attr(wf, "repo") <- "workflows"
+    con <- textConnection("out", "w", local=TRUE)
+    printNEWS(list(softpkg=soft, wfpkg=wf), con, relativeLink=TRUE,
+              maxLines=2L, repo="data/experiment")
+    close(con)
+    checkTrue(any(grepl("(/packages/release/bioc/news/softpkg/NEWS)",
+                        out, fixed=TRUE)))
+    checkTrue(any(grepl("(/packages/release/workflows/news/wfpkg/NEWS)",
+                        out, fixed=TRUE)))
+    checkTrue(!any(grepl("data/experiment", out, fixed=TRUE)))
+}
+
 test_truncateNEWSLines <- function()
 {
     lines <- c(

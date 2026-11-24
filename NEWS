@@ -5,7 +5,9 @@ ENHANCEMENT
 
     o (1.83.0) printNEWS() gains 'maxLines' (default 50) to cap each
     package's NEWS at whole items, ending with a link to the full NEWS
-    and a news(package = ...) hint, and 'repo' to build that link.
+    and a news(package = ...) hint. The link uses the repository that
+    getPackageNEWS() records on each package's NEWS, so NEWS combined
+    from several repositories links correctly.
 
 BUG FIXES
 
