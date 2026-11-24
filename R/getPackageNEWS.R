@@ -163,37 +163,108 @@ getNEWSFromFile <- function (dir, destfile, format = NULL, reader = NULL,
 }
 
 
+## Keep the first (newest) whole NEWS items of a package's printed NEWS
+## 'lines' so that at most 'maxLines' non-blank lines remain. Items are
+## never split: a unit starts at a 'Changes in version' header, at a
+## top-level bullet, or at an unindented line after a blank line (a
+## category heading). The first unit is always kept, and headings left
+## without items are dropped. Returns the kept lines, with attribute
+## 'truncated'.
+.truncateNEWSLines <- function(lines, maxLines)
+{
+    nonblank <- nzchar(trimws(lines))
+    truncated <- is.finite(maxLines) && sum(nonblank) > maxLines
+    if (!truncated)
+        return(structure(lines, truncated=FALSE))
+
+    indent <- nchar(sub("^(\\s*).*", "\\1", lines))
+    version <- grepl("^\\s{5,}Changes in version", lines)
+    bullet <- grepl("^\\s*[-o*+•]\\s+\\S", lines) & !version
+    base <- if (any(bullet)) min(indent[bullet]) else 0L
+    prevBlank <- c(TRUE, !nonblank[-length(lines)])
+    fence <- cumsum(grepl("^\\s*```", lines)) %% 2L == 1L
+    start <- nonblank & !fence &
+        (version | (bullet & indent == base) |
+         (indent <= base & prevBlank))
+    start[which(nonblank)[1L]] <- TRUE
+    unit <- cumsum(start)
+    unitLines <- tabulate(unit[nonblank], nbins=max(unit))
+    keep <- max(1L, sum(cumsum(unitLines) <= maxLines))
+    ## drop trailing units that are only a heading
+    isHeading <- function(u) {
+        l <- lines[unit == u & nonblank]
+        length(l) == 1L && !grepl("^\\s*[-o*+•]\\s", l)
+    }
+    while (keep > 1L && isHeading(keep))
+        keep <- keep - 1L
+    kept <- lines[unit <= keep]
+    while (length(kept) && !nzchar(trimws(kept[length(kept)])))
+        kept <- kept[-length(kept)]
+    structure(kept, truncated=TRUE)
+}
+
+## markdown fix-ups of printed NEWS lines
+.mdNEWS <- function(txt)
+{
+    txt <- sub("^    o  ", "-", txt)
+    txt <- sub("^\t", "  ", txt)
+    ## 'o' is a valid bullet for R's NEWS reader, but 'o' (or bullet
+    ## character) lines kept inside an item's text are not markdown list
+    ## markers, and kramdown merges them into the parent bullet
+    txt <- sub("^(\\s+)[o•] ", "\\1- ", txt)
+    ## a line starting with an HTML-like tag (e.g. '<save_path>') is read
+    ## by kramdown as an unclosed HTML block that hides the rest of the
+    ## page; autolinks such as <https://...> are left alone
+    sub("^(\\s*)<(?![a-z]+://)(?=[A-Za-z/!])", "\\1&lt;", txt, perl=TRUE)
+}
+
 printNEWS <- function(dbs, destfile, overwrite=FALSE, width=68,
-                      output=c("md", "text"), relativeLink=FALSE, ...)
+                      output=c("md", "text"), relativeLink=FALSE,
+                      maxLines=50L,
+                      repo=c("bioc", "data/experiment", "workflows"), ...)
 {
     output <- match.arg(output)
+    repo <- match.arg(repo)
     dbs <- lapply(dbs, function(db) {
-         db[["Text"]] <- sapply(db[["Text"]], function(elt) {
+         db[["Text"]] <- vapply(db[["Text"]], function(elt) {
              elt <- unlist(strsplit(elt, "\n"))
-             paste(strwrap(elt, width=options()[["width"]] - 10),
-                   collapse="\n")
-         })
+             elt <- paste(strwrap(elt, width=options()[["width"]] - 10),
+                          collapse="\n")
+             ## items from NEWS.Rd start with a newline, which printed
+             ## as an empty bullet followed by the text
+             trimws(elt)
+         }, character(1L))
          db
      })
     urlBase <- ifelse(relativeLink, "/packages/","https://bioconductor.org/packages/")
     txt <- capture.output({
         for (i in seq_along(dbs)) {
+            pkg <- names(dbs)[[i]]
             tryCatch({
                 cat(sprintf(
                     "\n[%s](%s%s)\n%s\n\n",
-                    names(dbs)[[i]], urlBase, names(dbs)[[i]],
-                    paste(rep("-", nchar(names(dbs)[[i]])), collapse="")))
-                print(dbs[[i]])
+                    pkg, urlBase, pkg,
+                    paste(rep("-", nchar(pkg)), collapse="")))
+                lines <- capture.output(print(dbs[[i]]))
+                if ("md" == output)
+                    lines <- .mdNEWS(lines)
+                lines <- .truncateNEWSLines(lines, maxLines)
+                writeLines(lines)
+                if (attr(lines, "truncated")) {
+                    newsUrl <- sprintf("%srelease/%s/news/%s/NEWS",
+                                       urlBase, repo, pkg)
+                    fmt <- if ("md" == output)
+                        "\n[See the full NEWS](%s) or run `news(package = \"%s\")`.\n"
+                    else
+                        "\nSee the full NEWS at %s or run news(package = \"%s\").\n"
+                    cat(sprintf(fmt, newsUrl, pkg))
+                }
             }, error=function(err) {
-                warning("print() failed for ", sQuote(names(dbs)[[i]]),
+                warning("print() failed for ", sQuote(pkg),
                         immediate.=TRUE, call.=FALSE)
             })
         }
     })
-    if ("md" == output) {
-        txt <- sub("^    o  ", "-", txt)
-        txt <- sub("^\t", "  ", txt)
-    }
 
     if (!is(destfile, "connection")) {
         if (file.exists(destfile) && !overwrite)

@@ -18,7 +18,8 @@ getPackageNEWS(prevRepos="3.6",
 	       repo=c("bioc", "data/experiment", "workflows"),
 	       srcdir = NULL)
 printNEWS(dbs, destfile, overwrite = FALSE, width = 68,
-	  output=c("md", "text"), relativeLink=FALSE, ...)
+	  output=c("md", "text"), relativeLink=FALSE, maxLines = 50L,
+	  repo=c("bioc", "data/experiment", "workflows"), ...)
 }
 
 \arguments{
@@ -51,6 +52,16 @@ printNEWS(dbs, destfile, overwrite = FALSE, width = 68,
   \item{relativeLink}{Should links to packages be relative links on
   bioconductor.org website or include full url
   'https//bioconductor.org'. default: FALSE is full url.}
+
+  \item{maxLines}{\code{numeric(1)} maximum number of non-blank lines
+    printed per package. Longer NEWS keeps its newest whole items up to
+    this limit and ends with a link to the package's full NEWS on
+    bioconductor.org and a \code{news(package = "pkg")} hint. Items are
+    never split. Use \code{Inf} to print all NEWS.}
+
+  \item{repo}{\code{character(1)} the repository of the packages in
+    \code{dbs}, used to build the link to the full NEWS for truncated
+    entries.}
 
   \item{...}{additional arguments, unused.}
 
