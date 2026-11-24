@@ -30,7 +30,13 @@ printNEWS(dbs, destfile, overwrite = FALSE, width = 68,
 
   \item{repo}{\code{character(1)} Which repository to get NEWS
   for. bioc is software packages, data/experiment is for data experiment
-  packages and workflows for workflow packages}
+  packages and workflows for workflow packages. \code{getPackageNEWS}
+  records it as the \code{"repo"} attribute of each \code{news_db}.
+  \code{printNEWS} uses that attribute to link truncated entries to their
+  full NEWS, so NEWS combined from several repositories (e.g.
+  \code{c(softNEWS, dataNEWS)}) links correctly; its own \code{repo}
+  argument is only used for \code{news_db} elements without the
+  attribute.}
 
   \item{srcdir}{Path to local checkout of package repositories, if NULL
   will try and use files on main builders}
@@ -59,9 +65,7 @@ printNEWS(dbs, destfile, overwrite = FALSE, width = 68,
     bioconductor.org and a \code{news(package = "pkg")} hint. Items are
     never split. Use \code{Inf} to print all NEWS.}
 
-  \item{repo}{\code{character(1)} the repository of the packages in
-    \code{dbs}, used to build the link to the full NEWS for truncated
-    entries.}
+
 
   \item{...}{additional arguments, unused.}
 

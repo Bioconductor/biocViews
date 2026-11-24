@@ -59,9 +59,12 @@ getPackageNEWS <- function(prevRepos="3.6",
                 } else {
                     tools:::.news_reader_default(news)
                 }
-            if (!is.null(db))
-                utils::news(Version > ver, db=db)
-            else NULL
+            if (!is.null(db)) {
+                db <- utils::news(Version > ver, db=db)
+                ## used by printNEWS() to link to the full NEWS
+                attr(db, "repo") <- repo
+                db
+            } else NULL
         }, error=function(...) NULL)
     }
 
@@ -225,6 +228,13 @@ printNEWS <- function(dbs, destfile, overwrite=FALSE, width=68,
 {
     output <- match.arg(output)
     repo <- match.arg(repo)
+    ## each package's repository, as recorded by getPackageNEWS(), so
+    ## that NEWS combined from several repositories links correctly;
+    ## 'repo' is the fallback
+    repos <- vapply(dbs, function(db) {
+        r <- attr(db, "repo")
+        if (is.null(r)) repo else r
+    }, character(1L))
     dbs <- lapply(dbs, function(db) {
          db[["Text"]] <- vapply(db[["Text"]], function(elt) {
              elt <- unlist(strsplit(elt, "\n"))
@@ -252,7 +262,7 @@ printNEWS <- function(dbs, destfile, overwrite=FALSE, width=68,
                 writeLines(lines)
                 if (attr(lines, "truncated")) {
                     newsUrl <- sprintf("%srelease/%s/news/%s/NEWS",
-                                       urlBase, repo, pkg)
+                                       urlBase, repos[[i]], pkg)
                     fmt <- if ("md" == output)
                         "\n[See the full NEWS](%s) or run `news(package = \"%s\")`.\n"
                     else
